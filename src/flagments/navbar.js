@@ -24,7 +24,7 @@ const Navbar = ({ setAuthenticated }) => {
                     {/**Dashboard*/}
                     <li>
                         <NavLink end to="/" onClick={() => handleMenuClick('dashboard')}>
-                            <i className="fa-solid fa-home fa-sidebar-icon"></i>
+                            <i className="fa-solid fa-home fa-sidebar-icon fa-custom"></i>
                             <span>Trang Chủ</span>
                             <span className="arrow"></span>
                         </NavLink>
@@ -32,29 +32,36 @@ const Navbar = ({ setAuthenticated }) => {
                     {/**Management*/}
                     <li className={`menu-dropdown ${isMenuItemActive('management')}`}>
                         <a href="##" onClick={() => handleMenuClick('management')}>
-                            <i className="fa-solid fa-gear fa-sidebar-icon"></i>
+                            <i className="fa-solid fa-gear fa-sidebar-icon fa-custom"></i>
                             <span>Quản Lý</span>
                             <span className="fa fa-angle-down pull-right"></span>
                         </a>
                         <ul className={`sub-menu ${isMenuCollapsed('management')}`}>
                             <li>
                                 <NavLink to="/management/member">
-                                    <i className="fa-solid fa-user fa-sidebar-icon"></i>
+                                    <i className="fa-solid fa-user fa-sidebar-icon fa-custom"></i>
                                     <span>Thành Viên</span>
                                     <span className="arrow"></span>
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink to="/management/staff">
-                                    <i className="fa-solid fa-user-tie fa-sidebar-icon"></i>
+                                    <i className="fa-solid fa-user-tie fa-sidebar-icon fa-custom"></i>
                                     <span>Nhân Viên</span>
                                     <span className="arrow"></span>
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink to="/management/package">
-                                    <i className="fa-solid fa-box-archive fa-sidebar-icon"></i>
-                                    <span>Gói Tập Luyện</span>
+                                    <i className="fa-solid fa-box-archive fa-sidebar-icon fa-custom"></i>
+                                    <span>Dịch Vụ</span>
+                                    <span className="arrow"></span>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/management/workout">
+                                    <i className="fa-solid fa-dumbbell fa-sidebar-icon fa-custom"></i>
+                                    <span>Bài Tập</span>
                                     <span className="arrow"></span>
                                 </NavLink>
                             </li>

@@ -26,7 +26,7 @@ const StaffManage = () => {
                     Danh Sách Nhân Viên
                 </span>
             </div>
-            <div className="staff-list-content">
+            <div className="list-content">
 
             </div>
         </>

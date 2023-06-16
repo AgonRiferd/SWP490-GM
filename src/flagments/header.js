@@ -61,7 +61,7 @@ const Header = ({ setAuthenticated }) => {
                         <li className={`dropdown user ${activeItem === 'user' ? 'open' : ''}`}
                         onClick={() => handleItemClick('user')} ref={dropdownRefs.user}>
                             <a href="##" className="padding-user">
-                                <i className="fa-solid fa-circle-user fa-user"></i>
+                                <i className="fa-solid fa-circle-user fa-user fa-custom"></i>
                                 <div className="profile">
                                     <div>
                                         Admin

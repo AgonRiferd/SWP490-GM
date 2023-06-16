@@ -1,6 +1,6 @@
 :root {
   --primary-color: #313e4b;
-  --secondary-color: rgb(86, 134, 225);
+  --secondary-color: #5686e1;
   --tertiary-color: #FAF6F6;
   --min-header-height: 55px;
 }
@@ -81,6 +81,10 @@ a.logo {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.login .logo {
+  margin-bottom: 10px;
 }
 
 .login .logo > i {
@@ -360,11 +364,14 @@ li > a {
 }
 
 i.fa-custom {
+  color: var(--secondary-color);
+}
+
+.navbar-right i.fa-bell {
   padding-top: 7px;
   font-size: 17px;
   width: 1.28571429em;
   text-align: center;
-  color: var(--secondary-color);
 }
 
 i.fa-user {
@@ -372,12 +379,10 @@ i.fa-user {
   width: 35px;
   height: 35px;
   text-align: center;
-  color: var(--secondary-color);
   float: left;
 }
 
 i.fa-sidebar-icon {
-  color: var(--secondary-color);
   display: inline-block;
   line-height: 20px;
   height: 20px;
@@ -433,17 +438,9 @@ i.fa-sidebar-icon {
   min-height: 100vh;
 }
 
-.content-container:before, .content-container:after {
-  display: table;
-  content: " ";
-}
-
-.content-container:after {
-  clear: both;
-}
-
 .content {
   padding: 10px;
+  min-height: 100vh;
 }
 
 .left-side {
@@ -545,11 +542,12 @@ li > a.active > .arrow {
 }
 
 .inner-content {
-  border: 1px solid var(--tertiary-color);
+  border: 1px thin var(--primary-color);
   box-shadow: 0px -4px 2px 0px var(--primary-color);
   background-color: #FFF;
   margin-top: 5px;
   padding: 5px 10px;
+  min-height: inherit;
 }
 
 .breadcrumb {
@@ -591,6 +589,10 @@ li > a.active > .arrow {
   margin: 0 3px;
 }
 
+.breadcrumb > li:last-child span {
+  font-weight: bold;
+}
+
 .content-header > span.title {
   margin: 0 5px;
   font-size: 22px;
@@ -598,7 +600,127 @@ li > a.active > .arrow {
   font-weight: bold;
 }
 
-.user-list-content,
-.staff-list-content {
+.list-content {
   position: relative;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+thead {
+  background-color: #687884;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+table.custom-table {
+  margin: 10px 0;
+}
+
+.custom-table th {
+  color: var(--tertiary-color);
+}
+
+.custom-table th:first-child {
+  width: 40%;
+}
+
+.custom-table th > .flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+  display: none;
+}
+
+.common-options {
+  position: relative;
+  user-select: none;
+  margin: 0 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.common-options .pagination-buttons {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.common-options .pagination-buttons button {
+  font-size: 15px;
+  margin: 0 5px;
+}
+
+.pagination-previous-buttons,
+.pagination-next-buttons {
+  display: inline-flex;
+}
+
+.pagination-previous-buttons > button {
+  margin-right: 5px;
+}
+
+.pagination-next-buttons > button {
+  margin-right: 5px;
+}
+
+.common-options .pagination-buttons .current-page {
+  padding: 0 15px;
+}
+
+.common-options .pagination-goto {
+  text-align: right;
+  margin-right: 10px;
+}
+
+.common-options .pagination-goto > input {
+  width: 40px;
+}
+
+.common-options .page-size {
+  text-align: left;
+}
+
+.page-size select {
+  padding: 2px;
+}
+
+.common-options .search-bar {
+  flex-grow: 1;
+  text-align: right;
+}
+
+.search-bar input {
+  padding: 2px;
+}
+
+.footer {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 30px;
+  box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.2);
+  background-color: var(--tertiary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer span {
+  font-size: 11px;
 }

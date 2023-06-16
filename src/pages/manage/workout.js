@@ -1,8 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
-const MemberManage = () => {
-
+import WorkoutTable from '../../components/workout/WorkoutTable'
+const WorkoutPage = () => {
     return (
         <>
             <div className='content-header'>
@@ -17,18 +16,20 @@ const MemberManage = () => {
                         <span>Quản Lý</span>
                     </li>
                     <li>
-                        <span>Thành Viên</span>
+                        <span>
+                            Bài Tập
+                        </span>
                     </li>
                 </ol>
                 <span className="title">
-                    Danh Sách Thành Viên
+                    Danh Sách Bài Tập
                 </span>
             </div>
             <div className="list-content">
-
+                <WorkoutTable />
             </div>
         </>
     )
 }
 
-export default MemberManage;
+export default WorkoutPage;

@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate, Outlet} from 'react-router-dom';
 import Header from "../flagments/header";
 import Navbar from "../flagments/navbar";
+import Footer from "../flagments/footer";
 
 const PrivateRoute = ({isAuthenticated, setAuthenticated}) => {
     return isAuthenticated() ? (
@@ -17,6 +18,7 @@ const PrivateRoute = ({isAuthenticated, setAuthenticated}) => {
                             <Outlet />
                         </div>
                     </div>
+                    <Footer />
                 </aside>
             </div>
         </>

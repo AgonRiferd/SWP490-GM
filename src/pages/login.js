@@ -13,7 +13,7 @@ const Login = ({ handleLogin }) => {
   useEffect(() => {
     document.body.style.backgroundImage = 'url(./background/bg.jpg)'; //Add background image to <body>
     return () => {
-      document.body.style.backgroundImage = '';
+      document.body.style.backgroundImage = ''; //Reset background-image when unmount
     };
   }, []);
 
@@ -47,9 +47,9 @@ const Login = ({ handleLogin }) => {
         />
         <div className="checkbox">
           <input type="checkbox" id="bypass" onChange={(e) => setBypass(e.target.checked)}/>
-          <label htmlFor="bypass"> Bypass Login</label> 
+          <label htmlFor="bypass"> Bypass Login</label> {/** ---------J4F---------*/}
         </div>
-        <input className="btn btn-submit" type="submit" value="Log In" disabled={isSubmitDisabled}/>
+        <input className="btn btn-submit" type="submit" value="Đăng Nhập" disabled={isSubmitDisabled}/>
       </form>
     </div>
   );
