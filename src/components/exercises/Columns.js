@@ -6,13 +6,18 @@ const COLUMNS = [
         accessor: 'name'
     },
     {
-        Header: 'Video ID',
-        accessor: 'videoId'
-    },
-    {
         Header: 'Ngày Tạo',
         accessor: 'time',
         Cell: ({ value }) => {return format(new Date(value), 'dd/MM/yyyy')}
+    },
+    {
+        Header: 'Video Link',
+        accessor: 'videoId',
+        Cell: ({ value }) => (
+            <a href={value} target="_blank" rel="noopener noreferrer">
+                {value}
+            </a>
+        )
     }
 ]
 

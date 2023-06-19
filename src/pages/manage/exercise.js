@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
+import COLUMNS from "../../components/exercises/Columns";
+import DATA from "../../components/exercises/DATA.json";
 import {default as ExcerciseTable} from '../../components/exercises/Table'
 
 const ExercisePage = () => {
+    const columns = useMemo(() => COLUMNS, []);
+    const data = useMemo(() => DATA, []);
+    const sortees = useMemo(
+        () => [
+            { 
+                id: "name", 
+                desc: false 
+            }
+        ], []
+    )
+
     return (
         <>
             <div className='content-header'>
@@ -27,7 +40,7 @@ const ExercisePage = () => {
                 </span>
             </div>
             <div className="list-content">
-                <ExcerciseTable />
+                <ExcerciseTable data={data} columns={columns} sortees={sortees}/>
             </div>
         </>
     )

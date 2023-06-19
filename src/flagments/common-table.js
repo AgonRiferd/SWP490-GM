@@ -1,42 +1,14 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { useTable, useSortBy, useGlobalFilter, usePagination } from "react-table";
-import { default as DialogCreate } from "./dialog/create";
 
 /**
- * Đây là tạo bảng tùy chỉnh dành cho trang exercise
- * Nếu muốn tạo bảng bình thường, hãy dùng common-table.js trong thư mục ../../flagments
+ * @param {*} data dữ liệu đầu vào dưới dạng json
+ * @param {*} columns một mảng xác định các cột của bảng
+ * @param {*} sortees một mảng chứa tên cột và giá trị boolean dùng để xác định cột sắp xếp mặc định.
+ * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, tạo trang.
  */
 
-const Table = ({ data, columns: initialColumns, sortees }) => {
-
-    const columns = useMemo(
-        () => [
-          ...initialColumns,
-          {
-            Header: 'Actions',
-            Cell: ({ row }) => (
-              <div>
-                <button onClick={() => handleDialogEdit(row.original)}>Edit</button>
-                <button onClick={() => handleDialogDelete(row.original)}>Delete</button>
-              </div>
-            ),
-          },
-        ],
-        [initialColumns]
-    );
-
-    const [dialogCreateIsOpen, setDialogCreateIsOpen] = useState(false);
-
-    const handleDialogCreate = () => {
-        setDialogCreateIsOpen(!dialogCreateIsOpen);
-    };
-    const handleDialogEdit = (rowData) => {
-        console.log('Edit:', rowData);
-    };// Test data
-    
-    const handleDialogDelete = (rowData) => {
-        console.log('Delete:', rowData);
-    };// Test data
+const CommonTable = ({data, columns, sortees }) => {
 
     const {
         getTableProps,
@@ -53,9 +25,8 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
         state,
         setGlobalFilter,
         setPageSize
-    } = useTable({
-        columns, data,
-        initialState: { sortBy: sortees }
+    } = useTable({ columns, data , 
+        initialState: {sortBy: sortees}
     }, useGlobalFilter, useSortBy, usePagination);
 
     const { globalFilter, pageIndex, pageSize } = state;
@@ -78,11 +49,8 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
                 <div className="search-bar">
                     <span>
                         Tìm kiếm: {' '}
-                        <input value={globalFilter || ''} onChange={(e) => setGlobalFilter(e.target.value)} />
+                        <input value={globalFilter || ''} onChange={(e) => setGlobalFilter(e.target.value)}/>
                     </span>
-                </div>
-                <div className="button-create">
-                    <button type="button" onClick={handleDialogCreate}>Thêm mới</button>
                 </div>
             </div>
             <table {...getTableProps()} className="custom-table">
@@ -128,7 +96,7 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
                             <button onClick={() => gotoPage(0)} disabled={!canPreviousPage} type="button">{'<<'}</button>
                             <button onClick={() => previousPage()} disabled={!canPreviousPage} type="button">Trước</button>
                         </div>
-                        <span className="current-page">{(pageIndex + 1) + ' / ' + pageCount}</span>
+                        <span className="current-page">{(pageIndex + 1) + ' / ' + pageCount }</span>
                         <div className="pagination-next-buttons">
                             <button onClick={() => nextPage()} disabled={!canNextPage} type="button">Sau</button>
                             <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} type="button">{'>>'}</button>
@@ -145,9 +113,8 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
                     </div>
                 </div>
                 : ''}
-            {dialogCreateIsOpen && <DialogCreate onClose={handleDialogCreate} />}
         </>
     )
 };
 
-export default Table;
+export default CommonTable;

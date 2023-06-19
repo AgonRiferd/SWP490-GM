@@ -446,7 +446,7 @@ i.fa-sidebar-icon {
 }
 
 .content {
-  padding: 10px;
+  padding: 25px;
   min-height: 100vh;
 }
 
@@ -619,8 +619,7 @@ thead {
   background-color: #687884;
 }
 
-td,
-th {
+td, th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
@@ -757,16 +756,14 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .dialog-container {
   border: 1px solid #888;
-  width: 500px;
-  height: 500px;
   box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
-  background-color: #FFF;
+  background-color: rgba(209, 209, 209);
 }
 
 .dialog-header {
   border-bottom: 1px solid var(--primary-color);
-  background: #ffffff;
-  color: #000;
+  background: var(--primary-color);
+  color: #fff;
   font-weight: bold;
 }
 
@@ -796,7 +793,7 @@ input[type="number"]::-webkit-outer-spin-button {
   font-size: 0.9em;
 }
 
-.dialog-title-bar>.dialog-title-bar-close {
+.dialog-title-bar > .dialog-title-bar-close {
   position: absolute;
   right: .3em;
   top: 50%;
@@ -808,31 +805,55 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .dialog-title-bar-close {
   font-size: 1em;
+  cursor: pointer;
 }
 
 .dialog-content {
   position: relative;
   border: 0;
-  padding: .5em 1em;
+  padding: 1em 1.5em;
   background: none;
   overflow: auto;
 }
 
-.dialog-fields label {
-  font-weight: bold;
-  display: flex;
-  margin-bottom: 5px;
+.dialog-fields > .dialog-field {
+  margin-bottom: 10px;
+  font-size: 0.9em;
 }
 
-.dialog-fields input[type="text"] {
-  display: block;
-  padding: 6px 12px;
-  font-size: 14px;
+table.dialog-field tr {
+  background-color: unset;
+}
+
+table.dialog-field td {
+  border: 0;
+}
+
+.dialog-field input {
+  min-height: 25px;
+	display: inline-block;
+  padding: 0 5px;
+}
+
+.dialog-field.textarea-field label{
+  display: flex;
+  margin-right: 10px;
+}
+
+.dialog-field > textarea {
+  display: inline-block;
+  margin-top: 5px;
+  min-height: 100px;
+  min-width: -webkit-fill-available;
+  padding: 5px;
 }
 
 .dialog-button-tray {
   margin-top: 15px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 .any-button {
@@ -848,4 +869,8 @@ input[type="number"]::-webkit-outer-spin-button {
   border: 1px solid #222;
   position: relative;
   cursor: pointer;
+}
+
+button[type="submit"].any-button {
+  background-color: #F48319;
 }
