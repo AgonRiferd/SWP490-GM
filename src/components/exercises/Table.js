@@ -1,13 +1,18 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useTable, useSortBy, useGlobalFilter, usePagination } from "react-table";
 import COLUMNS from "./Columns";
 import DATA from "./DATA.json";
 import SearchBar from "./SearchBar";
+import {default as DialogCreate} from "./dialog/create";
 
 const Table = () => {
-
     const columns = useMemo(() => COLUMNS, []);
     const data = useMemo(() => DATA, []);
+    const [dialogCreateIsOpen, setDialogCreateIsOpen] = useState(false);
+
+    const handleDialogCreate = () => {
+        setDialogCreateIsOpen(!dialogCreateIsOpen);
+    };
 
     const defaultSortColumn = 'name';
     const defaultSortOrder = 'asc';
@@ -52,7 +57,7 @@ const Table = () => {
                     <SearchBar filter={globalFilter} setFilter={setGlobalFilter} />
                 </div>
                 <div className="button-create">
-                    <button type="button">Create</button>
+                    <button type="button" onClick={handleDialogCreate}>Thêm mới</button>
                 </div>
             </div>
             <table {...getTableProps()} className="custom-table">
@@ -115,6 +120,7 @@ const Table = () => {
                     </div>
                 </div>
                 : ''}
+            {dialogCreateIsOpen && <DialogCreate onClose={handleDialogCreate} />}
         </>
     )
 };
