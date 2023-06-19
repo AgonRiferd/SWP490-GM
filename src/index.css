@@ -297,7 +297,6 @@ a.logo {
   width: 275px;
   padding: 0;
   margin: 0;
-  top: 100%;
   border: 1px;
 }
 
@@ -560,7 +559,7 @@ li > a.active > .arrow {
 }
 
 .content-header {
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .content-header > .breadcrumb {
@@ -594,14 +593,10 @@ li > a.active > .arrow {
 }
 
 .content-header > span.title {
-  margin: 0 5px;
+  margin: 10px 5px;
   font-size: 22px;
   color: var(--primary-color);
   font-weight: bold;
-}
-
-.list-content {
-  position: relative;
 }
 
 table {
@@ -649,7 +644,6 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .common-options {
-  position: relative;
   user-select: none;
   margin: 0 5px;
   display: flex;
@@ -703,11 +697,16 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .common-options .search-bar {
   flex-grow: 1;
+  text-align: center;
+}
+
+.common-options .button-create {
   text-align: right;
 }
 
 .search-bar input {
   padding: 2px;
+  width: 20vw;
 }
 
 .footer {

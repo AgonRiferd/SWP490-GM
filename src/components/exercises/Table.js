@@ -1,13 +1,16 @@
 import React, { useMemo } from "react";
 import { useTable, useSortBy, useGlobalFilter, usePagination } from "react-table";
 import COLUMNS from "./Columns";
-import WORKOUT_DATA from "./WORKOUT_DATA.json";
+import DATA from "./DATA.json";
 import SearchBar from "./SearchBar";
 
-const WorkoutTable = () => {
+const Table = () => {
 
     const columns = useMemo(() => COLUMNS, []);
-    const data = useMemo(() => WORKOUT_DATA, []);
+    const data = useMemo(() => DATA, []);
+
+    const defaultSortColumn = 'name';
+    const defaultSortOrder = 'asc';
 
     const {
         getTableProps,
@@ -24,9 +27,12 @@ const WorkoutTable = () => {
         state,
         setGlobalFilter,
         setPageSize
-    } = useTable({ columns, data }, useGlobalFilter, useSortBy, usePagination);
+    } = useTable({ columns, data , 
+        initialState: {sortBy:[{ id: defaultSortColumn, desc: defaultSortOrder === 'desc' }]}
+    }, useGlobalFilter, useSortBy, usePagination);
 
     const { globalFilter, pageIndex, pageSize } = state;
+
     return (
         <>
             <div className="common-options">
@@ -44,6 +50,9 @@ const WorkoutTable = () => {
                 </div>
                 <div className="search-bar">
                     <SearchBar filter={globalFilter} setFilter={setGlobalFilter} />
+                </div>
+                <div className="button-create">
+                    <button type="button">Create</button>
                 </div>
             </div>
             <table {...getTableProps()} className="custom-table">
@@ -110,4 +119,4 @@ const WorkoutTable = () => {
     )
 };
 
-export default WorkoutTable;
+export default Table;

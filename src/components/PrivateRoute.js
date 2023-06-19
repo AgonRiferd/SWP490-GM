@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, Outlet} from 'react-router-dom';
 import Header from "../flagments/header";
-import Navbar from "../flagments/navbar";
+import Sidebar from "../flagments/sidebar";
 import Footer from "../flagments/footer";
 
 const PrivateRoute = ({isAuthenticated, setAuthenticated}) => {
@@ -9,7 +9,7 @@ const PrivateRoute = ({isAuthenticated, setAuthenticated}) => {
         <>
             <div className='content-container'>
                 <aside className='left-side'>
-                    <Navbar setAuthenticated={setAuthenticated}/>
+                    <Sidebar setAuthenticated={setAuthenticated}/>
                 </aside>
                 <aside className="right-side">
                     <Header setAuthenticated={setAuthenticated}/>

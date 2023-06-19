@@ -1,3 +1,5 @@
+import {format} from 'date-fns'
+
 const COLUMNS = [
     {
         Header: 'Tên',
@@ -8,8 +10,9 @@ const COLUMNS = [
         accessor: 'videoId'
     },
     {
-        Header: 'Số lần',
-        accessor: 'time'
+        Header: 'Ngày Tạo',
+        accessor: 'time',
+        Cell: ({ value }) => {return format(new Date(value), 'dd/MM/yyyy')}
     }
 ]
 

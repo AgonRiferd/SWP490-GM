@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
-const Navbar = ({ setAuthenticated }) => {
+const Sidebar = ({ setAuthenticated }) => {
     const [activeNavItem, setActiveNavItem] = useState(null);
 
     const handleMenuClick = (navItem) => {
@@ -59,7 +59,7 @@ const Navbar = ({ setAuthenticated }) => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/management/workout">
+                                <NavLink to="/management/exercise">
                                     <i className="fa-solid fa-dumbbell fa-sidebar-icon fa-custom"></i>
                                     <span>Bài Tập</span>
                                     <span className="arrow"></span>
@@ -73,4 +73,4 @@ const Navbar = ({ setAuthenticated }) => {
     )
 }
 
-export default Navbar;
+export default Sidebar;

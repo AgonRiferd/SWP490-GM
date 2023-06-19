@@ -7,7 +7,7 @@ import MemberManage from './pages/manage/member'
 import PageNotFound from './pages/404';
 import HomePage from './pages/home';
 import StaffManage from './pages/manage/staff';
-import WorkoutPage from './pages/manage/workout';
+import ExercisePage from './pages/manage/exercise';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -29,7 +29,7 @@ function App() {
           <Route path="/management">
             <Route exact path="member" element={<MemberManage />} />
             <Route exact path="staff" element={<StaffManage />} />
-            <Route exact path="workout" element={<WorkoutPage />} />
+            <Route exact path="exercise" element={<ExercisePage />} />
           </Route>
         </Route>
         <Route path="/404" element={<PageNotFound />} />

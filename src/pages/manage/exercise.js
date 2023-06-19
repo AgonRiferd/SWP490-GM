@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import WorkoutTable from '../../components/workout/WorkoutTable'
-const WorkoutPage = () => {
+import {default as ExcerciseTable} from '../../components/exercises/Table'
+
+const ExercisePage = () => {
     return (
         <>
             <div className='content-header'>
@@ -26,10 +27,10 @@ const WorkoutPage = () => {
                 </span>
             </div>
             <div className="list-content">
-                <WorkoutTable />
+                <ExcerciseTable />
             </div>
         </>
     )
 }
 
-export default WorkoutPage;
+export default ExercisePage;
