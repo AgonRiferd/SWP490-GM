@@ -1,21 +1,21 @@
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import COLUMNS from "../../components/exercises/Columns";
-import DATA from "../../components/exercises/DATA.json";
-import {default as ExcerciseTable} from '../../components/exercises/Table'
+import DATA from "../../components/package/DATA.json";
+import COLUMNS from "../../components/package/Columns";
+import CommonTable from '../../flagments/common-table';
 
-const ExercisePage = () => {
-    const columns = useMemo(() => COLUMNS, []);
+const PackageManage = () => {
     const data = useMemo(() => DATA, []);
+    const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
             { 
-                id: "name", 
+                id: "orderDay", 
                 desc: false 
             }
         ], []
     )
-    
+
     // const [data, setData] = useState([]);
 
     // useEffect(() => {
@@ -36,7 +36,7 @@ const ExercisePage = () => {
     // const handleEditSuccess = () => {
     //   fetchData(); // Fetch data again after successful edit
     // };
-    
+
     return (
         <>
             <div className='content-header'>
@@ -51,20 +51,18 @@ const ExercisePage = () => {
                         <span>Quản Lý</span>
                     </li>
                     <li>
-                        <span>
-                            Bài Tập
-                        </span>
+                        <span>Dịch Vụ</span>
                     </li>
                 </ol>
                 <span className="title">
-                    Danh Sách Bài Tập
+                    Danh Sách Dịch Vụ
                 </span>
             </div>
             <div className="list-content">
-                <ExcerciseTable data={data} columns={columns} sortees={sortees}/>
+                <CommonTable data={data} columns={columns} sortees={sortees} />
             </div>
         </>
     )
 }
 
-export default ExercisePage;
+export default PackageManage;

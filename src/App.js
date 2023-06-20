@@ -8,6 +8,7 @@ import PageNotFound from './pages/404';
 import HomePage from './pages/home';
 import StaffManage from './pages/manage/staff';
 import ExercisePage from './pages/manage/exercise';
+import PackageManage from './pages/manage/package';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -30,6 +31,7 @@ function App() {
             <Route exact path="member" element={<MemberManage />} />
             <Route exact path="staff" element={<StaffManage />} />
             <Route exact path="exercise" element={<ExercisePage />} />
+            <Route exact path="package" element={<PackageManage />} />
           </Route>
         </Route>
         <Route path="/404" element={<PageNotFound />} />

@@ -637,8 +637,8 @@ table.custom-table {
   color: var(--tertiary-color);
 }
 
-.custom-table th:first-child {
-  width: 40%;
+.custom-table.table-exercise th:first-child {
+  width: 35%;
 }
 
 .custom-table th>.flex {

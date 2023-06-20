@@ -99,7 +99,7 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
                     <button type="button" className="any-button" onClick={handleCreate}>Thêm mới</button>
                 </div>
             </div>
-            <table {...getTableProps()} className="custom-table">
+            <table {...getTableProps()} className="custom-table table-exercise">
                 <thead>
                     {headerGroups.map((headerGroup) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>

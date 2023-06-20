@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { createRef, useEffect, useMemo, useState } from "react";
 import Logo from "./logo";
 
 const Header = ({ setAuthenticated }) => {
     const [activeItem, setActiveItem] = useState(null);
-    const dropdownRefs = {
-        notifications: useRef(null),
-        user: useRef(null),
-    };
+    const dropdownRefs = useMemo(() => ({
+        notifications: createRef(null), user: createRef(null)}),[]
+    );
 
     useEffect(() => {
         // Add event listener to handle clicks outside the dropdown
@@ -25,8 +24,7 @@ const Header = ({ setAuthenticated }) => {
           // Clean up the event listener when the component is unmounted
           document.removeEventListener('click', handleClickItem);
         };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [dropdownRefs]);
     
     const handleItemClick = (itemId) => {
         setActiveItem((prevItem) => (prevItem === itemId ? null : itemId));
