@@ -871,6 +871,17 @@ table.dialog-field td {
   cursor: pointer;
 }
 
-button[type="submit"].any-button {
+.any-button.button-submit {
   background-color: #F48319;
+}
+
+.button-refresh {
+  padding: 0;
+  border: 0;
+  background-color: unset;
+  cursor: pointer;
+}
+
+.textarea-field .button-refresh {
+  margin-left: 10px;
 }

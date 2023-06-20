@@ -15,7 +15,28 @@ const ExercisePage = () => {
             }
         ], []
     )
+    
+    // const [data, setData] = useState([]);
 
+    // useEffect(() => {
+    //   fetchData(); // Fetch initial data when component mounts
+    // }, []);
+  
+    // const fetchData = async () => {
+    //   try {
+    //     // Fetch data from the API and update the state
+    //     const response = await fetch('api/records');
+    //     const jsonData = await response.json();
+    //     setData(jsonData);
+    //   } catch (error) {
+    //     console.log('Error fetching data:', error);
+    //   }
+    // };
+  
+    // const handleEditSuccess = () => {
+    //   fetchData(); // Fetch data again after successful edit
+    // };
+    
     return (
         <>
             <div className='content-header'>

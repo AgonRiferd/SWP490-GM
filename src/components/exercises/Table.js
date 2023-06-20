@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { useTable, useSortBy, useGlobalFilter, usePagination } from "react-table";
-import { default as DialogCreate } from "./dialog/create";
+import Create from "./dialog/create";
+import BasicDialog from "../../flagments/dialog";
+import Edit from "./dialog/edit";
+import Delete from "./dialog/delete";
 
 /**
  * Đây là tạo bảng tùy chỉnh dành cho trang exercise
@@ -8,35 +11,46 @@ import { default as DialogCreate } from "./dialog/create";
  */
 
 const Table = ({ data, columns: initialColumns, sortees }) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [dialogMode, setDialogMode] = useState(null);
+    const [selectedRow, setSelectedRow] = useState(null);
+
+    const modeCreate = useMemo(() => ({ title: "Tạo mới", component: Create }),[]);
+    const modeEdit = useMemo(() => ({ title: "Chỉnh sửa", component: Edit }),[]);
+    const modeDelete = useMemo(() => ({ title: "Loại bỏ", component: Delete }),[]);
 
     const columns = useMemo(
         () => [
           ...initialColumns,
           {
             Header: 'Actions',
+            disableSortBy: true,
             Cell: ({ row }) => (
               <div>
-                <button onClick={() => handleDialogEdit(row.original)}>Edit</button>
-                <button onClick={() => handleDialogDelete(row.original)}>Delete</button>
+                <button onClick={() => handleAction(modeEdit, row.original)}>Edit</button>
+                <button onClick={() => handleAction(modeDelete, row.original)}>Delete</button>
               </div>
             ),
           },
         ],
-        [initialColumns]
+        [initialColumns, modeDelete, modeEdit]
     );
 
-    const [dialogCreateIsOpen, setDialogCreateIsOpen] = useState(false);
-
-    const handleDialogCreate = () => {
-        setDialogCreateIsOpen(!dialogCreateIsOpen);
+    const handleAction = (mode, rowData) => {
+        setDialogMode(mode);
+        setSelectedRow(rowData);
+        setIsDialogOpen(true);
     };
-    const handleDialogEdit = (rowData) => {
-        console.log('Edit:', rowData);
-    };// Test data
-    
-    const handleDialogDelete = (rowData) => {
-        console.log('Delete:', rowData);
-    };// Test data
+
+    const handleCloseDialog = () => {
+        setIsDialogOpen(false);
+    };
+
+    const handleCreate = () => {
+        setDialogMode(modeCreate);
+        setSelectedRow(null);
+        setIsDialogOpen(true);
+      };
 
     const {
         getTableProps,
@@ -82,7 +96,7 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
                     </span>
                 </div>
                 <div className="button-create">
-                    <button type="button" onClick={handleDialogCreate}>Thêm mới</button>
+                    <button type="button" className="any-button" onClick={handleCreate}>Thêm mới</button>
                 </div>
             </div>
             <table {...getTableProps()} className="custom-table">
@@ -145,9 +159,25 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
                     </div>
                 </div>
                 : ''}
-            {dialogCreateIsOpen && <DialogCreate onClose={handleDialogCreate} />}
+            {isDialogOpen && (
+                <Dialog 
+                    mode={dialogMode}
+                    rowData={selectedRow}
+                    onClose={handleCloseDialog} 
+                />
+            )}
         </>
     )
+};
+
+const Dialog = ({ mode, rowData, onClose }) => {
+    const { title, component: Component } = mode;
+    
+    return (
+        <BasicDialog title={title} onClose={onClose}>
+            <Component data={rowData} onClose={onClose}/>
+        </BasicDialog>
+    );
 };
 
 export default Table;

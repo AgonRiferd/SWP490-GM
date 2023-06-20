@@ -5,10 +5,10 @@ import { useTable, useSortBy, useGlobalFilter, usePagination } from "react-table
  * @param {*} data dữ liệu đầu vào dưới dạng json
  * @param {*} columns một mảng xác định các cột của bảng
  * @param {*} sortees một mảng chứa tên cột và giá trị boolean dùng để xác định cột sắp xếp mặc định.
- * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, tạo trang.
+ * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, phân trang.
  */
 
-const CommonTable = ({data, columns, sortees }) => {
+const CommonTable = ({data, columns, sortees}) => {
 
     const {
         getTableProps,
