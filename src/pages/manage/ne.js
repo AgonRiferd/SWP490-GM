@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import COLUMNS from "../../components/exercises/Columns";
-import DATA from "../../components/exercises/DATA.json";
-import { Create, Edit, Delete} from "../../components/exercises/dialog";
-import AdvanceTable from '../../flagments/advance-table';
+import DATA from '../../components/ne/DATA.json'
+import COLUMNS from '../../components/ne/Columns';
+import { Create, Edit, Delete } from '../../components/ne/dialog';
+import AdvanceTable from '../../flagments/advance-table'
 
-const ExercisePage = () => {
-    const columns = useMemo(() => COLUMNS, []);
+const NEManage = () => {
+
     const data = useMemo(() => DATA, []);
+    const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
             { 
@@ -22,28 +23,7 @@ const ExercisePage = () => {
         dialogEdit: { title: "Chỉnh sửa", component: Edit },
         dialogDelete: { title: "Loại bỏ", component: Delete }
     }),[]);
-    
-    // const [data, setData] = useState([]);
 
-    // useEffect(() => {
-    //   fetchData(); // Fetch initial data when component mounts
-    // }, []);
-  
-    // const fetchData = async () => {
-    //   try {
-    //     // Fetch data from the API and update the state
-    //     const response = await fetch('api');
-    //     const jsonData = await response.json();
-    //     setData(jsonData);
-    //   } catch (error) {
-    //     console.log('Error fetching data:', error);
-    //   }
-    // };
-  
-    // const handleEditSuccess = () => {
-    //   fetchData(); // Fetch data again after successful edit
-    // };
-    
     return (
         <>
             <div className='content-header'>
@@ -59,12 +39,12 @@ const ExercisePage = () => {
                     </li>
                     <li>
                         <span>
-                            Bài Tập
+                            <b>Nhân Viên: NE</b>
                         </span>
                     </li>
                 </ol>
                 <span className="title">
-                    Danh Sách Bài Tập
+                    Danh Sách Bác Sỹ Dinh Dưỡng
                 </span>
             </div>
             <div className="list-content">
@@ -74,4 +54,4 @@ const ExercisePage = () => {
     )
 }
 
-export default ExercisePage;
+export default NEManage;

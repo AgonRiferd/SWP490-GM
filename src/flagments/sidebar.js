@@ -45,9 +45,16 @@ const Sidebar = ({ setAuthenticated }) => {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/management/staff">
+                                <NavLink to="/management/pt">
                                     <i className="fa-solid fa-user-tie fa-sidebar-icon fa-custom"></i>
-                                    <span>Nhân Viên</span>
+                                    <span>PT</span>
+                                    <span className="arrow"></span>
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/management/ne">
+                                    <i className="fa-solid fa-user-tie fa-sidebar-icon fa-custom"></i>
+                                    <span>NE</span>
                                     <span className="arrow"></span>
                                 </NavLink>
                             </li>

@@ -6,9 +6,10 @@ import PrivateRoute from './components/PrivateRoute';
 import MemberManage from './pages/manage/member'
 import PageNotFound from './pages/404';
 import HomePage from './pages/home';
-import StaffManage from './pages/manage/staff';
+import PTManage from './pages/manage/pt';
 import ExercisePage from './pages/manage/exercise';
 import PackageManage from './pages/manage/package';
+import NEManage from './pages/manage/ne';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -29,7 +30,8 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="/management">
             <Route exact path="member" element={<MemberManage />} />
-            <Route exact path="staff" element={<StaffManage />} />
+            <Route exact path="pt" element={<PTManage />} />
+            <Route exact path="ne" element={<NEManage />} />
             <Route exact path="exercise" element={<ExercisePage />} />
             <Route exact path="package" element={<PackageManage />} />
           </Route>

@@ -885,3 +885,18 @@ table.dialog-field td {
 .textarea-field .button-refresh {
   margin-left: 10px;
 }
+
+.dialog-field input[type=radio] {
+  margin: 0 5px;
+}
+
+td.radio-gender {
+  display: flex;
+  justify-content: flex-start;
+}
+
+td.radio-gender > label {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}

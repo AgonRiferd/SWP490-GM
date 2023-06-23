@@ -1,6 +1,64 @@
 import React, { useState } from 'react';
 
-const Edit = ({ data, onClose }) => {
+export const Create = ({ onClose }) => {
+    const [isCreated, setIsCreated] = useState(false);
+
+    const handleCreate = () => {
+        // Xử lý logic xóa dữ liệu
+        // ...
+        setIsCreated(true);
+    };
+
+    return (
+        <>
+            {isCreated ? (
+                <>
+                    <p>Task failed successfully!</p>
+                    <div className='dialog-button-tray'>
+                        <button type="button" className="any-button" onClick={onClose}>
+                            Đóng
+                        </button>
+                    </div>
+                </>
+            ) : (
+                <form onSubmit={handleCreate}>
+                    <div className='dialog-fields'>
+                        <table className='dialog-field'>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span>Tên bài tập</span>
+                                    </td>
+                                    <td>
+                                        <input type='text' name='name' />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span>Video Link</span>
+                                    </td>
+                                    <td>
+                                        <input type='text' name='name' />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div className='dialog-field textarea-field'>
+                            <label>Mô tả</label>
+                            <textarea name='description' />
+                        </div>
+                    </div>
+                    <div className='dialog-button-tray'>
+                        <button type='submit' className='any-button button-submit'>Xác nhận</button>
+                        <button type='button' className='any-button button-cancel' onClick={onClose}>Hủy bỏ</button>
+                    </div>
+                </form>
+            )}
+        </>
+    );
+};
+
+export const Edit = ({ data, onClose }) => {
     const [formData, setFormData] = useState(data);
     const [initialData] = useState(data);
     const [isEdited, setIsEdited] = useState(false);
@@ -105,4 +163,39 @@ const Edit = ({ data, onClose }) => {
     );
 };
 
-export default Edit;
+export const Delete = ({ data, onClose }) => {
+    const [isDeleted, setIsDeleted] = useState(false);
+
+    const handleDelete = () => {
+        // Xử lý logic xóa dữ liệu
+        // ...
+        setIsDeleted(true);
+    };
+
+    return (
+        <>
+            {isDeleted ? (
+                <p>Task failed successfully!</p>
+            ) : (
+                <p>Bạn có chắc chắn muốn xóa?</p>
+            )}
+
+            <div className="dialog-button-tray">
+                {isDeleted ? (
+                    <button type="button" className="any-button" onClick={onClose}>
+                        Đóng
+                    </button>
+                ) : (
+                    <>
+                        <button type="button" className="any-button button-submit" onClick={handleDelete}>
+                            Xác nhận
+                        </button>
+                        <button type="button" className="any-button button-cancel" onClick={onClose}>
+                            Hủy bỏ
+                        </button>
+                    </>
+                )}
+            </div>
+        </>
+    );
+};

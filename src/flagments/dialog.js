@@ -1,5 +1,15 @@
 import React from 'react';
 
+const Dialog = ({ mode, rowData, onClose }) => {
+    const { title, component: Component } = mode;
+    
+    return (
+        <BasicDialog title={title} onClose={onClose}>
+            <Component data={rowData} onClose={onClose}/>
+        </BasicDialog>
+    );
+};
+
 const BasicDialog = ({ title, onClose, children }) => {
     return (
         <div className='ui-dialog ui-overlay'>
@@ -16,4 +26,4 @@ const BasicDialog = ({ title, onClose, children }) => {
     );
 };
 
-export default BasicDialog;
+export default Dialog;

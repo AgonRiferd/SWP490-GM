@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import DATA from "../../components/package/DATA.json";
 import COLUMNS from "../../components/package/Columns";
-import CommonTable from '../../flagments/common-table';
+import { Create, Edit, Delete } from "../../components/package/dialog";
+import AdvanceTable from '../../flagments/advance-table';
 
 const PackageManage = () => {
     const data = useMemo(() => DATA, []);
@@ -15,6 +16,12 @@ const PackageManage = () => {
             }
         ], []
     )
+
+    const dialogs = useMemo(() => ({
+        dialogCreate: { title: "Tạo mới", component: Create },
+        dialogEdit: { title: "Chỉnh sửa", component: Edit },
+        dialogDelete: { title: "Loại bỏ", component: Delete }
+    }),[]);
 
     // const [data, setData] = useState([]);
 
@@ -59,7 +66,7 @@ const PackageManage = () => {
                 </span>
             </div>
             <div className="list-content">
-                <CommonTable data={data} columns={columns} sortees={sortees} />
+                <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
             </div>
         </>
     )

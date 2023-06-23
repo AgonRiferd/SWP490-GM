@@ -1,21 +1,21 @@
 import React, { useMemo, useState } from "react";
 import { useTable, useSortBy, useGlobalFilter, usePagination } from "react-table";
-import { Create, Edit, Delete} from "./dialog";
-import Dialog from "../../flagments/dialog";
+import Dialog from "./dialog";
 
 /**
- * Đây là tạo bảng tùy chỉnh dành cho trang exercise
- * Nếu muốn tạo bảng bình thường, hãy dùng common-table.js trong thư mục ../../flagments
+ * @param {*} data dữ liệu đầu vào dưới dạng json
+ * @param {*} columns một mảng xác định các cột của bảng
+ * @param {*} sortees một mảng chứa tên cột và giá trị boolean dùng để xác định cột sắp xếp mặc định.
+ * @param {*} dialogs một mảng chứa các chức năng cho dialog: tạo: dialogCreate, 
+ * sửa: dialogEdit, xóa: dialogDelete.
+ * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, phân trang và dialog cho CRUD.
  */
 
-const Table = ({ data, columns: initialColumns, sortees }) => {
+const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
-
-    const modeCreate = useMemo(() => ({ title: "Tạo mới", component: Create }),[]);
-    const modeEdit = useMemo(() => ({ title: "Chỉnh sửa", component: Edit }),[]);
-    const modeDelete = useMemo(() => ({ title: "Loại bỏ", component: Delete }),[]);
+    const {dialogCreate, dialogEdit, dialogDelete} = dialogs;
 
     const columns = useMemo(
         () => [
@@ -25,13 +25,13 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
             disableSortBy: true,
             Cell: ({ row }) => (
               <div>
-                <button onClick={() => handleAction(modeEdit, row.original)}>Edit</button>
-                <button onClick={() => handleAction(modeDelete, row.original)}>Delete</button>
+                <button onClick={() => handleAction(dialogEdit, row.original)}>Edit</button>
+                <button onClick={() => handleAction(dialogDelete, row.original)}>Delete</button>
               </div>
             ),
           },
         ],
-        [initialColumns, modeDelete, modeEdit]
+        [initialColumns, dialogDelete, dialogEdit]
     );
 
     const handleAction = (mode, rowData) => {
@@ -45,7 +45,7 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
     };
 
     const handleCreate = () => {
-        setDialogMode(modeCreate);
+        setDialogMode(dialogCreate);
         setSelectedRow(null);
         setIsDialogOpen(true);
       };
@@ -102,7 +102,7 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
                     {headerGroups.map((headerGroup) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map((column) => (
-                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ width: column.width }}>
                                     <div className="flex">
                                         <span>{column.render("Header")}</span>
                                         <span className="sort-toggle">
@@ -158,14 +158,10 @@ const Table = ({ data, columns: initialColumns, sortees }) => {
                 </div>
                 : ''}
             {isDialogOpen && (
-                <Dialog 
-                    mode={dialogMode}
-                    rowData={selectedRow}
-                    onClose={handleCloseDialog} 
-                />
+                <Dialog mode={dialogMode} rowData={selectedRow} onClose={handleCloseDialog} />
             )}
         </>
     )
 };
 
-export default Table;
+export default AdvanceTable;
