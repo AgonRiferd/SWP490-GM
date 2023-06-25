@@ -1,8 +1,8 @@
-import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 
 export const SideBar = () => {
     return (
-        <ProSidebar>
+        <Sidebar>
             <Menu iconShape="square">
                 <MenuItem>Menu 1</MenuItem>
                 <SubMenu title="Menu 2">
@@ -10,6 +10,6 @@ export const SideBar = () => {
                     <MenuItem>Submenu 2.2</MenuItem>
                 </SubMenu>
             </Menu>
-        </ProSidebar>
+        </Sidebar>
     )
 }
