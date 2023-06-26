@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-const MemberManage = () => {
+const ScheduleManage = () => {
 
     return (
         <>
@@ -17,11 +17,11 @@ const MemberManage = () => {
                         <span>Quản Lý</span>
                     </li>
                     <li>
-                        <span>Thành Viên</span>
+                        <span>Thời khóa biểu</span>
                     </li>
                 </ol>
                 <span className="title">
-                    Danh Sách Thành Viên
+                    Danh Sách Thời Khóa Biểu
                 </span>
             </div>
             <div className="list-content">
@@ -31,4 +31,4 @@ const MemberManage = () => {
     )
 }
 
-export default MemberManage;
+export default ScheduleManage;

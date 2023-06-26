@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/login';
 import PrivateRoute from './components/PrivateRoute';
-import MemberManage from './pages/manage/member'
+import ScheduleManage from './pages/manage/schedule'
 import PageNotFound from './pages/404';
 import HomePage from './pages/home';
 import PTManage from './pages/manage/pt';
@@ -29,7 +29,7 @@ function App() {
         <Route exact path="/" element={<PrivateRoute isAuthenticated={isAuthenticated} setAuthenticated={setAuthenticated} />}>
           <Route index element={<HomePage />} />
           <Route path="/management">
-            <Route exact path="member" element={<MemberManage />} />
+            <Route exact path="schedule" element={<ScheduleManage />} />
             <Route exact path="pt" element={<PTManage />} />
             <Route exact path="ne" element={<NEManage />} />
             <Route exact path="exercise" element={<ExercisePage />} />
