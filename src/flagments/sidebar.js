@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
-const Sidebar = ({ setAuthenticated }) => {
+const Sidebar = () => {
     const [activeNavItem, setActiveNavItem] = useState(null);
 
     const handleMenuClick = (navItem) => {

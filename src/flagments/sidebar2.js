@@ -1,15 +1,26 @@
-import { ProSidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import { Sidebar, Menu, MenuItem, SubMenu, sidebarClasses } from 'react-pro-sidebar';
 
-export const SideBar = () => {
+const SideBar2 = () => {
     return (
-        <ProSidebar>
-            <Menu iconShape="square">
-                <MenuItem>Menu 1</MenuItem>
-                <SubMenu title="Menu 2">
-                    <MenuItem>Submenu 2.1</MenuItem>
-                    <MenuItem>Submenu 2.2</MenuItem>
+        <Sidebar rootStyles={{
+            [`.${sidebarClasses.container}`]: {
+              backgroundColor: 'red',
+            },
+          }}> 
+            <Menu>
+                <SubMenu label="Charts" icon={<i className="fa-solid fa-home fa-sidebar-icon fa-custom" />}>
+                    <MenuItem> Pie charts </MenuItem>
+                    <MenuItem> Line charts </MenuItem>
+                </SubMenu>
+                <MenuItem> Documentation </MenuItem>
+                <MenuItem> Calendar </MenuItem>
+                <SubMenu label="Charts" icon={<i className="fa-solid fa-home fa-sidebar-icon fa-custom" />}>
+                    <MenuItem> Pie charts </MenuItem>
+                    <MenuItem> Line charts </MenuItem>
                 </SubMenu>
             </Menu>
-        </ProSidebar>
+        </Sidebar>
     )
 }
+
+export default SideBar2;
