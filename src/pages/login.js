@@ -5,9 +5,22 @@ const Login = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    document.body.style.backgroundImage = 'url(./background/bg.jpg)'; //Add background image to <body>
+    return () => {
+      document.body.style.backgroundImage = ''; //Reset background-image when unmount
+    };
+  }, []);
+
+  // Create an instance of Axios with default configuration
+  const api = axios.create({
+    baseURL: 'http://egts.azurewebsites.net/api',
+  });
+
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://egts.azurewebsites.net/api/Login/Login', {
+      const response = await api.post('/Login/Login', {
         username,
         password
       });
@@ -35,13 +48,6 @@ const Login = ({ handleLogin }) => {
     }
   };
 
-  useEffect(() => {
-    document.body.style.backgroundImage = 'url(./background/bg.jpg)'; //Add background image to <body>
-    return () => {
-      document.body.style.backgroundImage = ''; //Reset background-image when unmount
-    };
-  }, []);
-
   const isSubmitDisabled = !(username && password);
 
   return (
@@ -53,7 +59,7 @@ const Login = ({ handleLogin }) => {
       </div>
       <div className="login-title">Đăng Nhập</div>
       {errorMessage && <p>{errorMessage}</p>}
-      <div className="login-form">
+      <form className="login-form">
         <input
           className="form-text"
           type="text"
@@ -71,7 +77,7 @@ const Login = ({ handleLogin }) => {
         <button className="btn btn-submit" type='button' disabled={isSubmitDisabled} onClick={handleSubmit}>
           Đăng Nhập
         </button>
-      </div>
+      </form>
     </div>
   );
 };
