@@ -12,21 +12,23 @@ import PackageManage from './pages/manage/package';
 import NEManage from './pages/manage/ne';
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [ loginData, setLoginData ] = useState(
+    localStorage.getItem('loginData') ? JSON.parse(localStorage.getItem('loginData')) : null
+  );
 
-  const handleLogin = () => {
-    setAuthenticated(true);
-  };
+  const handleLogin = (data) => {
+    setLoginData(data);
+  }
 
   const isAuthenticated = () => {
-    return authenticated;
+    return loginData !== null;
   };
 
   return (
     <Router>
       <Routes>
         <Route path="/login" element={isAuthenticated() ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
-        <Route exact path="/" element={<PrivateRoute isAuthenticated={isAuthenticated} setAuthenticated={setAuthenticated} />}>
+        <Route exact path="/" element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
           <Route index element={<HomePage />} />
           <Route path="/management">
             <Route exact path="member" element={<MemberManage />} />

@@ -15,23 +15,24 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
-    const {dialogCreate, dialogEdit, dialogDelete} = dialogs;
+    const { dialogCreate, dialogView, dialogEdit, dialogDelete } = dialogs;
 
     const columns = useMemo(
         () => [
-          ...initialColumns,
-          {
-            Header: 'Actions',
-            disableSortBy: true,
-            Cell: ({ row }) => (
-              <div>
-                <button onClick={() => handleAction(dialogEdit, row.original)}>Edit</button>
-                <button onClick={() => handleAction(dialogDelete, row.original)}>Delete</button>
-              </div>
-            ),
-          },
+            ...initialColumns,
+            {
+                Header: 'Actions',
+                disableSortBy: true,
+                Cell: ({ row }) => (
+                    <div>
+                        {dialogEdit && <button onClick={() => handleAction(dialogEdit, row.original)}>{dialogEdit.title}</button>}
+                        {dialogView && <button onClick={() => handleAction(dialogView, row.original)}>{dialogView.title}</button>}
+                        {dialogDelete && <button onClick={() => handleAction(dialogDelete, row.original)}>{dialogDelete.title}</button>}
+                    </div>
+                ),
+            },
         ],
-        [initialColumns, dialogDelete, dialogEdit]
+        [initialColumns, dialogDelete, dialogEdit, dialogView]
     );
 
     const handleAction = (mode, rowData) => {
@@ -48,7 +49,7 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
         setDialogMode(dialogCreate);
         setSelectedRow(null);
         setIsDialogOpen(true);
-      };
+    };
 
     const {
         getTableProps,

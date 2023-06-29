@@ -1,13 +1,38 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Login = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [bypass, setBypass] = useState(false); /** ---------J4F---------*/
+  const [errorMessage, setErrorMessage] = useState('');
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post('http://egts.azurewebsites.net/api/Login/Login', {
+        username,
+        password
+      });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleLogin();
+      const { code, data } = response.data;
+
+      if (code === 200 && data.role.toLowerCase() === 'staff') {
+        const loginData = JSON.stringify(data);
+        localStorage.setItem('loginData', loginData);
+        handleLogin(loginData);
+      } else {
+        setErrorMessage('Bạn không có quyền truy cập.');
+      }
+      // Xử lý phản hồi thành công
+      // Lưu thông tin đăng nhập, điều hướng tới trang chính, vv.
+    } catch (error) {
+      // Xử lý lỗi
+      if (error.response) {
+        // Lỗi được trả về từ phía server
+        setErrorMessage(error.response.data.message);
+      } else {
+        // Lỗi không có phản hồi từ server
+        setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+      }
+    }
   };
 
   useEffect(() => {
@@ -17,8 +42,7 @@ const Login = ({ handleLogin }) => {
     };
   }, []);
 
-  const isSubmitDisabled = !((username && password) || bypass/** ---------J4F---------*/);
-  const isInputDisabled = bypass; /** ---------J4F---------*/
+  const isSubmitDisabled = !(username && password);
 
   return (
     <div className="login animated bounceInLeft">
@@ -28,13 +52,13 @@ const Login = ({ handleLogin }) => {
         <h2>&nbsp;M</h2>
       </div>
       <div className="login-title">Đăng Nhập</div>
-      <form className="login-form" method="POST" onSubmit={handleSubmit}>
+      {errorMessage && <p>{errorMessage}</p>}
+      <div className="login-form">
         <input
           className="form-text"
           type="text"
           placeholder="Tên Đăng Nhập"
           value={username}
-          disabled={isInputDisabled} /** ---------J4F---------*/
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
@@ -42,15 +66,12 @@ const Login = ({ handleLogin }) => {
           type="password"
           placeholder="Mật Khẩu"
           value={password}
-          disabled={isInputDisabled} /** ---------J4F---------*/
           onChange={(e) => setPassword(e.target.value)}
         />
-        <div className="checkbox">
-          <input type="checkbox" id="bypass" onChange={(e) => setBypass(e.target.checked)}/>
-          <label htmlFor="bypass"> Bypass Login</label> {/** ---------J4F---------*/}
-        </div>
-        <input className="btn btn-submit" type="submit" value="Đăng Nhập" disabled={isSubmitDisabled}/>
-      </form>
+        <button className="btn btn-submit" type='button' disabled={isSubmitDisabled} onClick={handleSubmit}>
+          Đăng Nhập
+        </button>
+      </div>
     </div>
   );
 };

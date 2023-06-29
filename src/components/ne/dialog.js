@@ -132,6 +132,68 @@ export const Create = ({ onClose }) => {
     );
 };
 
+export const View = ({ data, onClose }) => {
+    const [initialData] = useState(data);
+
+    return (
+        <>
+            <div className='dialog-fields'>
+                <table className='dialog-field'>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label htmlFor="phone">Số điện thoại</label>
+                            </td>
+                            <td>
+                                <span>{initialData.phone}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label htmlFor="name">Họ và tên</label>
+                            </td>
+                            <td>
+                                <span>{initialData.name}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Giới tính</label>
+                            </td>
+                            <td className="radio-gender">
+                                <span>{initialData.gender}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Chứng chỉ</label>
+                            </td>
+                            <td>
+                                <span>
+                                    <a href={initialData.certificate} target="_blank" rel="noopener noreferrer">
+                                        {initialData.certificate}
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label htmlFor="address">Địa chỉ</label>
+                            </td>
+                            <td>
+                                <span>{initialData.address}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div className='dialog-button-tray'>
+                <button type='button' className='any-button' onClick={onClose}>Đóng</button>
+            </div>
+        </>
+    )
+}
+
 export const Edit = ({ data, onClose }) => {
     const [formData, setFormData] = useState(data);
     const [initialData] = useState(data);

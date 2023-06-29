@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import DATA from '../../components/ne/DATA.json'
 import COLUMNS from '../../components/ne/Columns';
-import { Create, Edit, Delete } from '../../components/ne/dialog';
+import { Create, View, Delete } from '../../components/ne/dialog';
 import AdvanceTable from '../../flagments/advance-table'
 
 const NEManage = () => {
@@ -20,7 +20,7 @@ const NEManage = () => {
 
     const dialogs = useMemo(() => ({
         dialogCreate: { title: "Tạo mới", component: Create },
-        dialogEdit: { title: "Chỉnh sửa", component: Edit },
+        dialogView: {title:"Thông tin", component: View},
         dialogDelete: { title: "Loại bỏ", component: Delete }
     }),[]);
 
