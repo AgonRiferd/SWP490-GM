@@ -1,48 +1,61 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import DATA from "../../components/package/DATA.json";
 import COLUMNS from "../../components/package/Columns";
-import { Create, Edit, Delete } from "../../components/package/dialog";
+import { Create, Edit, Delete, View } from "../../components/package/dialog";
 import AdvanceTable from '../../flagments/advance-table';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 const PackageManage = () => {
-    const data = useMemo(() => DATA, []);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [data, setData] = useState([]);
     const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
             { 
-                id: "orderDay", 
+                id: "price", 
                 desc: false 
             }
         ], []
     )
 
+    const fetchData = async () => {
+        const api = axios.create({
+            baseURL: 'https://egts.azurewebsites.net/api',
+        });
+
+        try {
+            setIsLoading(true);
+            // Fetch data from the API and update the state
+            const response = await api.get('/Packages');
+            //Fetch thành công
+            const { data } = response.data;
+            setData(data);
+            setIsLoading(false); // Kết thúc quá trình fetch
+        } catch (error) {
+            if (error.response) {
+                // Lỗi được trả về từ phía server
+                setErrorMessage(error.response.data.message);
+            } else {
+                // Lỗi không có phản hồi từ server
+                setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+            }
+        } finally {
+            setIsLoading(false); // Kết thúc quá trình fetch
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
+
     const dialogs = useMemo(() => ({
         dialogCreate: { title: "Tạo mới", component: Create },
+        dialogView: {title:"Thông tin", component: View},
         dialogEdit: { title: "Chỉnh sửa", component: Edit },
         dialogDelete: { title: "Loại bỏ", component: Delete }
     }),[]);
-
-    // const [data, setData] = useState([]);
-
-    // useEffect(() => {
-    //   fetchData(); // Fetch initial data when component mounts
-    // }, []);
-  
-    // const fetchData = async () => {
-    //   try {
-    //     // Fetch data from the API and update the state
-    //     const response = await fetch('api');
-    //     const jsonData = await response.json();
-    //     setData(jsonData);
-    //   } catch (error) {
-    //     console.log('Error fetching data:', error);
-    //   }
-    // };
-  
-    // const handleEditSuccess = () => {
-    //   fetchData(); // Fetch data again after successful edit
-    // };
 
     return (
         <>
@@ -65,9 +78,15 @@ const PackageManage = () => {
                     Danh Sách Dịch Vụ
                 </span>
             </div>
-            <div className="list-content">
-                <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
-            </div>
+            {isLoading ? (
+                <span className="loading-message">Đang tải dữ liệu...</span>
+            ) : errorMessage ? (
+                <span className="status-error">{errorMessage}</span>
+            ) : (
+                <div className="list-content">
+                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                </div>
+            )}
         </>
     )
 }

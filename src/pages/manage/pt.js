@@ -1,26 +1,66 @@
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import DATA from '../../components/pt/DATA.json'
 import COLUMNS from '../../components/pt/Columns';
-import { Create, Edit, Delete } from '../../components/pt/dialog';
-import AdvanceTable from '../../flagments/advance-table'
+import { Create, Edit, Delete, View } from '../../components/pt/dialog';
+import AdvanceTable from '../../flagments/advance-table';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useState } from 'react';
+
+const DATA_PARAM_ROLE_NAME = 'pt';
 
 const PTManage = () => {
-
-    const data = useMemo(() => DATA, []);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [data, setData] = useState([]);
     const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
             { 
-                id: "name", 
+                id: "fullname", 
                 desc: false 
             }
         ], []
-    )
+    );
+
+    const fetchData = async () => {
+        const api = axios.create({
+            baseURL: 'https://egts.azurewebsites.net/api',
+        });
+
+        try {
+            setIsLoading(true);
+            // Fetch data from the API and update the state
+            const response = await api.get('/Accounts/GetAllAccountsWithConditons', {
+                params: {
+                    role: DATA_PARAM_ROLE_NAME
+                }
+            });
+            //Fetch thành công
+            const { data } = response.data;
+            setData(data);
+            setIsLoading(false); // Kết thúc quá trình fetch
+        } catch (error) {
+            if (error.response) {
+                // Lỗi được trả về từ phía server
+                setErrorMessage(error.response.data.message);
+            } else {
+                // Lỗi không có phản hồi từ server
+                setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+            }
+        } finally {
+            setIsLoading(false); // Kết thúc quá trình fetch
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
 
     const dialogs = useMemo(() => ({
         dialogCreate: { title: "Tạo mới", component: Create },
-        dialogEdit: { title: "Chỉnh sửa", component: Edit },
+        dialogView: {title:"Thông tin", component: View},
+        dialogEdit: { title: "Trạng thái", component: Edit },
         dialogDelete: { title: "Loại bỏ", component: Delete }
     }),[]);
 
@@ -47,9 +87,15 @@ const PTManage = () => {
                     Danh Sách Huấn Luyện Viên
                 </span>
             </div>
-            <div className="list-content">
-                <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
-            </div>
+            {isLoading ? (
+                <span className="loading-message">Đang tải dữ liệu...</span>
+            ) : errorMessage ? (
+                <span className="status-error">{errorMessage}</span>
+            ) : (
+                <div className="list-content">
+                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                </div>
+            )}
         </>
     )
 }

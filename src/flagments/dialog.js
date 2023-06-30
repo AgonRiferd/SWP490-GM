@@ -1,11 +1,11 @@
 import React from 'react';
 
-const Dialog = ({ mode, rowData, onClose }) => {
-    const { title, component: Component } = mode;
-    
+const Dialog = ({ mode, rowData, onClose}) => {
+    const { title, component: Component, ...props } = mode;
+
     return (
         <BasicDialog title={title} onClose={onClose}>
-            <Component data={rowData} onClose={onClose}/>
+            <Component data={rowData} onClose={onClose} {...props}/>
         </BasicDialog>
     );
 };

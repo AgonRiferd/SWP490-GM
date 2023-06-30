@@ -1,25 +1,28 @@
-import { format } from 'date-fns'
-
 const COLUMNS = [
     {
-        Header: 'Gymer',
-        accessor: 'gymer.name'
-    },
-    {
         Header: 'PT',
-        accessor: 'pt.name'
+        accessor: 'hasPt',
+        disableGlobalFilter: true,
+        Cell: ({ value }) => {
+            return <input type="radio" checked={value} readOnly placeholder="Có PT?"/>
+        },
+        width: 30
     },
     {
         Header: 'NE',
-        accessor: 'ne.name'
+        accessor: 'hasNe',
+        disableGlobalFilter: true,
+        Cell: ({ value }) => {
+            return <input type="radio" checked={value} readOnly placeholder="Có NE?"/>
+        },
+        width: 30
     },
     {
-        Header: 'Order Day',
-        accessor: 'orderDay',
-        Cell: ({ value }) => {return format(new Date(value), 'dd/MM/yyyy')}
+        Header: 'Tổng số buổi',
+        accessor: 'numberOfsession'
     },
     {
-        Header: 'Price',
+        Header: 'Giá tiền',
         accessor: 'price'
     }
 ]

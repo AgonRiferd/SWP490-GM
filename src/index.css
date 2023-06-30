@@ -629,6 +629,10 @@ table.custom-table tr:nth-child(even) {
   background-color: #dddddd;
 }
 
+table.custom-table tr:nth-child(even) > td {
+  border: 1px solid #ffffff;
+}
+
 table.calendar-table {
   margin: 10px 0;
   border: 1px solid #000;
@@ -828,6 +832,7 @@ table.dialog-field tr {
 
 table.dialog-field td {
   border: 0;
+  padding: 5px 5px 5px 0;
 }
 
 .dialog-field input {
@@ -900,4 +905,12 @@ td.radio-gender > label {
   display: flex;
   align-items: center;
   margin-right: 10px;
+}
+
+.status-active {
+  color: green;
+}
+
+.status-inactive, .status-lock, .status-error {
+  color: red;
 }

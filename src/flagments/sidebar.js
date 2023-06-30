@@ -77,7 +77,7 @@ const Sidebar = () => {
                     {/** Calendar */}
                     <li>
                         <NavLink end to="/calendar" onClick={() => handleMenuClick('calendar')}>
-                            <i className="fa-solid fa-home fa-sidebar-icon fa-custom"></i>
+                            <i className="fa-solid fa-calendar-days fa-sidebar-icon fa-custom"></i>
                             <span>Lịch Trình</span>
                             <span className="arrow"></span>
                         </NavLink>

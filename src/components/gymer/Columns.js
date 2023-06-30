@@ -1,5 +1,3 @@
-import { format } from 'date-fns'
-
 const COLUMNS = [
     {
         Header: 'Số điện thoại',
@@ -20,15 +18,6 @@ const COLUMNS = [
         },
         disableGlobalFilter: true, // Không cho phép tìm kiếm trong cột này
         width: 80
-    },
-    {
-        Header: 'Ngày tham gia',
-        accessor: 'createDate',
-        Cell: ({ value }) => {
-            return format(new Date(value), 'dd/MM/yyyy')
-        },
-        disableGlobalFilter: true,
-        width: 100
     },
     {
         Header: 'Trạng Thái',

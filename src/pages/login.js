@@ -37,6 +37,7 @@ const Login = ({ handleLogin }) => {
         handleLogin(true);
       } else {
         setErrorMessage('Bạn không có quyền truy cập.');
+        clearField();
       }
       // Xử lý phản hồi thành công
       // Lưu thông tin đăng nhập, điều hướng tới trang chính, vv.
@@ -67,7 +68,7 @@ const Login = ({ handleLogin }) => {
         <h2>&nbsp;M</h2>
       </div>
       <div className="login-title">Đăng Nhập</div>
-      {errorMessage && <p>{errorMessage}</p>}
+      {errorMessage && <p className='status-error'>{errorMessage}</p>}
       <form className="login-form">
         <input
           className="form-text"

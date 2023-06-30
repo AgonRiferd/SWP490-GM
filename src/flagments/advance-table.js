@@ -25,14 +25,16 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
                 disableSortBy: true,
                 Cell: ({ row }) => (
                     <div>
-                        {dialogEdit && <button onClick={() => handleAction(dialogEdit, row.original)}>{dialogEdit.title}</button>}
                         {dialogView && <button onClick={() => handleAction(dialogView, row.original)}>{dialogView.title}</button>}
+                        {dialogEdit && <button onClick={() => handleAction(dialogEdit, row.original)}>{dialogEdit.title}</button>}
                         {dialogDelete && <button onClick={() => handleAction(dialogDelete, row.original)}>{dialogDelete.title}</button>}
                     </div>
                 ),
+                disableGlobalFilter: true,
+                width: 170
             },
         ],
-        [initialColumns, dialogDelete, dialogEdit, dialogView]
+        [initialColumns, dialogEdit, dialogView, dialogDelete]
     );
 
     const handleAction = (mode, rowData) => {
@@ -68,7 +70,7 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
         setPageSize
     } = useTable({
         columns, data,
-        initialState: { sortBy: sortees }
+        initialState: { sortBy: sortees}
     }, useGlobalFilter, useSortBy, usePagination);
 
     const { globalFilter, pageIndex, pageSize } = state;
@@ -94,9 +96,12 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
                         <input value={globalFilter || ''} onChange={(e) => setGlobalFilter(e.target.value)} />
                     </span>
                 </div>
-                <div className="button-create">
-                    <button type="button" className="any-button" onClick={handleCreate}>Thêm mới</button>
-                </div>
+                {dialogCreate &&
+                    <div className="button-create">
+                        <button type="button" className="any-button" onClick={handleCreate}>Thêm mới</button>
+                    </div>
+                }
+
             </div>
             <table {...getTableProps()} className="custom-table table-exercise">
                 <thead>
@@ -106,13 +111,15 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
                                 <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ width: column.width }}>
                                     <div className="flex">
                                         <span>{column.render("Header")}</span>
-                                        <span className="sort-toggle">
-                                            {column.isSorted ?
-                                                (column.isSortedDesc ?
-                                                    <i className="fa-solid fa-sort-up" /> : <i className="fa-solid fa-sort-down" />
-                                                ) : <i className="fa-solid fa-sort" />
-                                            }
-                                        </span>
+                                        {column.disableSortBy ? null : (
+                                            <span className="sort-toggle">
+                                                {column.isSorted ?
+                                                    (column.isSortedDesc ?
+                                                        <i className="fa-solid fa-sort-up" /> : <i className="fa-solid fa-sort-down" />
+                                                    ) : <i className="fa-solid fa-sort" />
+                                                }
+                                            </span>
+                                        )}
                                     </div>
                                 </th>
                             ))}
