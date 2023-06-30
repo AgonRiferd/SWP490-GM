@@ -10,25 +10,26 @@ import PTManage from './pages/manage/pt';
 import ExercisePage from './pages/manage/exercise';
 import PackageManage from './pages/manage/package';
 import NEManage from './pages/manage/ne';
+import CalendarPage from './pages/calendar';
 
 function App() {
-  const [ loginData, setLoginData ] = useState(
-    localStorage.getItem('loginData') ? JSON.parse(localStorage.getItem('loginData')) : null
+  const [ authenticate, setAuthenticate ] = useState(
+    localStorage.getItem('loginData') ? true : false
   );
 
   const handleLogin = (data) => {
-    setLoginData(data);
+    setAuthenticate(data);
   }
 
   const isAuthenticated = () => {
-    return loginData !== null;
+    return authenticate;
   };
 
   return (
     <Router>
       <Routes>
         <Route path="/login" element={isAuthenticated() ? <Navigate to="/" /> : <Login handleLogin={handleLogin} />} />
-        <Route exact path="/" element={<PrivateRoute isAuthenticated={isAuthenticated} />}>
+        <Route exact path="/" element={<PrivateRoute isAuthenticated={isAuthenticated} setAuthenticated={handleLogin}/>}>
           <Route index element={<HomePage />} />
           <Route path="/management">
             <Route exact path="member" element={<MemberManage />} />
@@ -37,6 +38,7 @@ function App() {
             <Route exact path="exercise" element={<ExercisePage />} />
             <Route exact path="package" element={<PackageManage />} />
           </Route>
+          <Route exact path="calendar" element={<CalendarPage />} />
         </Route>
         <Route path="/404" element={<PageNotFound />} />
         <Route path="*" element={<Navigate to="/404" />} />

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const Login = ({ handleLogin }) => {
-  const [username, setUsername] = useState('');
+  const [phoneNo, setPhoneNo] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -13,15 +13,19 @@ const Login = ({ handleLogin }) => {
     };
   }, []);
 
+  const clearField = () => {
+    setPassword('');
+  }
+
   // Create an instance of Axios with default configuration
   const api = axios.create({
-    baseURL: 'http://egts.azurewebsites.net/api',
+    baseURL: 'https://egts.azurewebsites.net/api',
   });
 
   const handleSubmit = async () => {
     try {
       const response = await api.post('/Login/Login', {
-        username,
+        phoneNo,
         password
       });
 
@@ -30,7 +34,7 @@ const Login = ({ handleLogin }) => {
       if (code === 200 && data.role.toLowerCase() === 'staff') {
         const loginData = JSON.stringify(data);
         localStorage.setItem('loginData', loginData);
-        handleLogin(loginData);
+        handleLogin(true);
       } else {
         setErrorMessage('Bạn không có quyền truy cập.');
       }
@@ -45,10 +49,15 @@ const Login = ({ handleLogin }) => {
         // Lỗi không có phản hồi từ server
         setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại sau.');
       }
+      clearField();
     }
   };
 
-  const isSubmitDisabled = !(username && password);
+  // const handleSubmit = () => {
+  //   handleLogin(true);
+  // }
+
+  const isSubmitDisabled = !(phoneNo && password);
 
   return (
     <div className="login animated bounceInLeft">
@@ -63,9 +72,9 @@ const Login = ({ handleLogin }) => {
         <input
           className="form-text"
           type="text"
-          placeholder="Tên Đăng Nhập"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Số điện thoại"
+          value={phoneNo}
+          onChange={(e) => setPhoneNo(e.target.value)}
         />
         <input
           className="form-text"

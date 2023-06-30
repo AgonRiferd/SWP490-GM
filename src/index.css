@@ -619,18 +619,19 @@ thead {
   background-color: #687884;
 }
 
-td, th {
+table.custom-table td, th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
 }
 
-tr:nth-child(even) {
+table.custom-table tr:nth-child(even) {
   background-color: #dddddd;
 }
 
-table.custom-table {
+table.calendar-table {
   margin: 10px 0;
+  border: 1px solid #000;
 }
 
 .custom-table th {

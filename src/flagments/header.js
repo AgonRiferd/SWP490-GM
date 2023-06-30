@@ -32,6 +32,7 @@ const Header = ({ setAuthenticated }) => {
 
     const logout = (e) => {
         e.preventDefault();
+        localStorage.removeItem('loginData');
         setAuthenticated(false);
     }
 
