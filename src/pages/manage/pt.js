@@ -6,6 +6,7 @@ import AdvanceTable from '../../flagments/advance-table';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
+import { LoadingTable } from '../../flagments/loading-table';
 
 const DATA_PARAM_ROLE_NAME = 'pt';
 
@@ -58,7 +59,7 @@ const PTManage = () => {
     }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
 
     const dialogs = useMemo(() => ({
-        dialogCreate: { title: "Tạo mới", component: Create },
+        dialogCreate: { title: "Tạo mới", component: Create, fetchData: fetchData },
         dialogView: {title:"Thông tin", component: View},
         dialogEdit: { title: "Trạng thái", component: Edit },
         dialogDelete: { title: "Loại bỏ", component: Delete }
@@ -88,7 +89,7 @@ const PTManage = () => {
                 </span>
             </div>
             {isLoading ? (
-                <span className="loading-message">Đang tải dữ liệu...</span>
+                <LoadingTable />
             ) : errorMessage ? (
                 <span className="status-error">{errorMessage}</span>
             ) : (

@@ -5,6 +5,7 @@ import { Create, Edit, Delete, View } from "../../components/package/dialog";
 import AdvanceTable from '../../flagments/advance-table';
 import { useEffect } from 'react';
 import axios from 'axios';
+import { LoadingTable } from '../../flagments/loading-table';
 
 const PackageManage = () => {
     const [errorMessage, setErrorMessage] = useState(null);
@@ -30,9 +31,11 @@ const PackageManage = () => {
             // Fetch data from the API and update the state
             const response = await api.get('/Packages');
             //Fetch thành công
-            const { data } = response.data;
-            setData(data);
-            setIsLoading(false); // Kết thúc quá trình fetch
+            if (response.status === 200) {
+                const { data } = response.data;
+                setData(data);
+            }
+            setIsLoading(false);
         } catch (error) {
             if (error.response) {
                 // Lỗi được trả về từ phía server
@@ -51,10 +54,10 @@ const PackageManage = () => {
     }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
 
     const dialogs = useMemo(() => ({
-        dialogCreate: { title: "Tạo mới", component: Create },
+        dialogCreate: { title: "Tạo mới", component: Create, fetchData: fetchData },
         dialogView: {title:"Thông tin", component: View},
         dialogEdit: { title: "Chỉnh sửa", component: Edit },
-        dialogDelete: { title: "Loại bỏ", component: Delete }
+        dialogDelete: { title: "Loại bỏ", component: Delete, fetchData: fetchData }
     }),[]);
 
     return (
@@ -79,7 +82,7 @@ const PackageManage = () => {
                 </span>
             </div>
             {isLoading ? (
-                <span className="loading-message">Đang tải dữ liệu...</span>
+                <LoadingTable />
             ) : errorMessage ? (
                 <span className="status-error">{errorMessage}</span>
             ) : (

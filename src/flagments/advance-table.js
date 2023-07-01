@@ -93,7 +93,7 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
                 <div className="search-bar">
                     <span>
                         Tìm kiếm: {' '}
-                        <input value={globalFilter || ''} onChange={(e) => setGlobalFilter(e.target.value)} />
+                        <input value={globalFilter || ''} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Tìm kiếm"/>
                     </span>
                 </div>
                 {dialogCreate &&

@@ -4,6 +4,7 @@ import { View, Edit, Delete } from '../../components/gymer/dialog';
 import COLUMNS from '../../components/gymer/Columns';
 import AdvanceTable from '../../flagments/advance-table';
 import axios from 'axios';
+import { LoadingTable } from '../../flagments/loading-table';
 
 const DATA_PARAM_ROLE_NAME = 'gymer';
 
@@ -84,7 +85,7 @@ const MemberManage = () => {
                 </span>
             </div>
             {isLoading ? (
-                <span className="loading-message">Đang tải dữ liệu...</span>
+                <LoadingTable />
             ) : errorMessage ? (
                 <span className="status-error">{errorMessage}</span>
             ) : (

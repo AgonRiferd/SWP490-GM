@@ -261,6 +261,7 @@ a.logo {
   border-radius: 4px;
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
   box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+  z-index: 100;
 }
 
 .dropdown-menu:after {
@@ -619,7 +620,8 @@ thead {
   background-color: #687884;
 }
 
-table.custom-table td, th {
+table.custom-table td,
+th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
@@ -629,7 +631,7 @@ table.custom-table tr:nth-child(even) {
   background-color: #dddddd;
 }
 
-table.custom-table tr:nth-child(even) > td {
+table.custom-table tr:nth-child(even)>td {
   border: 1px solid #ffffff;
 }
 
@@ -798,7 +800,7 @@ input[type="number"]::-webkit-outer-spin-button {
   font-size: 0.9em;
 }
 
-.dialog-title-bar > .dialog-title-bar-close {
+.dialog-title-bar>.dialog-title-bar-close {
   position: absolute;
   right: .3em;
   top: 50%;
@@ -821,7 +823,7 @@ input[type="number"]::-webkit-outer-spin-button {
   overflow: auto;
 }
 
-.dialog-fields > .dialog-field {
+.dialog-fields>.dialog-field {
   margin-bottom: 10px;
   font-size: 0.9em;
 }
@@ -837,16 +839,16 @@ table.dialog-field td {
 
 .dialog-field input {
   min-height: 25px;
-	display: inline-block;
+  display: inline-block;
   padding: 0 5px;
 }
 
-.dialog-field.textarea-field label{
+.dialog-field.textarea-field label {
   display: flex;
   margin-right: 10px;
 }
 
-.dialog-field > textarea {
+.dialog-field>textarea {
   display: inline-block;
   margin-top: 5px;
   min-height: 100px;
@@ -901,7 +903,8 @@ td.radio-gender {
   justify-content: flex-start;
 }
 
-td.radio-gender > label {
+td.radio-gender>label,
+.radio-field>* {
   display: flex;
   align-items: center;
   margin-right: 10px;
@@ -911,6 +914,64 @@ td.radio-gender > label {
   color: green;
 }
 
-.status-inactive, .status-lock, .status-error {
+.status-inactive,
+.status-lock,
+.status-error {
   color: red;
+}
+
+.dialog-loading {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 11;
+}
+
+i.fa-spinner {
+  font-size: 70px;
+  margin-bottom: 20px;
+}
+
+.dialog-container.on-load > .dialog-header,
+.dialog-container.on-load > .dialog-content {
+  opacity: 0.3;
+}
+
+.dialog-content > .content-delete {
+  min-width: 250px;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.loading-table {
+  position: relative;
+}
+
+.loading-table table tr {
+  height: 35px;
+}
+
+.loading-table table > thead > tr > th:first-child {
+  width: 10%;
+}
+
+.loading-table table > thead > tr > th:last-child {
+  width: 20%;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

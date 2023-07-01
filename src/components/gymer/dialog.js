@@ -69,37 +69,54 @@ export const Edit = ({ data, onClose }) => {
     )
 };
 
-export const Delete = ({ data, onClose, ...props }) => {
-    const [isLoading, setIsLoading] = useState(false);
+export const Delete = ({ data, onClose, isLoading, onLoading, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
 
     const api = axios.create({
         baseURL: 'https://egts.azurewebsites.net/api',
     });
 
-    const handleDelete = async () => {
+    const handleDelete = async (e) => {
+        e.preventDefault();
+        
         try {
-            setIsLoading(true);
+            onLoading(true);
             const response = await api.delete(`/Accounts/DeleteAccount/${data.id}`);
             if (response.status === 200 || response.status === 204) {
+                alert('Gymer đã được xóa.');
                 props.fetchData();
             } else {
-                setErrorMessage('Xóa không thành công');
+                setErrorMessage(<>
+                        <p>Xóa không thành công</p>
+                        <p>Status: {response.status}</p>
+                    </>
+                );
+                onLoading(false);
             }
         } catch (error) {
             // Xử lý lỗi nếu có
-            console.error(error);
-            setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại sau.');
-        } finally {
-            setIsLoading(false);
+            if (error.response) {
+                setErrorMessage(<>
+                    <p>Xóa không thành công</p>
+                    <p>Mã lỗi: {error.response.status}</p>
+                </>);
+            } else {
+                setErrorMessage(<>
+                    <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                    <p>Mã lỗi: {error.code}</p>
+                </>);
+            }
+            onLoading(false);
         }
     };
 
     return (
-        <>
+        <div className="content-delete">
             {errorMessage ? (
                 <>
-                    <span className="status-error">{errorMessage}</span>
+                    <center>
+                        <span className="status-error">{errorMessage}</span>
+                    </center>
                     <div className="dialog-button-tray">
                         <button type="button" className="any-button button-cancel" onClick={onClose}>
                             Trở về
@@ -108,7 +125,9 @@ export const Delete = ({ data, onClose, ...props }) => {
                 </>
             ) : (
                 <>
-                    <p>Bạn có chắc chắn muốn xóa?</p>
+                    <center>
+                        <p>Bạn có chắc chắn muốn xóa?</p>
+                    </center>
                     <div className="dialog-button-tray">
                         <button type="button" className="any-button button-submit" onClick={handleDelete} disabled={isLoading}>
                             Xác nhận
@@ -119,7 +138,6 @@ export const Delete = ({ data, onClose, ...props }) => {
                     </div>
                 </>
             )}
-
-        </>
+        </div>
     );
 };

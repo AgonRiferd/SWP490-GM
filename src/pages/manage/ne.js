@@ -4,6 +4,7 @@ import COLUMNS from '../../components/ne/Columns';
 import { Create, View, Delete, Edit } from '../../components/ne/dialog';
 import AdvanceTable from '../../flagments/advance-table';
 import axios from 'axios';
+import { LoadingTable } from '../../flagments/loading-table';
 
 const DATA_PARAM_ROLE_NAME = 'ne';
 
@@ -56,7 +57,7 @@ const NEManage = () => {
     }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
 
     const dialogs = useMemo(() => ({
-        dialogCreate: { title: "Tạo mới", component: Create },
+        dialogCreate: { title: "Tạo mới", component: Create, fetchData: fetchData },
         dialogView: {title:"Thông tin", component: View},
         dialogEdit: { title: "Trạng thái", component: Edit },
         dialogDelete: { title: "Loại bỏ", component: Delete }
@@ -86,7 +87,7 @@ const NEManage = () => {
                 </span>
             </div>
             {isLoading ? (
-                <span className="loading-message">Đang tải dữ liệu...</span>
+                <LoadingTable />
             ) : errorMessage ? (
                 <span className="status-error">{errorMessage}</span>
             ) : (
