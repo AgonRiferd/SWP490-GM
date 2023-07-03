@@ -4,7 +4,7 @@ const COLUMNS = [
         accessor: 'hasPt',
         disableGlobalFilter: true,
         Cell: ({ value }) => {
-            return <input type="radio" checked={value} readOnly placeholder="Có PT?"/>
+            return <input type="checkbox" checked={value} readOnly placeholder="Có PT?"/>
         },
         width: 30
     },
@@ -13,7 +13,7 @@ const COLUMNS = [
         accessor: 'hasNe',
         disableGlobalFilter: true,
         Cell: ({ value }) => {
-            return <input type="radio" checked={value} readOnly placeholder="Có NE?"/>
+            return <input type="checkbox" checked={value} readOnly placeholder="Có NE?"/>
         },
         width: 30
     },

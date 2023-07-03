@@ -557,6 +557,7 @@ li>a.active>.arrow {
   margin-top: 5px;
   padding: 5px 10px;
   min-height: inherit;
+  user-select: none;
 }
 
 .breadcrumb {
@@ -662,7 +663,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .common-options {
   user-select: none;
-  margin: 0 5px;
+  margin: 0 5px 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -709,7 +710,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .page-size select {
-  padding: 2px;
+  padding: 5px 2px;
 }
 
 .common-options .search-bar {
@@ -722,7 +723,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .search-bar input {
-  padding: 2px;
+  padding: 5px;
   width: 20vw;
 }
 
@@ -866,7 +867,7 @@ table.dialog-field td {
 
 .any-button {
   border: 0px;
-  padding: 10px 20px 10px;
+  padding: 7px 10px;
   font-weight: bold;
   font-size: 13px;
   line-height: 1;
@@ -877,6 +878,10 @@ table.dialog-field td {
   border: 1px solid #222;
   position: relative;
   cursor: pointer;
+}
+
+.any-button .icon-create {
+  margin-right: 5px;
 }
 
 .any-button.button-submit {
@@ -974,4 +979,27 @@ i.fa-spinner {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+}
+
+.table-actions span {
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.table-actions span:hover {
+  color: var(--secondary-color);
+}
+
+.table-actions span:not(:last-child) {
+  border-right: 1px solid var(--primary-color);
+}
+
+.cursor {
+  cursor: pointer;
 }

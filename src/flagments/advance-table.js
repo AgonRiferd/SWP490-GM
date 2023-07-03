@@ -23,18 +23,29 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
             {
                 Header: 'Actions',
                 disableSortBy: true,
+                disableGlobalFilter: true,
                 Cell: ({ row }) => (
-                    <div>
-                        {dialogView && <button onClick={() => handleAction(dialogView, row.original)}>{dialogView.title}</button>}
-                        {dialogEdit && <button onClick={() => handleAction(dialogEdit, row.original)}>{dialogEdit.title}</button>}
-                        {dialogDelete && <button onClick={() => handleAction(dialogDelete, row.original)}>{dialogDelete.title}</button>}
+                    <div className="table-actions">
+                        {dialogView && 
+                            <span onClick={() => handleAction(dialogView, row.original)} title={dialogView.title}>
+                                {dialogView.icon ? dialogView.icon : dialogView.title}
+                            </span>
+                        }
+                        {dialogEdit && 
+                            <span onClick={() => handleAction(dialogEdit, row.original)} title={dialogEdit.title}>
+                                {dialogEdit.icon ? dialogEdit.icon : dialogEdit.title}
+                            </span>
+                        }
+                        {dialogDelete && 
+                            <span onClick={() => handleAction(dialogDelete, row.original)} title={dialogDelete.title}>
+                                {dialogDelete.icon ? dialogDelete.icon : dialogDelete.title}
+                            </span>
+                        }
                     </div>
                 ),
-                disableGlobalFilter: true,
                 width: 170
             },
-        ],
-        [initialColumns, dialogEdit, dialogView, dialogDelete]
+        ], [initialColumns, dialogEdit, dialogView, dialogDelete]
     );
 
     const handleAction = (mode, rowData) => {
@@ -98,7 +109,14 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
                 </div>
                 {dialogCreate &&
                     <div className="button-create">
-                        <button type="button" className="any-button" onClick={handleCreate}>Thêm mới</button>
+                        <button type="button" className="any-button" onClick={handleCreate}>
+                            {dialogCreate.icon && 
+                                <span className="icon-create">
+                                    {dialogCreate.icon}
+                                </span>
+                            }
+                            {dialogCreate.title}
+                        </button>
                     </div>
                 }
 

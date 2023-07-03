@@ -45,7 +45,12 @@ const MemberManage = () => {
                 setErrorMessage(error.response.data.message);
             } else {
                 // Lỗi không có phản hồi từ server
-                setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+                setErrorMessage(
+                    <>
+                        <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                        <span>Mã lỗi: {error.code}</span>
+                    </>
+                );
             }
         } finally {
             setIsLoading(false); // Kết thúc quá trình fetch
@@ -58,9 +63,9 @@ const MemberManage = () => {
     
     
     const dialogs = useMemo(() => ({
-        dialogEdit: { title: "Trạng thái", component: Edit },
-        dialogView: { title: "Thông tin", component: View },
-        dialogDelete: { title: "Loại bỏ", component: Delete, fetchData: fetchData}
+        dialogEdit: { title: "Trạng thái", icon: <i className="fa-solid fa-user-lock"></i>, component: Edit },
+        dialogView: { title: "Thông tin", icon: <i className="fa-solid fa-eye"></i>, component: View },
+        dialogDelete: { title: "Loại bỏ", icon: <i className="fa-solid fa-trash"></i>, component: Delete, fetchData: fetchData}
     }), []);
 
     return (

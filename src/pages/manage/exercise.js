@@ -18,9 +18,9 @@ const ExercisePage = () => {
     )
 
     const dialogs = useMemo(() => ({
-        dialogCreate: { title: "Tạo mới", component: Create },
-        dialogEdit: { title: "Chỉnh sửa", component: Edit },
-        dialogDelete: { title: "Loại bỏ", component: Delete }
+        dialogCreate: { title: "Tạo mới", icon: <i class="fa-solid fa-plus"></i>, component: Create },
+        dialogEdit: { title: "Chỉnh sửa", icon: <i className="fa-solid fa-pen-to-square"></i>, component: Edit },
+        dialogDelete: { title: "Loại bỏ", icon: <i className="fa-solid fa-trash"></i>, component: Delete }
     }),[]);
     
     // const [data, setData] = useState([]);
