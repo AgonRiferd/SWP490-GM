@@ -38,9 +38,9 @@ const Sidebar = ({ setAuthenticated }) => {
                         </a>
                         <ul className={`sub-menu ${isMenuCollapsed('management')}`}>
                             <li>
-                                <NavLink to="/management/member">
+                                <NavLink to="/management/schedule">
                                     <i className="fa-solid fa-user fa-sidebar-icon fa-custom"></i>
-                                    <span>Thành Viên</span>
+                                    <span>Lịch trình</span>
                                     <span className="arrow"></span>
                                 </NavLink>
                             </li>
