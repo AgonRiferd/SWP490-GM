@@ -4,8 +4,8 @@ import COLUMNS from "../../components/package/Columns";
 import { Create, Edit, Delete, View } from "../../components/package/dialog";
 import AdvanceTable from '../../flagments/advance-table';
 import { useEffect } from 'react';
-import axios from 'axios';
 import { LoadingTable } from '../../flagments/loading-table';
+import axios from '../../utils/axiosConfig';
 
 const PackageManage = () => {
     const [errorMessage, setErrorMessage] = useState(null);
@@ -22,14 +22,10 @@ const PackageManage = () => {
     )
 
     const fetchData = async () => {
-        const api = axios.create({
-            baseURL: 'https://egts.azurewebsites.net/api',
-        });
-
         try {
             setIsLoading(true);
             // Fetch data from the API and update the state
-            const response = await api.get('/Packages');
+            const response = await axios.get('/Packages/GetPackages');
             //Fetch thành công
             if (response.status === 200) {
                 const { data } = response.data;

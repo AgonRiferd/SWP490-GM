@@ -65,13 +65,6 @@ const Sidebar = () => {
                                     <span className="arrow"></span>
                                 </NavLink>
                             </li>
-                            <li>
-                                <NavLink to="/management/exercise">
-                                    <i className="fa-solid fa-dumbbell fa-sidebar-icon fa-custom"></i>
-                                    <span>Bài Tập</span>
-                                    <span className="arrow"></span>
-                                </NavLink>
-                            </li>
                         </ul>
                     </li>
                     {/** Calendar */}

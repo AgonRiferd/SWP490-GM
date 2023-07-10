@@ -63,9 +63,23 @@ const MemberManage = () => {
     
     
     const dialogs = useMemo(() => ({
-        dialogEdit: { title: "Trạng thái", icon: <i className="fa-solid fa-user-lock"></i>, component: Edit },
-        dialogView: { title: "Thông tin", icon: <i className="fa-solid fa-eye"></i>, component: View },
-        dialogDelete: { title: "Loại bỏ", icon: <i className="fa-solid fa-trash"></i>, component: Delete, fetchData: fetchData}
+        dialogEdit: { 
+            title: "Trạng thái", 
+            icon: <i className="fa-solid fa-user-lock"></i>, 
+            component: Edit,
+            fetchData: fetchData
+        },
+        dialogView: { 
+            title: "Thông tin", 
+            icon: <i className="fa-solid fa-eye"></i>, 
+            component: View 
+        },
+        dialogDelete: { 
+            title: "Loại bỏ", 
+            icon: <i className="fa-solid fa-trash"></i>, 
+            component: Delete, 
+            fetchData: fetchData
+        }
     }), []);
 
     return (

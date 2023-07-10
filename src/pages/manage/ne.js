@@ -76,7 +76,8 @@ const NEManage = () => {
         dialogEdit: { 
             title: "Trạng thái", 
             icon: <i className="fa-solid fa-user-lock"></i>, 
-            component: Edit 
+            component: Edit,
+            fetchData: fetchData
         },
         dialogDelete: { 
             title: "Loại bỏ", 

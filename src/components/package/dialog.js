@@ -1,5 +1,5 @@
-import axios from 'axios';
 import React, { useState } from 'react';
+import axios from '../../utils/axiosConfig';
 
 export const Create = ({ onClose, isLoading, onLoading, ...props}) => {
     const [errorMessage, setErrorMessage] = useState('');
@@ -18,10 +18,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props}) => {
         }));
     };
 
-    const api = axios.create({
-        baseURL: 'https://egts.azurewebsites.net/api',
-    });
-
     const handleCreate = async (e) => {
         e.preventDefault();
 
@@ -32,7 +28,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props}) => {
 
         try {
             onLoading(true);
-            const response = await api.post('/Packages', formData);
+            const response = await axios.post('/Packages/CreatePackage', formData);
             if (response.status === 200) {
                 alert('Tạo mới thành công');
                 props.fetchData();
@@ -162,16 +158,12 @@ export const Edit = ({ data, onClose }) => {
 export const Delete = ({ data, isLoading, onLoading, onClose, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
 
-    const api = axios.create({
-        baseURL: 'https://egts.azurewebsites.net/api',
-    });
-
     const handleDelete = async (e) => {
         e.preventDefault();
         
         try {
             onLoading(true);
-            const response = await api.delete(`/Packages/${data.id}`);
+            const response = await axios.delete(`/Packages/DeletePackage/${data.id}`);
             if (response.status === 200 || response.status === 204) {
                 alert('Package đã được xóa.');
                 props.fetchData();

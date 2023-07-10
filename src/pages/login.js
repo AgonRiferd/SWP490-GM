@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../utils/axiosConfig';
+import Cookies from 'universal-cookie';
+const BackgroundImage = './background/bg.jpg';
 
-const Login = ({ handleLogin }) => {
+const Login = ({ setIsAuthenticated }) => {
   const [phoneNo, setPhoneNo] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const cookies = new Cookies();
 
   useEffect(() => {
-    document.body.style.backgroundImage = 'url(./background/bg.jpg)'; //Add background image to <body>
+    const preloadImage = new Image();
+    preloadImage.src = BackgroundImage;
+  });
+
+  useEffect(() => {
+    document.body.style.backgroundImage = `url(${BackgroundImage})`;
     return () => {
-      document.body.style.backgroundImage = ''; //Reset background-image when unmount
+      document.body.style.backgroundImage = '';
     };
   }, []);
 
@@ -17,24 +25,19 @@ const Login = ({ handleLogin }) => {
     setPassword('');
   }
 
-  // Create an instance of Axios with default configuration
-  const api = axios.create({
-    baseURL: 'https://egts.azurewebsites.net/api',
-  });
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const response = await api.post('/Login/Login', {
+      const response = await axios.post('/Login/Login', {
         phoneNo,
         password
       });
 
-      const { code, data } = response.data;
+      const { code, data, token } = response.data;
 
       if (code === 200 && data.role.toLowerCase() === 'staff') {
-        const loginData = JSON.stringify(data);
-        localStorage.setItem('loginData', loginData);
-        handleLogin(true);
+        cookies.set('token', token, { path: '/' });
+        setIsAuthenticated(true);
       } else {
         setErrorMessage('Bạn không có quyền truy cập.');
         clearField();
@@ -49,14 +52,11 @@ const Login = ({ handleLogin }) => {
       } else {
         // Lỗi không có phản hồi từ server
         setErrorMessage('Đã xảy ra lỗi. Vui lòng thử lại sau.');
+        console.log(error);
       }
       clearField();
     }
   };
-
-  // const handleSubmit = () => {
-  //   handleLogin(true);
-  // }
 
   const isSubmitDisabled = !(phoneNo && password);
 
@@ -75,6 +75,7 @@ const Login = ({ handleLogin }) => {
           type="text"
           placeholder="Số điện thoại"
           value={phoneNo}
+          autoComplete="phone"
           onChange={(e) => setPhoneNo(e.target.value)}
         />
         <input
@@ -82,6 +83,7 @@ const Login = ({ handleLogin }) => {
           type="password"
           placeholder="Mật Khẩu"
           value={password}
+          autoComplete="current-password"
           onChange={(e) => setPassword(e.target.value)}
         />
         <button className="btn btn-submit" type='button' disabled={isSubmitDisabled} onClick={handleSubmit}>

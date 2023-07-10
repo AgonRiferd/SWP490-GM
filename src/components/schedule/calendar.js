@@ -20,7 +20,7 @@ const Calendar = () => {
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
-      calendar.push(<td key={day}>{day}</td>);
+      calendar.push(<td key={day} >{day}</td>);
     }
 
     const lastDay = new Date(currentYear, currentMonth, daysInMonth).getDay();

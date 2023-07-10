@@ -1,8 +1,11 @@
 import React, { createRef, useEffect, useMemo, useState } from "react";
 import Logo from "./logo";
+import Cookies from "universal-cookie";
 
-const Header = ({ setAuthenticated }) => {
+const Header = ({ setIsAuthenticated }) => {
     const [activeItem, setActiveItem] = useState(null);
+    const cookies = new Cookies();
+
     const dropdownRefs = useMemo(() => ({
         notifications: createRef(null), user: createRef(null)}),[]
     );
@@ -32,8 +35,8 @@ const Header = ({ setAuthenticated }) => {
 
     const logout = (e) => {
         e.preventDefault();
-        localStorage.removeItem('loginData');
-        setAuthenticated(false);
+        cookies.remove("token");
+        setIsAuthenticated(false);
     }
 
     return(
