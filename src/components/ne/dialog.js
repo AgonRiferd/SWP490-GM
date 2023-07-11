@@ -1,4 +1,3 @@
-import axios from "axios";
 import { format } from "date-fns";
 import React, { useState } from "react";
 import axiosInstance from "../../utils/axiosConfig";

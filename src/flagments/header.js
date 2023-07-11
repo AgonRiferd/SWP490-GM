@@ -1,5 +1,4 @@
 import React, { createRef, useEffect, useMemo, useState } from "react";
-import Logo from "./logo";
 import Cookies from "universal-cookie";
 
 const Header = ({ setIsAuthenticated }) => {
@@ -42,7 +41,6 @@ const Header = ({ setIsAuthenticated }) => {
     return(
         <header className="header">
             <div className="navbar">
-                <Logo />
                 <div className="navbar-right">
                     <ul className="nav">
                         <li className={`dropdown notifications ${activeItem === 'notifications' ? 'open' : ''}`}

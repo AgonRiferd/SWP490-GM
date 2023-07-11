@@ -124,7 +124,7 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
                 <>
                     <center>
                         {data.isLock ? 
-                            <p>Cho phép user Hoạt động trở lại?</p> : <p>Bạn có chắc muốn khóa user?</p>
+                            <p>Cho phép Hoạt động trở lại?</p> : <p>Bạn có chắc muốn khóa người dùng này?</p>
                         }
                     </center>
                     <div className="dialog-button-tray">

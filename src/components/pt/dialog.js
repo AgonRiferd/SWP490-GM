@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-import { format } from 'date-fns'
-import axios from "axios";
 import axiosInstance from "../../utils/axiosConfig";
 
 // const MAX_FILE_SIZE = 10 * 1024 * 1024;
 // const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png'];
 const GENDER_MALE = 'M';
 const GENDER_FEMALE = 'F';
-const api = axios.create({
-    baseURL: 'https://egts.azurewebsites.net/api',
-});
 
 export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
@@ -39,7 +34,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 
         try {
             onLoading(true);
-            const response = await api.post('/Accounts/CreateAccount', formData);
+            const response = await axiosInstance.post('/Accounts/CreateAccount', formData);
             if (response.status === 200 || response.status === 201) {
                 alert('Tạo mới thành công');
                 props.fetchData();
@@ -171,53 +166,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 };
 
 export const View = ({ data, onClose }) => {
-    const [initialData] = useState(data);
-
-    return (
-        <>
-            <div className='dialog-fields'>
-                <table className='dialog-field'>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <label htmlFor="phone">Số điện thoại</label>
-                            </td>
-                            <td>
-                                <span>{initialData.phoneNo}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label htmlFor="name">Họ và tên</label>
-                            </td>
-                            <td>
-                                <span>{initialData.fullname}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Giới tính</label>
-                            </td>
-                            <td className="radio-gender">
-                                <span>{initialData.gender === GENDER_MALE ? 'Nam' : 'Nữ'}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label htmlFor="name">Ngày tham gia</label>
-                            </td>
-                            <td>
-                                <span>{format(new Date(initialData.createDate), 'dd/MM/yyyy')}</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div className='dialog-button-tray'>
-                <button type='button' className='any-button' onClick={onClose}>Đóng</button>
-            </div>
-        </>
-    )
 }
 
 export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {

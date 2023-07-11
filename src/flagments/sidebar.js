@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import Logo from './logo';
 
 const Sidebar = () => {
     const [activeNavItem, setActiveNavItem] = useState(null);
@@ -18,7 +19,9 @@ const Sidebar = () => {
 
     return (
         <>
-            <div className='block-empty'></div>
+            <div className='sidebar-header'>
+                <Logo />
+            </div>
             <section className='sidebar' id='menu'>
                 <ul className='nav'>
                     {/**Dashboard*/}

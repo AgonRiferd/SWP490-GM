@@ -11,13 +11,13 @@ import Dialog from "./dialog";
  * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, phân trang và dialog cho CRUD.
  */
 
-const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
+const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewData }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
     const { dialogCreate, dialogView, dialogEdit, dialogDelete } = dialogs;
 
-    const columns = useMemo(
+    const columns = useMemo (
         () => [
             ...initialColumns,
             {
@@ -27,25 +27,30 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs }) => {
                 Cell: ({ row }) => (
                     <div className="table-actions">
                         {dialogView && 
-                            <span onClick={() => handleAction(dialogView, row.original)} title={dialogView.title}>
-                                {dialogView.icon ? dialogView.icon : dialogView.title}
+                            <span onClick={() => handleAction(dialogView, row.original)} title={dialogView.title ? dialogView.title : 'View'}>
+                                {dialogView.icon ? dialogView.icon : dialogView.title ? dialogView.title : 'View'}
+                            </span>
+                        }
+                        {viewData &&
+                            <span onClick={() => viewData.setDataView(row.original)} title={viewData.title ? viewData.title : 'View'}>
+                                {viewData.icon ? viewData.icon : viewData.title ? viewData.title : 'View'}
                             </span>
                         }
                         {dialogEdit && 
-                            <span onClick={() => handleAction(dialogEdit, row.original)} title={dialogEdit.title}>
-                                {dialogEdit.icon ? dialogEdit.icon : dialogEdit.title}
+                            <span onClick={() => handleAction(dialogEdit, row.original)} title={dialogEdit.title ? dialogEdit.title : 'Edit'}>
+                                {dialogEdit.icon ? dialogEdit.icon : dialogEdit.title ? dialogEdit.title : 'Edit'}
                             </span>
                         }
                         {dialogDelete && 
-                            <span onClick={() => handleAction(dialogDelete, row.original)} title={dialogDelete.title}>
-                                {dialogDelete.icon ? dialogDelete.icon : dialogDelete.title}
+                            <span onClick={() => handleAction(dialogDelete, row.original)} title={dialogDelete.title ? dialogDelete.title : 'Delete'}>
+                                {dialogDelete.icon ? dialogDelete.icon : dialogDelete.title ? dialogDelete.title : 'Delete'}
                             </span>
                         }
                     </div>
                 ),
                 width: 170
             },
-        ], [initialColumns, dialogEdit, dialogView, dialogDelete]
+        ], [initialColumns, dialogView, viewData, dialogEdit, dialogDelete]
     );
 
     const handleAction = (mode, rowData) => {

@@ -1,12 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import COLUMNS from '../../components/pt/Columns';
-import { Create, Edit, Delete, View } from '../../components/pt/dialog';
+import { Create, Edit, Delete } from '../../components/pt/dialog';
 import AdvanceTable from '../../flagments/advance-table';
-import { useEffect } from 'react';
-import axios from 'axios';
-import { useState } from 'react';
 import { LoadingTable } from '../../flagments/loading-table';
+import CustomView from '../../components/pt/View';
+import axiosInstance from '../../utils/axiosConfig';
 
 const DATA_PARAM_ROLE_NAME = 'pt';
 
@@ -14,6 +13,7 @@ const PTManage = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
+    const [dataView, setDataView] = useState();
     const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
@@ -25,14 +25,10 @@ const PTManage = () => {
     );
 
     const fetchData = async () => {
-        const api = axios.create({
-            baseURL: 'https://egts.azurewebsites.net/api',
-        });
-
         try {
             setIsLoading(true);
             // Fetch data from the API and update the state
-            const response = await api.get('/Accounts/GetAllAccountsWithConditons', {
+            const response = await axiosInstance.get('/Accounts/GetAllAccountsWithConditons', {
                 params: {
                     role: DATA_PARAM_ROLE_NAME
                 }
@@ -70,11 +66,6 @@ const PTManage = () => {
             component: Create, 
             fetchData: fetchData 
         },
-        dialogView: {
-            title:"Thông tin", 
-            icon: <i className="fa-solid fa-eye"></i>, 
-            component: View
-        },
         dialogEdit: { 
             title: "Trạng thái", 
             icon: <i className="fa-solid fa-user-lock"></i>, 
@@ -87,6 +78,12 @@ const PTManage = () => {
             component: Delete 
         }
     }),[]);
+
+    const viewData = useMemo(() => ({
+        title: "Thông tin",
+        icon: <i className="fa-solid fa-eye"></i>, 
+        setDataView: setDataView
+    }), []);
 
     return (
         <>
@@ -117,9 +114,12 @@ const PTManage = () => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData} />
                 </div>
             )}
+            {dataView && 
+                <CustomView dataUser={dataView} isMainLoading={isLoading} />
+            }
         </>
     )
 }

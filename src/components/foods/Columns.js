@@ -10,17 +10,6 @@ const COLUMNS = [
         accessor: 'createDate',
         disableGlobalFilter: true,
         Cell: ({ value }) => {return format(new Date(value), 'dd/MM/yyyy')}
-    },
-    {
-        Header: 'Video Link',
-        accessor: 'video',
-        disableGlobalFilter: true,
-        disableSortBy: true,
-        Cell: ({ value }) => (
-            <a href={value} target="_blank" rel="noopener noreferrer">
-                {value}
-            </a>
-        )
     }
 ]
 

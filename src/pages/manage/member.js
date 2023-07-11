@@ -1,10 +1,11 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { View, Edit, Delete } from '../../components/gymer/dialog';
+import { Edit, Delete } from '../../components/gymer/dialog';
+import CustomView from '../../components/gymer/View';
 import COLUMNS from '../../components/gymer/Columns';
 import AdvanceTable from '../../flagments/advance-table';
-import axios from 'axios';
 import { LoadingTable } from '../../flagments/loading-table';
+import axiosInstance from '../../utils/axiosConfig';
 
 const DATA_PARAM_ROLE_NAME = 'gymer';
 
@@ -12,6 +13,7 @@ const MemberManage = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
+    const [dataView, setDataView] = useState();
     const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
@@ -20,17 +22,13 @@ const MemberManage = () => {
                 desc: false
             }
         ], []
-    )
-    
-    const fetchData = async () => {
-        const api = axios.create({
-            baseURL: 'https://egts.azurewebsites.net/api',
-        });
+    );
 
+    const fetchData = async () => {
         try {
             setIsLoading(true);
             // Fetch data from the API and update the state
-            const response = await api.get('/Accounts/GetAllAccountsWithConditons', {
+            const response = await axiosInstance.get('/Accounts/GetAllAccountsWithConditons', {
                 params: {
                     role: DATA_PARAM_ROLE_NAME
                 }
@@ -52,7 +50,6 @@ const MemberManage = () => {
                     </>
                 );
             }
-        } finally {
             setIsLoading(false); // Kết thúc quá trình fetch
         }
     };
@@ -61,7 +58,6 @@ const MemberManage = () => {
         fetchData();
     }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
     
-    
     const dialogs = useMemo(() => ({
         dialogEdit: { 
             title: "Trạng thái", 
@@ -69,17 +65,18 @@ const MemberManage = () => {
             component: Edit,
             fetchData: fetchData
         },
-        dialogView: { 
-            title: "Thông tin", 
-            icon: <i className="fa-solid fa-eye"></i>, 
-            component: View 
-        },
         dialogDelete: { 
             title: "Loại bỏ", 
             icon: <i className="fa-solid fa-trash"></i>, 
             component: Delete, 
             fetchData: fetchData
         }
+    }), []);
+
+    const viewData = useMemo(() => ({
+        title: "Thông tin",
+        icon: <i className="fa-solid fa-eye"></i>, 
+        setDataView: setDataView
     }), []);
 
     return (
@@ -109,9 +106,12 @@ const MemberManage = () => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData}/>
                 </div>
             )}
+            {dataView && 
+                <CustomView dataUser={dataView} isMainLoading={isLoading} />
+            }
         </>
     )
 }

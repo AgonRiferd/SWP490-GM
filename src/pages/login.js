@@ -7,6 +7,7 @@ const Login = ({ setIsAuthenticated }) => {
   const [phoneNo, setPhoneNo] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const cookies = new Cookies();
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const Login = ({ setIsAuthenticated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await axios.post('/Login/Login', {
         phoneNo,
         password
@@ -41,6 +43,7 @@ const Login = ({ setIsAuthenticated }) => {
       } else {
         setErrorMessage('Bạn không có quyền truy cập.');
         clearField();
+        setIsLoading(false);
       }
       // Xử lý phản hồi thành công
       // Lưu thông tin đăng nhập, điều hướng tới trang chính, vv.
@@ -55,6 +58,7 @@ const Login = ({ setIsAuthenticated }) => {
         console.log(error);
       }
       clearField();
+      setIsLoading(false);
     }
   };
 
@@ -63,9 +67,7 @@ const Login = ({ setIsAuthenticated }) => {
   return (
     <div className="login animated bounceInLeft">
       <div className="logo">
-        <h2>G&nbsp;</h2>
-        <i className="fa-solid fa-dumbbell"></i>
-        <h2>&nbsp;M</h2>
+        <img src="/logo.png" alt='logo' />
       </div>
       <div className="login-title">Đăng Nhập</div>
       {errorMessage && <p className='status-error'>{errorMessage}</p>}
@@ -86,9 +88,17 @@ const Login = ({ setIsAuthenticated }) => {
           autoComplete="current-password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button className="btn btn-submit" type='button' disabled={isSubmitDisabled} onClick={handleSubmit}>
-          Đăng Nhập
-        </button>
+        {isLoading ? (
+          <button className="btn btn-submit" type='button' disabled={true}>
+            <i className="fa-solid fa-spinner fa-spin-pulse" />
+            &nbsp;&nbsp;Đăng Nhập
+          </button>
+        ) : (
+          <button className="btn btn-submit" type='button' disabled={isSubmitDisabled} onClick={handleSubmit}>
+            Đăng Nhập
+          </button>
+        )}
+
       </form>
     </div>
   );

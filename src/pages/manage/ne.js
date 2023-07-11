@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import COLUMNS from '../../components/ne/Columns';
-import { Create, View, Delete, Edit } from '../../components/ne/dialog';
+import { Create, Delete, Edit } from '../../components/ne/dialog';
 import AdvanceTable from '../../flagments/advance-table';
 import axios from 'axios';
 import { LoadingTable } from '../../flagments/loading-table';
+import CustomView from '../../components/ne/View';
 
 const DATA_PARAM_ROLE_NAME = 'ne';
 
@@ -12,6 +13,7 @@ const NEManage = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
+    const [dataView, setDataView] = useState();
     const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
@@ -68,11 +70,6 @@ const NEManage = () => {
             component: Create, 
             fetchData: fetchData 
         },
-        dialogView: {
-            title:"Thông tin", 
-            icon: <i className="fa-solid fa-eye"></i>, 
-            component: View
-        },
         dialogEdit: { 
             title: "Trạng thái", 
             icon: <i className="fa-solid fa-user-lock"></i>, 
@@ -84,6 +81,12 @@ const NEManage = () => {
             icon: <i className="fa-solid fa-trash"></i>, 
             component: Delete 
         }
+    }), []);
+
+    const viewData = useMemo(() => ({
+        title: "Thông tin",
+        icon: <i className="fa-solid fa-eye"></i>, 
+        setDataView: setDataView
     }), []);
 
     return (
@@ -115,9 +118,12 @@ const NEManage = () => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData}/>
                 </div>
             )}
+            {dataView && 
+                <CustomView dataUser={dataView} isMainLoading={isLoading} />
+            }
         </>
     )
 }
