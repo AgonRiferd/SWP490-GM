@@ -4,6 +4,7 @@ import axios from '../../utils/axiosConfig';
 export const Create = ({ onClose, isLoading, onLoading, ...props}) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
+        name: '',
         numberOfsession: '',
         price: '',
         hasPt: false,
@@ -70,6 +71,58 @@ export const Create = ({ onClose, isLoading, onLoading, ...props}) => {
                         <tbody>
                             <tr>
                                 <td>
+                                    <label htmlFor="name">Tên</label>
+                                    <label className='status-lock'>*</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type='text'
+                                        id="name"
+                                        name='name'
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label htmlFor="numberOfsession">Tổng số buổi</label>
+                                    <label className='status-lock'>*</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type='number'
+                                        id="numberOfsession"
+                                        name='numberOfsession'
+                                        value={formData.numberOfsession}
+                                        onChange={handleChange}
+                                        min={1}
+                                        required
+                                        placeholder='16'
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label htmlFor="price">Giá tiền</label>
+                                    <label className='status-lock'>*</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type='number'
+                                        id="price"
+                                        name='price'
+                                        value={formData.price}
+                                        onChange={handleChange}
+                                        min={0}
+                                        required
+                                        placeholder='0'
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <label>Tùy chọn</label>
                                 </td>
                                 <td className="radio-field">
@@ -91,42 +144,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props}) => {
                                         />
                                         Có NE
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label htmlFor="numberOfsession">Tổng số buổi</label>
-                                    <label className='status-lock'>*</label>
-                                </td>
-                                <td>
-                                    <input
-                                        type='number'
-                                        id="numberOfsession"
-                                        name='numberOfsession'
-                                        value={formData.numberOfsession}
-                                        onChange={handleChange}
-                                        min={1}
-                                        required
-                                        placeholder='1'
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label htmlFor="price">Giá tiền</label>
-                                    <label className='status-lock'>*</label>
-                                </td>
-                                <td>
-                                    <input
-                                        type='number'
-                                        id="price"
-                                        name='price'
-                                        value={formData.price}
-                                        onChange={handleChange}
-                                        min={0}
-                                        required
-                                        placeholder='0'
-                                    />
                                 </td>
                             </tr>
                         </tbody>

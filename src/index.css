@@ -679,8 +679,9 @@ input[type="number"]::-webkit-outer-spin-button {
   user-select: none;
   margin-right: 5px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: flex-end;
+
 }
 
 .common-options .pagination-buttons {
@@ -830,7 +831,8 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 20px;
 }
 
-.dialog-title-bar-close {
+.dialog-title-bar-close,
+.button-close {
   font-size: 1em;
   cursor: pointer;
 }
@@ -1075,6 +1077,17 @@ hr.view-divider {
   background-image: url(../public/layout/rule.png);
   background-repeat: repeat-x;
   background-position: center;
+}
+
+.sep-container button.button-close {
+  float: right;
+  margin-right: 20px;
+}
+
+.sep-container:after {
+  display: table;
+  content: "";
+  clear: both;
 }
 
 .sep-text {

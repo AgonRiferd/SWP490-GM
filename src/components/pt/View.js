@@ -6,7 +6,7 @@ import { Delete, View } from "../exercises/dialog";
 import { LoadingTable } from "../../flagments/loading-table";
 import AdvanceTable from "../../flagments/advance-table";
 
-const CustomView = ({ dataUser, isMainLoading }) => {
+const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -59,6 +59,7 @@ const CustomView = ({ dataUser, isMainLoading }) => {
             <hr className="view-divider" />
             <div className="sep-container">
                 <div className="sep-text">Thông tin</div>
+                <button type="button" className="button-close" onClick={() => setDataView()}>&times;</button>
             </div>
             {isLoading ? (
                 <div className="loading-overlay">

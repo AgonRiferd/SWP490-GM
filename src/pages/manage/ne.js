@@ -104,7 +104,7 @@ const NEManage = () => {
                     </li>
                     <li>
                         <span>
-                            <b>Nhân Viên: NE</b>
+                            <b>Nhân Viên: Bác Sỹ Dinh Dưỡng</b>
                         </span>
                     </li>
                 </ol>

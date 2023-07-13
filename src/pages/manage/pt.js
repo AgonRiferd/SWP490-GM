@@ -100,7 +100,7 @@ const PTManage = () => {
                     </li>
                     <li>
                         <span>
-                            <b>Nhân Viên: PT</b>
+                            <b>Nhân Viên: Huấn Luyện Viên</b>
                         </span>
                     </li>
                 </ol>
@@ -118,7 +118,7 @@ const PTManage = () => {
                 </div>
             )}
             {dataView && 
-                <CustomView dataUser={dataView} isMainLoading={isLoading} />
+                <CustomView dataUser={dataView} setDataView={setDataView} isMainLoading={isLoading} />
             }
         </>
     )

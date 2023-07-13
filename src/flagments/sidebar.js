@@ -50,14 +50,14 @@ const Sidebar = () => {
                             <li>
                                 <NavLink to="/management/pt">
                                     <i className="fa-solid fa-user-tie fa-sidebar-icon fa-custom"></i>
-                                    <span>PT</span>
+                                    <span>Huấn Luyện Viên</span>
                                     <span className="arrow"></span>
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink to="/management/ne">
                                     <i className="fa-solid fa-user-tie fa-sidebar-icon fa-custom"></i>
-                                    <span>NE</span>
+                                    <span>Bác Sỹ Dinh Dưỡng</span>
                                     <span className="arrow"></span>
                                 </NavLink>
                             </li>

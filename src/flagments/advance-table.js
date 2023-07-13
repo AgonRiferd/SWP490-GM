@@ -15,18 +15,20 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
+    const [isShowAll, setIsShowAll] = useState(false);
+    const [hasIsLocked, setHasIsLocked] = useState(false);
     const { dialogCreate, dialogView, dialogEdit, dialogDelete } = dialogs;
 
-    const columns = useMemo (
+    const columns = useMemo(
         () => [
             ...initialColumns,
             {
-                Header: 'Actions',
+                Header: 'Hoạt Động Quản Lý',
                 disableSortBy: true,
                 disableGlobalFilter: true,
                 Cell: ({ row }) => (
                     <div className="table-actions">
-                        {dialogView && 
+                        {dialogView &&
                             <span onClick={() => handleAction(dialogView, row.original)} title={dialogView.title ? dialogView.title : 'View'}>
                                 {dialogView.icon ? dialogView.icon : dialogView.title ? dialogView.title : 'View'}
                             </span>
@@ -36,12 +38,12 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
                                 {viewData.icon ? viewData.icon : viewData.title ? viewData.title : 'View'}
                             </span>
                         }
-                        {dialogEdit && 
+                        {dialogEdit &&
                             <span onClick={() => handleAction(dialogEdit, row.original)} title={dialogEdit.title ? dialogEdit.title : 'Edit'}>
                                 {dialogEdit.icon ? dialogEdit.icon : dialogEdit.title ? dialogEdit.title : 'Edit'}
                             </span>
                         }
-                        {dialogDelete && 
+                        {dialogDelete &&
                             <span onClick={() => handleAction(dialogDelete, row.original)} title={dialogDelete.title ? dialogDelete.title : 'Delete'}>
                                 {dialogDelete.icon ? dialogDelete.icon : dialogDelete.title ? dialogDelete.title : 'Delete'}
                             </span>
@@ -69,6 +71,27 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
         setIsDialogOpen(true);
     };
 
+    const booleanSortFunction = (rowA, rowB, columnId) => {
+        const valueA = rowA.values[columnId] ? 1 : 0;
+        const valueB = rowB.values[columnId] ? 1 : 0;
+
+        return valueA - valueB;
+    };
+
+    const customColumns = useMemo(() => {
+        return columns.map((column) => {
+            if (column.accessor === 'isLock') {
+                setHasIsLocked(true);
+                return {
+                    ...column,
+                    sortType: booleanSortFunction,
+                    disableSortBy: !isShowAll// Sử dụng custom sort function cho cột kiểu boolean
+                };
+            }
+            return column;
+        });
+    }, [columns, isShowAll]);
+
     const {
         getTableProps,
         getTableBodyProps,
@@ -84,10 +107,14 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
         state,
         setGlobalFilter,
         setPageSize
-    } = useTable({
-        columns, data,
-        initialState: { sortBy: sortees}
-    }, useGlobalFilter, useSortBy, usePagination);
+    } = useTable(
+        useMemo(() => ({
+            columns: customColumns,
+            data: isShowAll ? data : data.filter(row => !row.isLock),
+            initialState: { sortBy: sortees },
+        }), [customColumns, data, isShowAll, sortees]
+        ), useGlobalFilter, useSortBy, usePagination
+    );
 
     const { globalFilter, pageIndex, pageSize } = state;
 
@@ -96,7 +123,12 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
             <div className="common-options">
                 <div className="page-size">
                     <span>Hiển thị:{' '}</span>
-                    <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))} title="Page Size">
+                    <select value={pageSize} onChange={(e) => {
+                        const newSize = Number(e.target.value);
+                        if (newSize !== pageSize) {
+                            setPageSize(newSize);
+                        }
+                    }} title="Page Size">
                         {
                             [10, 25, 50].map((pageSize) => (
                                 <option key={pageSize} value={pageSize}>
@@ -109,13 +141,13 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
                 <div className="search-bar">
                     <span>
                         Tìm kiếm: {' '}
-                        <input value={globalFilter || ''} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Tìm kiếm"/>
+                        <input value={globalFilter || ''} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Tìm kiếm" />
                     </span>
                 </div>
                 {dialogCreate &&
                     <div className="button-create">
                         <button type="button" className="any-button" onClick={handleCreate}>
-                            {dialogCreate.icon && 
+                            {dialogCreate.icon &&
                                 <span className="icon-create">
                                     {dialogCreate.icon}
                                 </span>
@@ -164,30 +196,45 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
                     })}
                 </tbody>
             </table>
-            {pageCount > 1 ?
-                <div className="common-options">
-                    <div className="pagination-buttons">
-                        <div className="pagination-previous-buttons">
-                            <button onClick={() => gotoPage(0)} disabled={!canPreviousPage} type="button">{'<<'}</button>
-                            <button onClick={() => previousPage()} disabled={!canPreviousPage} type="button">Trước</button>
+            <div className="common-options">
+                {pageCount > 1 &&
+                    <>
+                        <div className="pagination-goto">
+                            <span>Đến trang: {' '}</span>
+                            <input type='number' defaultValue={pageIndex + 1} min="1"
+                                onChange={(e) => {
+                                    const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0;
+                                    gotoPage(pageNumber);
+                                }}
+                            />
                         </div>
-                        <span className="current-page">{(pageIndex + 1) + ' / ' + pageCount}</span>
-                        <div className="pagination-next-buttons">
-                            <button onClick={() => nextPage()} disabled={!canNextPage} type="button">Sau</button>
-                            <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} type="button">{'>>'}</button>
+                        <div className="pagination-buttons">
+                            <div className="pagination-previous-buttons">
+                                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage} type="button">{'<<'}</button>
+                                <button onClick={() => previousPage()} disabled={!canPreviousPage} type="button">Trước</button>
+                            </div>
+                            <span className="current-page">{(pageIndex + 1) + ' / ' + pageCount}</span>
+                            <div className="pagination-next-buttons">
+                                <button onClick={() => nextPage()} disabled={!canNextPage} type="button">Sau</button>
+                                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} type="button">{'>>'}</button>
+                            </div>
                         </div>
+                    </>
+                }
+                {hasIsLocked &&
+                    <div className="show-all-checkbox">
+                        <label>
+                            Trạng Thái: 
+                            <input
+                                type="checkbox"
+                                checked={isShowAll}
+                                onChange={() => setIsShowAll(!isShowAll)}
+                            />
+                            Hiển thị tất cả
+                        </label>
                     </div>
-                    <div className="pagination-goto">
-                        <span>Đến trang: {' '}</span>
-                        <input type='number' defaultValue={pageIndex + 1} min="1"
-                            onChange={(e) => {
-                                const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0;
-                                gotoPage(pageNumber);
-                            }}
-                        />
-                    </div>
-                </div>
-                : ''}
+                }
+            </div>
             {isDialogOpen && (
                 <Dialog mode={dialogMode} rowData={selectedRow} onClose={handleCloseDialog} />
             )}
