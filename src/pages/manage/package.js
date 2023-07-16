@@ -15,7 +15,7 @@ const PackageManage = () => {
     const sortees = useMemo(
         () => [
             { 
-                id: "price", 
+                id: "name", 
                 desc: false 
             }
         ], []
@@ -56,7 +56,7 @@ const PackageManage = () => {
 
     const dialogs = useMemo(() => ({
         dialogCreate: { 
-            title: "Tạo mới", 
+            title: "Tạo Dịch Vụ", 
             icon: <i className="fa-solid fa-plus"></i>, 
             component: Create, 
             fetchData: fetchData 

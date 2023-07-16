@@ -3,9 +3,9 @@ import { NavLink } from 'react-router-dom';
 import COLUMNS from '../../components/ne/Columns';
 import { Create, Delete, Edit } from '../../components/ne/dialog';
 import AdvanceTable from '../../flagments/advance-table';
-import axios from 'axios';
 import { LoadingTable } from '../../flagments/loading-table';
 import CustomView from '../../components/ne/View';
+import axiosInstance from '../../utils/axiosConfig';
 
 const DATA_PARAM_ROLE_NAME = 'ne';
 
@@ -25,25 +25,21 @@ const NEManage = () => {
     );
 
     const fetchData = async () => {
-        const api = axios.create({
-            baseURL: 'https://egts.azurewebsites.net/api',
-        });
-
         try {
             setIsLoading(true);
-            // Fetch data from the API and update the state
-            const response = await api.get('/Accounts/GetAllAccountsWithConditons', {
+            // Fetch
+            const response = await axiosInstance.get('/Accounts/GetAllAccountsWithConditons', {
                 params: {
                     role: DATA_PARAM_ROLE_NAME
                 }
             });
-            //Fetch thành công
+            //Fetch thành công (Chấp nhận code: 2xx)
             const { data } = response.data;
             setData(data);
-            setIsLoading(false); // Kết thúc quá trình fetch
+            setIsLoading(false);
         } catch (error) {
             if (error.response) {
-                // Lỗi được trả về từ phía server
+                // Lỗi được trả về từ phía server (Error code: 4xx)
                 setErrorMessage(error.response.data.message);
             } else {
                 // Lỗi không có phản hồi từ server
@@ -55,13 +51,13 @@ const NEManage = () => {
                 );
             }
         } finally {
-            setIsLoading(false); // Kết thúc quá trình fetch
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
         fetchData();
-    }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
+    }, []);
 
     const dialogs = useMemo(() => ({
         dialogCreate: { 
