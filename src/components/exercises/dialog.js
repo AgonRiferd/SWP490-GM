@@ -9,12 +9,22 @@ export const View = ({ data, onClose }) => {
 
     return (
         <>
-            <div className='dialog-fields'>
+            <div className='dialog-fields flex-column'>
+                <div className='iframe-video'>
+                    <iframe 
+                        width="400" 
+                        height="200" 
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" 
+                        title="Never Gonna Give You Up" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowFullScreen
+                    />
+                </div>
                 <table className='dialog-field'>
                     <tbody>
                         <tr>
                             <td>
-                                <label htmlFor="name">Tên</label>
+                                <label htmlFor="name">Tên bài tập</label>
                             </td>
                             <td>
                                 <span>{initialData.name}</span>
@@ -26,6 +36,14 @@ export const View = ({ data, onClose }) => {
                             </td>
                             <td>
                                 <span>{format(new Date(initialData.createDate), 'dd/MM/yyyy')}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label htmlFor="name">Miêu tả</label>
+                            </td>
+                            <td>
+                                <span>{initialData.description}</span>
                             </td>
                         </tr>
                     </tbody>

@@ -176,6 +176,14 @@ const OtherProfile = ({ user }) => {
                             <span>{format(new Date(user.createDate), 'dd/MM/yyyy')}</span>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <label>Chứng chỉ</label>
+                        </td>
+                        <td>
+                            <span className="status-error">API chưa có</span>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

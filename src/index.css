@@ -1265,3 +1265,11 @@ hr.view-divider {
 .normal-file-input #file-input-label {
   display: none;
 }
+
+.flex-column {
+  flex-direction: column;
+}
+
+.iframe-video {
+  margin: 5px 0 10px;
+}
