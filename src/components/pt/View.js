@@ -4,7 +4,8 @@ import { format } from 'date-fns'
 import COLUMNS from "../exercises/Columns";
 import { Delete, View } from "../exercises/dialog";
 import { LoadingTable } from "../../flagments/loading-table";
-import AdvanceTable from "../../flagments/advance-table";
+import {AdvanceTable, EmptyDataTable} from "../../flagments/advance-table";
+import { formatPhoneNumber } from "../../utils/convert";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -92,7 +93,7 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                                                     <label>Số Điện Thoại</label>
                                                 </td>
                                                 <td>
-                                                    <span>{user.phoneNo}</span>
+                                                    <span>{formatPhoneNumber(user.phoneNo)}</span>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -249,10 +250,12 @@ const Exercise = ({ userId }) => {
                 <LoadingTable />
             ) : errorMessage ? (
                 <span className="status-error">{errorMessage}</span>
-            ) : (
+            ) : data ? (
                 <div className="list-content">
                     <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
                 </div>
+            ) : (
+                <EmptyDataTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
             )}
         </>
     )

@@ -11,7 +11,7 @@ import Dialog from "./dialog";
  * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, phân trang và dialog cho CRUD.
  */
 
-const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewData }) => {
+export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewData }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
@@ -110,7 +110,7 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
     } = useTable(
         useMemo(() => ({
             columns: customColumns,
-            data: isShowAll ? data : data.filter(row => !row.isLock),
+            data: isShowAll ? data : (data ? data.filter(row => !row.isLock) : data),
             initialState: { sortBy: sortees },
         }), [customColumns, data, isShowAll, sortees]
         ), useGlobalFilter, useSortBy, usePagination
@@ -182,7 +182,7 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {page.map((row) => {
+                    {data.length > 0 ? page.map((row) => {
                         prepareRow(row);
                         return (
                             <tr {...row.getRowProps()}>
@@ -193,7 +193,13 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
                                 ))}
                             </tr>
                         )
-                    })}
+                    }) : (
+                        <tr>
+                            <td colSpan={columns.length} style={{ textAlign: "center" }}>
+                                <span className="status-error">Không có dữ liệu</span>
+                            </td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
             <div className="common-options">
@@ -224,7 +230,7 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
                 {hasIsLocked &&
                     <div className="show-all-checkbox">
                         <label>
-                            Trạng Thái: 
+                            Trạng Thái:
                             <input
                                 type="checkbox"
                                 checked={isShowAll}
@@ -242,4 +248,60 @@ const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewDat
     )
 };
 
-export default AdvanceTable;
+export const EmptyDataTable = ({ columns, dialogs }) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [dialogMode, setDialogMode] = useState(null);
+    const { dialogCreate } = dialogs;
+
+    const handleCloseDialog = () => {
+        setIsDialogOpen(false);
+    };
+
+    const handleCreate = () => {
+        setDialogMode(dialogCreate);
+        setIsDialogOpen(true);
+    };
+
+    return (
+        <>
+            <div className="common-options">
+                {dialogCreate &&
+                    <div className="button-create">
+                        <button type="button" className="any-button" onClick={handleCreate}>
+                            {dialogCreate.icon &&
+                                <span className="icon-create">
+                                    {dialogCreate.icon}
+                                </span>
+                            }
+                            {dialogCreate.title}
+                        </button>
+                    </div>
+                }
+
+            </div>
+            <table className="custom-table table-exercise">
+                <thead>
+                    <tr>
+                        {columns.map((column) =>
+                            <th key={column.accessor} style={{ width: column.width }}>
+                                <div className="flex">
+                                    <span>{column.Header}</span>
+                                </div>
+                            </th>
+                        )}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colSpan={columns.length} style={{ textAlign: "center" }}>
+                            <span className="status-error">Không có dữ liệu</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            {isDialogOpen && (
+                <Dialog mode={dialogMode} onClose={handleCloseDialog} />
+            )}
+        </>
+    )
+};

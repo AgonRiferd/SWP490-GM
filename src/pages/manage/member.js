@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { Edit, Delete } from '../../components/gymer/dialog';
 import CustomView from '../../components/gymer/View';
 import COLUMNS from '../../components/gymer/Columns';
-import AdvanceTable from '../../flagments/advance-table';
+import { AdvanceTable } from '../../flagments/advance-table';
 import { LoadingTable } from '../../flagments/loading-table';
 import axiosInstance from '../../utils/axiosConfig';
 
@@ -34,8 +34,10 @@ const MemberManage = () => {
                 }
             });
             //Fetch thành công
-            const { data } = response.data;
-            setData(data);
+            if (response.status === 200) {
+                const { data } = response.data;
+                setData(data);
+            }
             setIsLoading(false); // Kết thúc quá trình fetch
         } catch (error) {
             if (error.response) {
@@ -57,25 +59,25 @@ const MemberManage = () => {
     useEffect(() => {
         fetchData();
     }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
-    
+
     const dialogs = useMemo(() => ({
-        dialogEdit: { 
-            title: "Trạng thái", 
-            icon: <i className="fa-solid fa-user-lock"></i>, 
+        dialogEdit: {
+            title: "Trạng thái",
+            icon: <i className="fa-solid fa-user-lock"></i>,
             component: Edit,
             fetchData: fetchData
         },
-        dialogDelete: { 
-            title: "Loại bỏ", 
-            icon: <i className="fa-solid fa-trash"></i>, 
-            component: Delete, 
+        dialogDelete: {
+            title: "Loại bỏ",
+            icon: <i className="fa-solid fa-trash"></i>,
+            component: Delete,
             fetchData: fetchData
         }
     }), []);
 
     const viewData = useMemo(() => ({
         title: "Thông tin",
-        icon: <i className="fa-solid fa-eye"></i>, 
+        icon: <i className="fa-solid fa-eye"></i>,
         setDataView: setDataView
     }), []);
 
@@ -106,10 +108,10 @@ const MemberManage = () => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData}/>
+                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData} />
                 </div>
             )}
-            {dataView && 
+            {dataView &&
                 <CustomView dataUser={dataView} isMainLoading={isLoading} />
             }
         </>

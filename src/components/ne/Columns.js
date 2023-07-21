@@ -1,11 +1,15 @@
 import { format } from 'date-fns'
+import { formatPhoneNumber } from '../../utils/convert'
 
 const COLUMNS = [
     {
         Header: 'Số điện thoại',
         accessor: 'phoneNo',
         width: 120,
-        disableSortBy: true
+        disableSortBy: true,
+        Cell: ({value}) => {
+            return formatPhoneNumber(value)
+        }
     },
     {
         Header: 'Họ và Tên',

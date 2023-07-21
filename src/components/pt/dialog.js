@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import axiosInstance from "../../utils/axiosConfig";
+// import { ImageToByteConverter } from "../../utils/imageConvert";
+import { formatPhoneNumber } from "../../utils/convert";
 
-// const MAX_FILE_SIZE = 10 * 1024 * 1024;
-// const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png'];
 const GENDER_MALE = 'M';
 const GENDER_FEMALE = 'F';
 
 export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
+    // const [imageByteData, setImageByteData] = useState(null);
     const [formData, setFormData] = useState({
         phoneNo: '',
         password: '',
@@ -24,6 +25,24 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         }));
     };
 
+    const handleKeyDown = (e) => {
+        const { key } = e;
+
+        if (!/[0-9]/.test(key) && key !== "Backspace") {
+            e.preventDefault();
+        }
+    };
+
+    const handlePhoneChange = (e) => {
+        const { name, value } = e.target;
+        const phoneNumber = value.replace(/\D/g, "");
+        // Định dạng số tiền và cập nhật state
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: phoneNumber,
+        }));
+    };
+
     const handleCreate = async (e) => {
         e.preventDefault();
 
@@ -34,6 +53,13 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 
         try {
             onLoading(true);
+
+            // Thêm trường 'avatar' vào data chứa dữ liệu hình ảnh
+            // setFormData((prevData) => ({
+            //     ...prevData,
+            //     avatar: imageByteData,
+            // }));
+
             const response = await axiosInstance.post('/Accounts/CreateAccount', formData);
             if (response.status === 200 || response.status === 201) {
                 alert('Tạo mới thành công');
@@ -80,15 +106,16 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     <label className='status-lock'>*</label>
                                 </td>
                                 <td>
-                                    <input 
-                                        type="tel" 
-                                        id="phone" 
-                                        name="phoneNo" 
-                                        pattern="[0-9]{9,10}"
-                                        value={formData.phoneNo}
-                                        onChange={handleChange}
+                                    <input
+                                        type="tel"
+                                        id="phone"
+                                        name="phoneNo"
+                                        pattern="\d{4}-\d{3}-\d{3}|\d{4}-\d{3}-\d{4}"
+                                        value={formatPhoneNumber(formData.phoneNo)}
+                                        onChange={handlePhoneChange}
+                                        onKeyDown={handleKeyDown}
                                         required
-                                        placeholder="xxxx xxx xxx"
+                                        placeholder="xxxx-xxx-xxxx"
                                     />
                                 </td>
                             </tr>
@@ -98,9 +125,9 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     <label className='status-lock'>*</label>
                                 </td>
                                 <td>
-                                    <input 
-                                        type="password" 
-                                        id="password" 
+                                    <input
+                                        type="password"
+                                        id="password"
                                         name="password"
                                         value={formData.password}
                                         onChange={handleChange}
@@ -114,9 +141,9 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     <label className='status-lock'>*</label>
                                 </td>
                                 <td>
-                                    <input 
-                                        type='text' 
-                                        id="name" 
+                                    <input
+                                        type='text'
+                                        id="name"
                                         name='fullname'
                                         value={formData.fullname}
                                         onChange={handleChange}
@@ -130,10 +157,10 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                 </td>
                                 <td className="radio-gender">
                                     <label className="radio-gender">
-                                        <input 
-                                            type="radio" 
-                                            id="male" 
-                                            name="gender" 
+                                        <input
+                                            type="radio"
+                                            id="male"
+                                            name="gender"
                                             value={GENDER_MALE}
                                             checked={formData.gender === GENDER_MALE}
                                             onChange={handleChange}
@@ -141,10 +168,10 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                         <label htmlFor="male">Nam</label>
                                     </label>
                                     <label>
-                                        <input 
-                                            type="radio" 
-                                            id="female" 
-                                            name="gender" 
+                                        <input
+                                            type="radio"
+                                            id="female"
+                                            name="gender"
                                             value={GENDER_FEMALE}
                                             checked={formData.gender === GENDER_FEMALE}
                                             onChange={handleChange}
@@ -153,6 +180,15 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     </label>
                                 </td>
                             </tr>
+                            {/* <tr>
+                                <td>
+                                    <label htmlFor="certificate">Chứng chỉ</label>
+                                    <label className='status-lock'>*</label>
+                                </td>
+                                <td className="normal-file-input">
+                                    <ImageToByteConverter setImageByteData={setImageByteData} />
+                                </td>
+                            </tr> */}
                         </tbody>
                     </table>
                 </div>
@@ -181,7 +217,7 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
 
     const handleDelete = async (e) => {
         e.preventDefault();
-        
+
         try {
             onLoading(true);
             const response = await axiosInstance.put(`/Accounts/UpdateAccount/${data.id}`, formData);
@@ -230,7 +266,7 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
             ) : (
                 <>
                     <center>
-                        {data.isLock ? 
+                        {data.isLock ?
                             <p>Cho phép user Hoạt động trở lại?</p> : <p>Bạn có chắc muốn khóa user?</p>
                         }
                     </center>
@@ -249,5 +285,5 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
 };
 
 export const Delete = ({ data, onClose }) => {
-    
+
 };

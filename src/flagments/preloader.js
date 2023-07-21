@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 import axios from '../utils/axiosConfig';
 
 export const PageLoader = ({ setIsLoading, setIsAuthenticated }) => {
+    const [status, setStatus] = useState('Đang kết nối đến máy chủ...');
     const navigate = useNavigate();
     const cookies = new Cookies();
     const token = cookies.get('token');
@@ -17,7 +18,6 @@ export const PageLoader = ({ setIsLoading, setIsAuthenticated }) => {
                         Authorization: 'bearer ' + token
                     }
                 });
-                console.log("Token work!");
                 setIsAuthenticated(true);
                 setIsLoading(false);
             } catch (error) {
@@ -29,12 +29,14 @@ export const PageLoader = ({ setIsLoading, setIsAuthenticated }) => {
         };
 
         if (token) {
+            setStatus('Đang kiểm tra token...');
             verifyToken(token);
         } else {
             setIsLoading(false);
             navigate("/login");
         }
-    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status]);
 
     return (
         <>
@@ -42,7 +44,7 @@ export const PageLoader = ({ setIsLoading, setIsAuthenticated }) => {
                 <img src={process.env.PUBLIC_URL + '/logo512.png'} alt="React" width={300} height={300} />
                 <div className="loading-overlay">
                     <i className="fa-solid fa-spinner fa-spin-pulse"></i>
-                    <span>Đang kết nối đến máy chủ...</span>
+                    <span>{status}</span>
                 </div>
             </div>
         </>

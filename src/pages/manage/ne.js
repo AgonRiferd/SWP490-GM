@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import COLUMNS from '../../components/ne/Columns';
 import { Create, Delete, Edit } from '../../components/ne/dialog';
-import AdvanceTable from '../../flagments/advance-table';
+import { AdvanceTable } from '../../flagments/advance-table';
 import { LoadingTable } from '../../flagments/loading-table';
 import CustomView from '../../components/ne/View';
 import axiosInstance from '../../utils/axiosConfig';
@@ -114,7 +114,7 @@ const NEManage = () => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData}/>
+                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData} />
                 </div>
             )}
             {dataView && 

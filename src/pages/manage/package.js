@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import COLUMNS from "../../components/package/Columns";
 import { Create, Edit, Delete, View } from "../../components/package/dialog";
-import AdvanceTable from '../../flagments/advance-table';
+import { AdvanceTable } from '../../flagments/advance-table';
 import { useEffect } from 'react';
 import { LoadingTable } from '../../flagments/loading-table';
 import axios from '../../utils/axiosConfig';
@@ -69,7 +69,8 @@ const PackageManage = () => {
         dialogEdit: { 
             title: "Chỉnh sửa", 
             icon: <i className="fa-solid fa-pen-to-square"></i>, 
-            component: Edit 
+            component: Edit,
+            fetchData: fetchData
         },
         dialogDelete: { 
             title: "Loại bỏ", 

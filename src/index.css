@@ -845,7 +845,11 @@ input[type="number"]::-webkit-outer-spin-button {
   overflow: auto;
 }
 
-.dialog-fields>.dialog-field {
+.dialog-fields {
+  display: flex;
+}
+
+.dialog-fields > .dialog-field {
   margin-bottom: 10px;
   font-size: 0.9em;
 }
@@ -1088,6 +1092,10 @@ hr.view-divider {
   margin-right: 20px;
 }
 
+.button-remarquable {
+  background-color: #F48319;
+}
+
 .sep-container:after {
   display: table;
   content: "";
@@ -1210,4 +1218,50 @@ hr.view-divider {
   width: 100%;
   margin-bottom: 15px;
   margin-top: 20px;
+}
+
+.dialog-user-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.dialog-user-avatar .image-container {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #999;
+  background-color: #fff;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+}
+
+.dialog-user-avatar #file-input {
+  display: none;
+}
+
+.dialog-user-avatar #file-input-label {
+  background-color: whitesmoke;
+  display: block;
+}
+
+.strip {
+  position: relative;
+  background-image: url(../public/layout/stripe.png);
+  background-repeat: repeat-y;
+  background-position: center;
+}
+.strip:after {
+  display: table;
+  content: "";
+  clear: both;
+}
+
+.normal-file-input #file-input-label {
+  display: none;
 }

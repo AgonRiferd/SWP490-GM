@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import React, { useState } from "react";
 import axiosInstance from "../../utils/axiosConfig";
+import { formatPhoneNumber } from "../../utils/convert";
 
 // const MAX_FILE_SIZE = 10 * 1024 * 1024;
 // const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png'];
@@ -22,6 +23,24 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: value,
+        }));
+    };
+
+    const handleKeyDown = (e) => {
+        const { key } = e;
+
+        if (!/[0-9]/.test(key) && key !== "Backspace") {
+            e.preventDefault();
+        }
+    };
+
+    const handlePhoneChange = (e) => {
+        const { name, value } = e.target;
+        const phoneNumber = value.replace(/\D/g, "");
+        // Định dạng số tiền và cập nhật state
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: phoneNumber,
         }));
     };
 
@@ -81,15 +100,16 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     <label className='status-lock'>*</label>
                                 </td>
                                 <td>
-                                    <input 
-                                        type="tel" 
-                                        id="phone" 
-                                        name="phoneNo" 
-                                        pattern="[0-9]{9,10}"
-                                        value={formData.phoneNo}
-                                        onChange={handleChange}
+                                <input
+                                        type="tel"
+                                        id="phone"
+                                        name="phoneNo"
+                                        pattern="\d{4}-\d{3}-\d{3}|\d{4}-\d{3}-\d{4}"
+                                        value={formatPhoneNumber(formData.phoneNo)}
+                                        onChange={handlePhoneChange}
+                                        onKeyDown={handleKeyDown}
                                         required
-                                        placeholder="xxxx xxx xxx"
+                                        placeholder="xxxx-xxx-xxxx"
                                     />
                                 </td>
                             </tr>

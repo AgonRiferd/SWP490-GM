@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import COLUMNS from '../../components/pt/Columns';
 import { Create, Edit, Delete } from '../../components/pt/dialog';
-import AdvanceTable from '../../flagments/advance-table';
+import { AdvanceTable } from '../../flagments/advance-table';
 import { LoadingTable } from '../../flagments/loading-table';
 import CustomView from '../../components/pt/View';
 import axiosInstance from '../../utils/axiosConfig';
@@ -17,9 +17,9 @@ const PTManage = () => {
     const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
-            { 
-                id: "fullname", 
-                desc: false 
+            {
+                id: "fullname",
+                desc: false
             }
         ], []
     );
@@ -60,28 +60,28 @@ const PTManage = () => {
     }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
 
     const dialogs = useMemo(() => ({
-        dialogCreate: { 
-            title: "Tạo mới", 
+        dialogCreate: {
+            title: "Tạo mới",
             icon: <i className="fa fa-solid fa-user-plus"></i>,
-            component: Create, 
-            fetchData: fetchData 
+            component: Create,
+            fetchData: fetchData
         },
-        dialogEdit: { 
-            title: "Trạng thái", 
-            icon: <i className="fa-solid fa-user-lock"></i>, 
+        dialogEdit: {
+            title: "Trạng thái",
+            icon: <i className="fa-solid fa-user-lock"></i>,
             component: Edit,
             fetchData: fetchData
         },
-        dialogDelete: { 
-            title: "Loại bỏ", 
-            icon: <i className="fa-solid fa-trash"></i>, 
-            component: Delete 
+        dialogDelete: {
+            title: "Loại bỏ",
+            icon: <i className="fa-solid fa-trash"></i>,
+            component: Delete
         }
-    }),[]);
+    }), []);
 
     const viewData = useMemo(() => ({
         title: "Thông tin",
-        icon: <i className="fa-solid fa-eye"></i>, 
+        icon: <i className="fa-solid fa-eye"></i>,
         setDataView: setDataView
     }), []);
 
@@ -117,7 +117,7 @@ const PTManage = () => {
                     <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData} />
                 </div>
             )}
-            {dataView && 
+            {dataView &&
                 <CustomView dataUser={dataView} setDataView={setDataView} isMainLoading={isLoading} />
             }
         </>

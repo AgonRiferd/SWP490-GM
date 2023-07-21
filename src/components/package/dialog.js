@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../utils/axiosConfig';
-
-const formatMoney = (value) => {
-    const price = value === null ? 0 : value;
-    const formattedValue = price.toLocaleString();
-    return formattedValue;
-};
+import { formatMoney } from '../../utils/convert';
 
 export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
@@ -61,7 +56,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 
     const handlePriceChange = (e) => {
         const { name, value } = e.target;
-        const numericValue = value.replace(/[^0-9]/g, "");
+        const numericValue = value.replace(/\D/g, "");
         // Định dạng số tiền và cập nhật state
         const numericPrice = Number(numericValue);
         setFormData((prevFormData) => ({
@@ -352,9 +347,253 @@ export const View = ({ data, onClose }) => {
     );
 };
 
-export const Edit = ({ data, onClose }) => {
+export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
+    const [errorMessage, setErrorMessage] = useState('');
+    const [formData, setFormData] = useState(data);
+
+    useEffect(() => {
+        const total = formData.centerCost + (formData.hasPt ? formData.ptcost : 0) + (formData.hasNe ? formData.necost : 0);
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            price: total,
+        }));
+    }, [formData.centerCost, formData.ptcost, formData.hasPt, formData.necost, formData.hasNe]);
+
+    const handleKeyDown = (e) => {
+        const { key } = e;
+
+        if (!/[0-9]/.test(key) && key !== "Backspace") {
+            e.preventDefault();
+        }
+    };
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        if (name === "hasPt" && !checked) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                ptCost: 0,
+                [name]: checked
+            }));
+        } else if (name === "hasNe" && !checked) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                neCost: 0,
+                [name]: checked
+            }));
+        } else {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: type === 'checkbox' ? checked : value,
+            }));
+        }
+    };
+
+    const handlePriceChange = (e) => {
+        const { name, value } = e.target;
+        const numericValue = value.replace(/\D/g, "");
+        // Định dạng số tiền và cập nhật state
+        const numericPrice = Number(numericValue);
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: numericPrice,
+        }));
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+
+        if (formData.name.trim().length === 0) {
+            alert('Vui lòng điền đầy đủ thông tin!');
+            return;
+        }
+
+        try {
+            onLoading(true);
+            const response = await axios.put('/Packages/UpdatePackage', formData);
+            if (response.status === 200) {
+                alert('Cập nhật thành công');
+                props.fetchData();
+            } else {
+                setErrorMessage(<>
+                    <p>Cập nhật không thành công</p>
+                    <p>Status: {response.status}</p>
+                </>
+                );
+                onLoading(false);
+            }
+        } catch (error) {
+            // Xử lý lỗi nếu có
+            if (error.response) {
+                setErrorMessage(
+                    <>
+                        <p>Cập nhật không thành công</p>
+                        <p>Mã lỗi: {error.response.status}</p>
+                    </>
+                );
+            } else {
+                setErrorMessage(
+                    <>
+                        <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                        <p>Mã lỗi: {error.code}</p>
+                    </>
+                );
+            }
+            onLoading(false);
+        }
+    };
+
     return (
         <>
+            {errorMessage && <span className="status-error">{errorMessage}</span>}
+            <form onSubmit={handleUpdate}>
+                <div className='dialog-fields'>
+                    <table className='dialog-field'>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label htmlFor="name">Tên</label>
+                                    <label className='status-lock'>*</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type='text'
+                                        id="name"
+                                        name='name'
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label htmlFor="numberOfsession">Tổng số buổi</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type='number'
+                                        id="numberOfsession"
+                                        name='numberOfsession'
+                                        value={formData.numberOfsession}
+                                        onChange={handleChange}
+                                        min={1}
+                                        required
+                                        placeholder='1'
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label htmlFor="price">Giá phòng tập</label>
+                                </td>
+                                <td>
+                                    <input
+                                        type='text'
+                                        id="price"
+                                        name='centerCost'
+                                        value={formatMoney(formData.centerCost)}
+                                        onChange={handlePriceChange}
+                                        onKeyDown={handleKeyDown}
+                                        required
+                                        placeholder='0đ'
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={2}>
+                                    <div className="sep-container">
+                                        <div className="sep-text">Tùy Chọn</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="radio-field" colSpan={2}>
+                                    <div>
+                                        <input
+                                            type="checkbox"
+                                            name="hasPt"
+                                            checked={formData.hasPt}
+                                            onChange={handleChange}
+                                        />
+                                        Huấn luyện viên
+                                    </div>
+                                </td>
+                            </tr>
+                            {formData.hasPt && (
+                                <tr>
+                                    <td>
+                                        <label htmlFor="ptCost">Chi phí </label>
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            id="ptCost"
+                                            name="ptcost"
+                                            value={formatMoney(formData.ptcost)}
+                                            onChange={handlePriceChange}
+                                            onKeyDown={handleKeyDown}
+                                            required
+                                            placeholder="0đ"
+                                        />
+                                    </td>
+                                </tr>
+                            )}
+                            <tr>
+                                <td className='radio-field' colSpan={2}>
+                                    <div>
+                                        <input
+                                            type="checkbox"
+                                            name="hasNe"
+                                            checked={formData.hasNe}
+                                            onChange={handleChange}
+                                        />
+                                        Bác sỹ dinh dưỡng
+                                    </div>
+                                </td>
+                            </tr>
+                            {formData.hasNe && (
+                                <tr>
+                                    <td>
+                                        <label htmlFor="neCost">Chi phí </label>
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            id="neCost"
+                                            name="necost"
+                                            value={formatMoney(formData.necost)}
+                                            onChange={handlePriceChange}
+                                            onKeyDown={handleKeyDown}
+                                            required
+                                            placeholder="0đ"
+                                        />
+                                    </td>
+                                </tr>
+                            )}
+                            <tr>
+                                <td colSpan={2}>
+                                    <div className="sep-container">
+                                        <div className="sep-text"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Tổng cộng :
+                                </td>
+                                <td>
+                                    {formatMoney(formData.price)} đ
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div className='dialog-button-tray'>
+                    <button type='submit' className='any-button button-submit' disabled={isLoading}>Cập nhật</button>
+                    <button type='button' className='any-button button-cancel' onClick={onClose}>Hủy bỏ</button>
+                </div>
+            </form>
         </>
     );
 };
@@ -412,13 +651,14 @@ export const Delete = ({ data, isLoading, onLoading, onClose, ...props }) => {
             ) : (
                 <>
                     <center>
+                        <p>Tên Dịch vụ : <span className='status-error'>{data.name}</span></p>
                         <p>Bạn có chắc chắn muốn xóa?</p>
                     </center>
                     <div className="dialog-button-tray">
-                        <button type="button" className="any-button button-submit" onClick={handleDelete} disabled={isLoading}>
+                        <button type="button" className="any-button" onClick={handleDelete} disabled={isLoading}>
                             Xác nhận
                         </button>
-                        <button type="button" className="any-button button-cancel" onClick={onClose}>
+                        <button type="button" className="any-button button-cancel button-remarquable" onClick={onClose}>
                             Hủy bỏ
                         </button>
                     </div>
