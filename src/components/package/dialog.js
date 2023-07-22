@@ -17,12 +17,12 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 
     // Cập nhật giá trị của price khi các thành phần thay đổi
     useEffect(() => {
-        const total = formData.centerCost + (formData.hasPt ? formData.ptCost : 0) + (formData.hasNe ? formData.neCost : 0);
+        const total = formData.centerCost + (formData.hasPt ? formData.ptCost * formData.numberOfsession : 0) + (formData.hasNe ? formData.neCost : 0);
         setFormData((prevFormData) => ({
             ...prevFormData,
             price: total,
         }));
-    }, [formData.centerCost, formData.ptCost, formData.hasPt, formData.neCost, formData.hasNe]);
+    }, [formData.centerCost, formData.ptCost, formData.hasPt, formData.neCost, formData.hasNe, formData.numberOfsession]);
 
     const handleKeyDown = (e) => {
         const { key } = e;
@@ -352,12 +352,12 @@ export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
     const [formData, setFormData] = useState(data);
 
     useEffect(() => {
-        const total = formData.centerCost + (formData.hasPt ? formData.ptcost : 0) + (formData.hasNe ? formData.necost : 0);
+        const total = formData.centerCost + (formData.hasPt ? formData.ptcost * formData.numberOfsession : 0) + (formData.hasNe ? formData.necost : 0);
         setFormData((prevFormData) => ({
             ...prevFormData,
             price: total,
         }));
-    }, [formData.centerCost, formData.ptcost, formData.hasPt, formData.necost, formData.hasNe]);
+    }, [formData.centerCost, formData.ptcost, formData.hasPt, formData.necost, formData.hasNe, formData.numberOfsession]);
 
     const handleKeyDown = (e) => {
         const { key } = e;

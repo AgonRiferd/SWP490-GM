@@ -6,6 +6,7 @@ import { Delete, View } from "../exercises/dialog";
 import { LoadingTable } from "../../flagments/loading-table";
 import {AdvanceTable, EmptyDataTable} from "../../flagments/advance-table";
 import { formatPhoneNumber } from "../../utils/convert";
+import { BytesToImageConvert } from "../../utils/imageConvert";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -78,6 +79,7 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                                     {user.fullname.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
+                                    {console.log('Image:' + user.image)}
                                     <table className='dialog-field'>
                                         <tbody>
                                             <tr>
@@ -181,7 +183,9 @@ const OtherProfile = ({ user }) => {
                             <label>Chứng chỉ</label>
                         </td>
                         <td>
-                            <span className="status-error">API chưa có</span>
+                            {user.image ? 
+                                <BytesToImageConvert imageByteData={user.image} />
+                            : <span>Empty</span>}
                         </td>
                     </tr>
                 </tbody>

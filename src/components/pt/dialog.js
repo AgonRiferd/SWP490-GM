@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosConfig";
-// import { ImageToByteConverter } from "../../utils/imageConvert";
+import { ImageInput } from "../../utils/imageConvert";
 import { formatPhoneNumber } from "../../utils/convert";
 
 const GENDER_MALE = 'M';
@@ -8,14 +8,23 @@ const GENDER_FEMALE = 'F';
 
 export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
-    // const [imageByteData, setImageByteData] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
     const [formData, setFormData] = useState({
         phoneNo: '',
         password: '',
         fullname: '',
         gender: GENDER_MALE,
-        role: 'PT'
+        role: 'PT',
+        certification: imageFile
     });
+
+    useEffect(() => {
+        // Thêm trường 'certification' vào data chứa dữ liệu hình ảnh
+        setFormData((prevData) => ({
+            ...prevData,
+            certification: imageFile,
+        }));
+    }, [imageFile])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -36,7 +45,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const handlePhoneChange = (e) => {
         const { name, value } = e.target;
         const phoneNumber = value.replace(/\D/g, "");
-        // Định dạng số tiền và cập nhật state
+
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: phoneNumber,
@@ -46,20 +55,14 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const handleCreate = async (e) => {
         e.preventDefault();
 
-        if (!formData.phoneNo || !formData.password || !formData.fullname) {
+        if (!formData.phoneNo || !formData.password || !formData.fullname || !imageFile) {
             alert('Vui lòng điền đầy đủ thông tin!');
             return;
         }
 
         try {
             onLoading(true);
-
-            // Thêm trường 'avatar' vào data chứa dữ liệu hình ảnh
-            // setFormData((prevData) => ({
-            //     ...prevData,
-            //     avatar: imageByteData,
-            // }));
-
+            console.log(formData.certification);
             const response = await axiosInstance.post('/Accounts/CreateAccount', formData);
             if (response.status === 200 || response.status === 201) {
                 alert('Tạo mới thành công');
@@ -74,7 +77,9 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
             }
         } catch (error) {
             // Xử lý lỗi nếu có
+            console.log('Certification: ' + formData.certification);
             if (error.response) {
+                console.log(error);
                 setErrorMessage(
                     <>
                         <p>Tạo không thành công</p>
@@ -180,15 +185,15 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     </label>
                                 </td>
                             </tr>
-                            {/* <tr>
+                            <tr>
                                 <td>
                                     <label htmlFor="certificate">Chứng chỉ</label>
                                     <label className='status-lock'>*</label>
                                 </td>
                                 <td className="normal-file-input">
-                                    <ImageToByteConverter setImageByteData={setImageByteData} />
+                                    <ImageInput setImageFile={setImageFile} />
                                 </td>
-                            </tr> */}
+                            </tr>
                         </tbody>
                     </table>
                 </div>
