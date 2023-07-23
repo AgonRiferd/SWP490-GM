@@ -165,77 +165,81 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     />
                                 </td>
                             </tr>
-                            <tr>
-                                <td colSpan={2}>
-                                    <div className="sep-container">
-                                        <div className="sep-text">Tùy Chọn</div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className="radio-field" colSpan={2}>
-                                    <div>
-                                        <input
-                                            type="checkbox"
-                                            name="hasPt"
-                                            checked={formData.hasPt}
-                                            onChange={handleChange}
-                                        />
-                                        Huấn luyện viên
-                                    </div>
-                                </td>
-                            </tr>
-                            {formData.hasPt && (
-                                <tr>
-                                    <td>
-                                        <label htmlFor="ptCost">Chi phí </label>
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            id="ptCost"
-                                            name="ptCost"
-                                            value={formatMoney(formData.ptCost)}
-                                            onChange={handlePriceChange}
-                                            onKeyDown={handleKeyDown}
-                                            required
-                                            placeholder="0đ"
-                                        />
-                                    </td>
-                                </tr>
-                            )}
-                            <tr>
-                                <td className='radio-field' colSpan={2}>
-                                    <div>
-                                        <input
-                                            type="checkbox"
-                                            name="hasNe"
-                                            checked={formData.hasNe}
-                                            onChange={handleChange}
-                                        />
-                                        Bác sỹ dinh dưỡng
-                                    </div>
-                                </td>
-                            </tr>
-                            {formData.hasNe && (
-                                <tr>
-                                    <td>
-                                        <label htmlFor="neCost">Chi phí </label>
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            id="neCost"
-                                            name="neCost"
-                                            value={formatMoney(formData.neCost)}
-                                            onChange={handlePriceChange}
-                                            onKeyDown={handleKeyDown}
-                                            required
-                                            placeholder="0đ"
-                                        />
-                                    </td>
-                                </tr>
-                            )}
+                            {props.packageType !== 1 &&
+                                <>
+                                    <tr>
+                                        <td colSpan={2}>
+                                            <div className="sep-container">
+                                                <div className="sep-text">Tùy Chọn</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td className="radio-field" colSpan={2}>
+                                            <div>
+                                                <input
+                                                    type="checkbox"
+                                                    name="hasPt"
+                                                    checked={formData.hasPt}
+                                                    onChange={handleChange}
+                                                />
+                                                Huấn luyện viên
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {formData.hasPt && (
+                                        <tr>
+                                            <td>
+                                                <label htmlFor="ptCost">Chi phí </label>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    id="ptCost"
+                                                    name="ptCost"
+                                                    value={formatMoney(formData.ptCost)}
+                                                    onChange={handlePriceChange}
+                                                    onKeyDown={handleKeyDown}
+                                                    required
+                                                    placeholder="0đ"
+                                                />
+                                            </td>
+                                        </tr>
+                                    )}
+                                    <tr>
+                                        <td className='radio-field' colSpan={2}>
+                                            <div>
+                                                <input
+                                                    type="checkbox"
+                                                    name="hasNe"
+                                                    checked={formData.hasNe}
+                                                    onChange={handleChange}
+                                                />
+                                                Bác sỹ dinh dưỡng
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {formData.hasNe && (
+                                        <tr>
+                                            <td>
+                                                <label htmlFor="neCost">Chi phí </label>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    id="neCost"
+                                                    name="neCost"
+                                                    value={formatMoney(formData.neCost)}
+                                                    onChange={handlePriceChange}
+                                                    onKeyDown={handleKeyDown}
+                                                    required
+                                                    placeholder="0đ"
+                                                />
+                                            </td>
+                                        </tr>
+                                    )}
+                                </>
+                            }
                             <tr>
                                 <td colSpan={2}>
                                     <div className="sep-container">

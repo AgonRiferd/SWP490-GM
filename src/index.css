@@ -2,7 +2,8 @@
   --primary-color: #313e4b;
   --secondary-color: #5686e1;
   --tertiary-color: #cbb682;
-  --tertiary-color-lighter: color-mix(in srgb,var(--tertiary-color),#fff 15%);;
+  --tertiary-color-lighter: color-mix(in srgb, var(--tertiary-color), #fff 15%);
+  ;
   --text-color: #FAF6F6;
   --min-header-height: 55px;
 }
@@ -184,6 +185,7 @@ a.logo {
   min-height: var(--min-header-height);
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 .sidebar-header {
   padding: 5px 0;
   user-select: none;
@@ -195,7 +197,7 @@ a.logo {
   min-width: 150px;
 }
 
-.sidebar-header .logo > img {
+.sidebar-header .logo>img {
   width: 150px;
 }
 
@@ -206,7 +208,7 @@ a.logo {
   margin-left: 20px;
 }
 
-.header .logo > img {
+.header .logo>img {
   width: 150px;
 }
 
@@ -849,7 +851,7 @@ input[type="number"]::-webkit-outer-spin-button {
   display: flex;
 }
 
-.dialog-fields > .dialog-field {
+.dialog-fields>.dialog-field {
   margin-bottom: 10px;
   font-size: 0.9em;
 }
@@ -1177,13 +1179,13 @@ hr.view-divider {
   clear: both;
 }
 
-.common-tab-selected, .common-tab-selected:hover {
+.common-tab-selected,
+.common-tab-selected:hover {
   border-color: #9f9a8f;
   background: #fff;
 }
 
 .common-tab-container {
-  cursor: pointer;
   float: left;
   display: block;
   padding: 6px;
@@ -1201,7 +1203,7 @@ hr.view-divider {
 }
 
 .common-tab-name {
-  max-width: 120px;
+  /* max-width: 120px; */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1256,6 +1258,7 @@ hr.view-divider {
   background-repeat: repeat-y;
   background-position: center;
 }
+
 .strip:after {
   display: table;
   content: "";
@@ -1272,4 +1275,41 @@ hr.view-divider {
 
 .iframe-video {
   margin: 5px 0 10px;
+}
+
+.dialog-steps {
+  box-shadow: none;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  color: gray;
+}
+
+.dialog-steps li.active {
+  color: #000;
+}
+
+.dialog-steps li+li:before {
+  padding: 0;
+  content: '\00BB';
+  color: #000;
+  margin: 0 5px;
+}
+
+.progress-bar-content {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.progress-bar-container {
+  width: 100%;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 5px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4caf50;
 }

@@ -67,9 +67,10 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
         phoneNo: '',
         password: '',
         fullname: '',
+        image: '',
         gender: '',
         role: '',
-        isLock: !data.isLock
+        isDelete: !data.isDelete
     });
 
     const handleDelete = async (e) => {
@@ -77,7 +78,7 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
         
         try {
             onLoading(true);
-            const response = await axiosInstance.put(`/Accounts/UpdateAccount/${data.id}`, formData);
+            const response = await axiosInstance.put(`/Accounts/UpdateAccount?id=${data.id}`, formData);
             if (response.status === 200 || response.status === 204) {
                 alert('Trạng thái đã được cập nhật.');
                 props.fetchData();
@@ -123,7 +124,7 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
             ) : (
                 <>
                     <center>
-                        {data.isLock ? 
+                        {data.isDelete ? 
                             <p>Cho phép Hoạt động trở lại?</p> : <p>Bạn có chắc muốn khóa người dùng này?</p>
                         }
                     </center>

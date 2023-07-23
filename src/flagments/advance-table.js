@@ -3,10 +3,10 @@ import { useTable, useSortBy, useGlobalFilter, usePagination } from "react-table
 import Dialog from "./dialog";
 
 /**
- * @param {*} data dữ liệu đầu vào dưới dạng json
- * @param {*} columns một mảng xác định các cột của bảng
- * @param {*} sortees một mảng chứa tên cột và giá trị boolean dùng để xác định cột sắp xếp mặc định.
- * @param {*} dialogs một mảng chứa các chức năng cho dialog: tạo: dialogCreate, 
+ * @param {JSON} data dữ liệu đầu vào dưới dạng json
+ * @param {Array} columns một mảng xác định các cột của bảng
+ * @param {Array} sortees một mảng chứa tên cột và giá trị boolean dùng để xác định cột sắp xếp mặc định.
+ * @param {JSON} dialogs một mảng chứa các chức năng cho dialog: tạo: dialogCreate, 
  * sửa: dialogEdit, xóa: dialogDelete.
  * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, phân trang và dialog cho CRUD.
  */
@@ -80,7 +80,7 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
 
     const customColumns = useMemo(() => {
         return columns.map((column) => {
-            if (column.accessor === 'isLock') {
+            if (column.accessor === 'isDelete') {
                 setHasIsLocked(true);
                 return {
                     ...column,
@@ -110,7 +110,7 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
     } = useTable(
         useMemo(() => ({
             columns: customColumns,
-            data: isShowAll ? data : (data ? data.filter(row => !row.isLock) : data),
+            data: isShowAll ? data : (data ? data.filter(row => !row.isDelete) : data),
             initialState: { sortBy: sortees },
         }), [customColumns, data, isShowAll, sortees]
         ), useGlobalFilter, useSortBy, usePagination
@@ -243,64 +243,6 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
             </div>
             {isDialogOpen && (
                 <Dialog mode={dialogMode} rowData={selectedRow} onClose={handleCloseDialog} />
-            )}
-        </>
-    )
-};
-
-export const EmptyDataTable = ({ columns, dialogs }) => {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [dialogMode, setDialogMode] = useState(null);
-    const { dialogCreate } = dialogs;
-
-    const handleCloseDialog = () => {
-        setIsDialogOpen(false);
-    };
-
-    const handleCreate = () => {
-        setDialogMode(dialogCreate);
-        setIsDialogOpen(true);
-    };
-
-    return (
-        <>
-            <div className="common-options">
-                {dialogCreate &&
-                    <div className="button-create">
-                        <button type="button" className="any-button" onClick={handleCreate}>
-                            {dialogCreate.icon &&
-                                <span className="icon-create">
-                                    {dialogCreate.icon}
-                                </span>
-                            }
-                            {dialogCreate.title}
-                        </button>
-                    </div>
-                }
-
-            </div>
-            <table className="custom-table table-exercise">
-                <thead>
-                    <tr>
-                        {columns.map((column) =>
-                            <th key={column.accessor} style={{ width: column.width }}>
-                                <div className="flex">
-                                    <span>{column.Header}</span>
-                                </div>
-                            </th>
-                        )}
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colSpan={columns.length} style={{ textAlign: "center" }}>
-                            <span className="status-error">Không có dữ liệu</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            {isDialogOpen && (
-                <Dialog mode={dialogMode} onClose={handleCloseDialog} />
             )}
         </>
     )

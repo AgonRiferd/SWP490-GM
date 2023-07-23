@@ -134,6 +134,9 @@ const CustomView = ({ dataUser, isMainLoading }) => {
                         {isTabActive(1) && 
                             <OtherProfile user={user}/>
                         }
+                        {isTabActive(2) && 
+                            <Schedule userId={user.id}/>
+                        }
                     </div>
                 </>
             )}
@@ -168,5 +171,8 @@ const OtherProfile = ({ user }) => {
     )
 }
 
+const Schedule = ({ userId }) => {
+    
+}
 
 export default CustomView;

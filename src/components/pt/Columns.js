@@ -36,7 +36,7 @@ const COLUMNS = [
     },
     {
         Header: 'Trạng Thái',
-        accessor: 'isLock',
+        accessor: 'isDelete',
         Cell: ({ value }) => {
             return value ? <span className="status-lock">Bị khóa</span> : <span className="status-active">Hoạt động</span>
         },

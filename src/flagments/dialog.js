@@ -25,7 +25,7 @@ const BasicDialog = ({ title, onClose, isLoading, children }) => {
                 }
                 <div className='dialog-title-bar ui-corner-all dialog-header'>
                     <span className='dialog-title'>{title}</span>
-                    <button type='button' className='dialog-title-bar-close' onClick={onClose}>&times;</button>
+                    {/* <button type='button' className='dialog-title-bar-close' onClick={onClose}>&times;</button> */}
                 </div>
                 <div className='dialog-content'>
                     {children}

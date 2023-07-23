@@ -64,7 +64,7 @@ const Sidebar = () => {
                             <li>
                                 <NavLink to="/management/package">
                                     <i className="fa-solid fa-box-archive fa-sidebar-icon fa-custom"></i>
-                                    <span>Dịch Vụ</span>
+                                    <span>Gói Tập</span>
                                     <span className="arrow"></span>
                                 </NavLink>
                             </li>

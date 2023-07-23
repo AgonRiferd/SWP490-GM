@@ -1,14 +1,6 @@
-
-const booleanSortFunction = (rowA, rowB, columnId) => {
-    const valueA = rowA.values[columnId] ? 1 : 0;
-    const valueB = rowB.values[columnId] ? 1 : 0;
-
-    return valueA - valueB;
-};
-
 const COLUMNS = [
     {
-        Header: 'Tên Dịch Vụ',
+        Header: 'Tên Gói',
         accessor: 'name'
     },
     {
@@ -27,7 +19,7 @@ const COLUMNS = [
                 </center>
             )
         },
-        sortType: booleanSortFunction,
+        disableSortBy: true,
         width: 30
     },
     {
@@ -41,7 +33,7 @@ const COLUMNS = [
                 </center>
             )
         },
-        sortType: booleanSortFunction,
+        disableSortBy: true,
         width: 30
     },
     {

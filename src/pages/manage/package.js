@@ -11,12 +11,13 @@ const PackageManage = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
+    const [activeTabItem, setActiveTabItem] = useState(1);
     const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
-            { 
-                id: "name", 
-                desc: false 
+            {
+                id: "name",
+                desc: false
             }
         ], []
     )
@@ -55,30 +56,39 @@ const PackageManage = () => {
     }, []); // [] để chỉ gọi fetchData khi component được mount lần đầu
 
     const dialogs = useMemo(() => ({
-        dialogCreate: { 
-            title: "Tạo Dịch Vụ", 
-            icon: <i className="fa-solid fa-plus"></i>, 
-            component: Create, 
-            fetchData: fetchData 
+        dialogCreate: {
+            title: "Tạo Gói tập",
+            icon: <i className="fa-solid fa-plus"></i>,
+            component: Create,
+            fetchData: fetchData,
+            packageType: activeTabItem
         },
         dialogView: {
-            title:"Thông tin",
-            icon: <i className="fa-solid fa-eye"></i>, 
+            title: "Thông tin",
+            icon: <i className="fa-solid fa-eye"></i>,
             component: View
         },
-        dialogEdit: { 
-            title: "Chỉnh sửa", 
-            icon: <i className="fa-solid fa-pen-to-square"></i>, 
+        dialogEdit: {
+            title: "Chỉnh sửa",
+            icon: <i className="fa-solid fa-pen-to-square"></i>,
             component: Edit,
             fetchData: fetchData
         },
-        dialogDelete: { 
-            title: "Loại bỏ", 
-            icon: <i className="fa-solid fa-trash"></i>, 
-            component: Delete, 
-            fetchData: fetchData 
+        dialogDelete: {
+            title: "Loại bỏ",
+            icon: <i className="fa-solid fa-trash"></i>,
+            component: Delete,
+            fetchData: fetchData
         }
-    }), []);
+    }), [activeTabItem]);
+
+    const handleTabClick = (tabItem) => {
+        activeTabItem !== tabItem && setActiveTabItem(tabItem);
+    };
+
+    const isTabActive = (tabItem) => {
+        return activeTabItem === tabItem ? true : false;
+    };
 
     return (
         <>
@@ -94,12 +104,42 @@ const PackageManage = () => {
                         <span>Quản Lý</span>
                     </li>
                     <li>
-                        <span>Dịch Vụ</span>
+                        <span>Gói Tập</span>
                     </li>
                 </ol>
                 <span className="title">
-                    Danh Sách Dịch Vụ
+                    Danh Sách Gói Tập
                 </span>
+            </div>
+            <div className="common-tabs">
+                <div className={`common-tab ${isTabActive(1) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(1)}>
+                    <div className="common-tab-container">
+                        <span className="common-tab-name">
+                            Gói Cơ Bản
+                        </span>
+                    </div>
+                </div>
+                <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
+                    <div className="common-tab-container">
+                        <span className="common-tab-name">
+                            Gói Tập Luyện
+                        </span>
+                    </div>
+                </div>
+                <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
+                    <div className="common-tab-container">
+                        <span className="common-tab-name">
+                            Gói Sức Khỏe
+                        </span>
+                    </div>
+                </div>
+                <div className={`common-tab ${isTabActive(4) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(4)}>
+                    <div className="common-tab-container">
+                        <span className="common-tab-name">
+                            Gói Super Vip Pro Max Plus Ultra Limited
+                        </span>
+                    </div>
+                </div>
             </div>
             {isLoading ? (
                 <LoadingTable />
@@ -107,10 +147,52 @@ const PackageManage = () => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                    {isTabActive(1) &&
+                        <NomalPackage data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                    }
+                    {isTabActive(2) &&
+                        <PremiumPackage data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                    }
+                    {isTabActive(3) &&
+                        <PremiumPlusPackage data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                    }
+                    {isTabActive(4) &&
+                        <GalaxyPackage data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                    }
                 </div>
             )}
         </>
+    )
+}
+const NomalPackage = ({data, columns, sortees, dialogs}) => {
+    const customData = data.filter(row => !row.hasNe && !row.hasPt);
+
+    return (
+        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs}/>
+    )
+}
+
+const PremiumPackage = ({data, columns, sortees, dialogs}) => {
+    const customData = data.filter(row => row.hasPt && !row.hasNe);
+
+    return (
+        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs} />
+    )
+}
+
+const PremiumPlusPackage = ({data, columns, sortees, dialogs}) => {
+    const customData = data.filter(row => !row.hasPt && row.hasNe);
+
+    return (
+        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs} />
+    )
+}
+
+const GalaxyPackage = ({data, columns, sortees, dialogs}) => {
+    const customData = data.filter(row => row.hasNe && row.hasPt);
+
+    return (
+        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs} />
     )
 }
 

@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { storage } from './firebaseConfig';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png'];
 
-export const ImageInput = ({ setImageFile }) => {
+export const ImageInput = ({ setImageUrl, userId }) => {
     const [errorMessage, setErrorMessage] = useState(null);
+    const [uploadProgress, setUploadProgress] = useState(101);
+    const [onProgress, setOnProgress] = useState(false);
 
     const isImageValid = (file) => {
         // Kiểm tra kích thước ảnh
@@ -23,22 +27,51 @@ export const ImageInput = ({ setImageFile }) => {
     };
 
     const handleImageChange = (e) => {
+        setOnProgress(true);
         const file = e.target.files[0];
-
         if (file) {
             if (isImageValid(file)) {
-                setImageFile(file);
+                const storageRef = ref(storage, `certificate/${userId}`);
+                const uploadTask = uploadBytesResumable(storageRef, file);
+                uploadTask.on("state_changed",
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        setUploadProgress(progress);
+                    },
+                    (error) => {
+                        setErrorMessage(error);
+                    },
+                    () => {
+                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                            setImageUrl(downloadURL);
+                        });
+                    }
+                );
             };
         }
+        setOnProgress(false);
     };
 
     return (
         <>
-            <input type="file" id="file-input" onChange={handleImageChange} accept="image/jpeg, image/png" />
+            <input type="file" id="file-input" onChange={handleImageChange} accept="image/jpeg, image/png" disabled={onProgress} />
             <label id="file-input-label" className="any-button" htmlFor="file-input">
                 Chọn ảnh
             </label>
             {errorMessage && <div>{errorMessage}</div>}
+            {uploadProgress < 100 &&
+                <div className='progress-bar-content'>
+                    <div className="progress-bar-container">
+                        <div className="progress-bar" style={{ width: `${uploadProgress}%` }}></div>
+                    </div>
+                    <span>{uploadProgress.toFixed(2)}%</span>
+                </div>
+            }
+            {uploadProgress === 100 &&
+                <div>
+                    <span>Tải ảnh thành công</span>
+                </div>
+            }
         </>
     );
 }
