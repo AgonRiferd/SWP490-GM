@@ -189,6 +189,7 @@ a.logo {
 .sidebar-header {
   padding: 5px 0;
   user-select: none;
+  background-color: var(--tertiary-color-lighter);
 }
 
 .sidebar-header .logo {

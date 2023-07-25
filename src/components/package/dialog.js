@@ -3,14 +3,15 @@ import axios from '../../utils/axiosConfig';
 import { formatMoney } from '../../utils/convert';
 
 export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
+    const [type,] = useState(props.packageType);
     const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         name: '',
         numberOfsession: 1,
         centerCost: 0,
-        hasPt: false,
+        hasPt: (type === 2) || (type === 4),
         ptCost: 0,
-        hasNe: false,
+        hasNe: (type === 3) || (type === 4),
         neCost: 0,
         price: 0,
     });
@@ -33,25 +34,11 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     };
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        if (name === "hasPt" && !checked) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                ptCost: 0,
-                [name]: checked
-            }));
-        } else if (name === "hasNe" && !checked) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                neCost: 0,
-                [name]: checked
-            }));
-        } else {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                [name]: type === 'checkbox' ? checked : value,
-            }));
-        }
+        const { name, value } = e.target;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }));
     };
 
     const handlePriceChange = (e) => {
@@ -133,24 +120,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                             </tr>
                             <tr>
                                 <td>
-                                    <label htmlFor="numberOfsession">Tổng số buổi</label>
-                                </td>
-                                <td>
-                                    <input
-                                        type='number'
-                                        id="numberOfsession"
-                                        name='numberOfsession'
-                                        value={formData.numberOfsession}
-                                        onChange={handleChange}
-                                        min={1}
-                                        required
-                                        placeholder='1'
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label htmlFor="price">Giá phòng tập</label>
+                                    <label htmlFor="price">Phí phòng tập</label>
                                 </td>
                                 <td>
                                     <input
@@ -165,79 +135,77 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     />
                                 </td>
                             </tr>
-                            {props.packageType !== 1 &&
+                            {formData.hasPt &&
                                 <>
                                     <tr>
                                         <td colSpan={2}>
                                             <div className="sep-container">
-                                                <div className="sep-text">Tùy Chọn</div>
+                                                <div className="sep-text">Huấn luyện viên</div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td className="radio-field" colSpan={2}>
-                                            <div>
-                                                <input
-                                                    type="checkbox"
-                                                    name="hasPt"
-                                                    checked={formData.hasPt}
-                                                    onChange={handleChange}
-                                                />
-                                                Huấn luyện viên
-                                            </div>
+                                        <td>
+                                            <label htmlFor="numberOfsession">Tổng buổi tập</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type='number'
+                                                id="numberOfsession"
+                                                name='numberOfsession'
+                                                value={formData.numberOfsession}
+                                                onChange={handleChange}
+                                                min={1}
+                                                required
+                                                placeholder='1'
+                                            />
                                         </td>
                                     </tr>
-                                    {formData.hasPt && (
-                                        <tr>
-                                            <td>
-                                                <label htmlFor="ptCost">Chi phí </label>
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    id="ptCost"
-                                                    name="ptCost"
-                                                    value={formatMoney(formData.ptCost)}
-                                                    onChange={handlePriceChange}
-                                                    onKeyDown={handleKeyDown}
-                                                    required
-                                                    placeholder="0đ"
-                                                />
-                                            </td>
-                                        </tr>
-                                    )}
                                     <tr>
-                                        <td className='radio-field' colSpan={2}>
-                                            <div>
-                                                <input
-                                                    type="checkbox"
-                                                    name="hasNe"
-                                                    checked={formData.hasNe}
-                                                    onChange={handleChange}
-                                                />
-                                                Bác sỹ dinh dưỡng
+                                        <td>
+                                            <label htmlFor="ptCost">Chi phí / buổi</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                id="ptCost"
+                                                name="ptCost"
+                                                value={formatMoney(formData.ptCost)}
+                                                onChange={handlePriceChange}
+                                                onKeyDown={handleKeyDown}
+                                                required
+                                                placeholder="0đ"
+                                            />
+                                        </td>
+                                    </tr>
+                                </>
+                            }
+                            {formData.hasNe &&
+                                <>
+                                    <tr>
+                                        <td colSpan={2}>
+                                            <div className="sep-container">
+                                                <div className="sep-text">Bác sỹ dinh dưỡng</div>
                                             </div>
                                         </td>
                                     </tr>
-                                    {formData.hasNe && (
-                                        <tr>
-                                            <td>
-                                                <label htmlFor="neCost">Chi phí </label>
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    id="neCost"
-                                                    name="neCost"
-                                                    value={formatMoney(formData.neCost)}
-                                                    onChange={handlePriceChange}
-                                                    onKeyDown={handleKeyDown}
-                                                    required
-                                                    placeholder="0đ"
-                                                />
-                                            </td>
-                                        </tr>
-                                    )}
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="neCost">Chi phí </label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                id="neCost"
+                                                name="neCost"
+                                                value={formatMoney(formData.neCost)}
+                                                onChange={handlePriceChange}
+                                                onKeyDown={handleKeyDown}
+                                                required
+                                                placeholder="0đ"
+                                            />
+                                        </td>
+                                    </tr>
                                 </>
                             }
                             <tr>
@@ -283,48 +251,57 @@ export const View = ({ data, onClose }) => {
                         </tr>
                         <tr>
                             <td>
-                                <span>Tổng số buổi</span>
-                            </td>
-                            <td>
-                                <span>{data.numberOfsession}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span>Giá phòng tập</span>
+                                <span>Phí phòng tập</span>
                             </td>
                             <td>
                                 <span>{formatMoney(data.centerCost)} đ</span>
                             </td>
                         </tr>
-                        {(data.hasPt || data.hasNe) &&
-                            <tr>
-                                <td colSpan={2}>
-                                    <div className="sep-container">
-                                        <div className="sep-text">Tùy Chọn</div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
                         {data.hasPt && (
-                            <tr>
-                                <td>
-                                    <span>Huấn luyện viên</span>
-                                </td>
-                                <td>
-                                    <span>{formatMoney(data.ptcost)} đ</span>
-                                </td>
-                            </tr>
+                            <>
+                                <tr>
+                                    <td colSpan={2}>
+                                        <div className="sep-container">
+                                            <div className="sep-text">Huấn luyện viên</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span>Tổng buổi tập</span>
+                                    </td>
+                                    <td>
+                                        <span>{data.numberOfsession}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span>Chi phí / buổi</span>
+                                    </td>
+                                    <td>
+                                        <span>{formatMoney(data.ptcost)} đ</span>
+                                    </td>
+                                </tr>
+                            </>
                         )}
                         {data.hasNe && (
-                            <tr>
-                                <td>
-                                    <span>Bác Sỹ dinh dưỡng</span>
-                                </td>
-                                <td>
-                                    <span>{formatMoney(data.necost)} đ</span>
-                                </td>
-                            </tr>
+                            <>
+                                <tr>
+                                    <td colSpan={2}>
+                                        <div className="sep-container">
+                                            <div className="sep-text">Bác Sỹ dinh dưỡng</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span>Chi phí</span>
+                                    </td>
+                                    <td>
+                                        <span>{formatMoney(data.necost)} đ</span>
+                                    </td>
+                                </tr>
+                            </>
                         )}
                         <tr>
                             <td colSpan={2}>
@@ -372,25 +349,11 @@ export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
     };
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        if (name === "hasPt" && !checked) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                ptCost: 0,
-                [name]: checked
-            }));
-        } else if (name === "hasNe" && !checked) {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                neCost: 0,
-                [name]: checked
-            }));
-        } else {
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                [name]: type === 'checkbox' ? checked : value,
-            }));
-        }
+        const { name, value } = e.target;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }));
     };
 
     const handlePriceChange = (e) => {
@@ -472,24 +435,7 @@ export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
                             </tr>
                             <tr>
                                 <td>
-                                    <label htmlFor="numberOfsession">Tổng số buổi</label>
-                                </td>
-                                <td>
-                                    <input
-                                        type='number'
-                                        id="numberOfsession"
-                                        name='numberOfsession'
-                                        value={formData.numberOfsession}
-                                        onChange={handleChange}
-                                        min={1}
-                                        required
-                                        placeholder='1'
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label htmlFor="price">Giá phòng tập</label>
+                                    <label htmlFor="price">Phí phòng tập</label>
                                 </td>
                                 <td>
                                     <input
@@ -504,77 +450,79 @@ export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
                                     />
                                 </td>
                             </tr>
-                            <tr>
-                                <td colSpan={2}>
-                                    <div className="sep-container">
-                                        <div className="sep-text">Tùy Chọn</div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className="radio-field" colSpan={2}>
-                                    <div>
-                                        <input
-                                            type="checkbox"
-                                            name="hasPt"
-                                            checked={formData.hasPt}
-                                            onChange={handleChange}
-                                        />
-                                        Huấn luyện viên
-                                    </div>
-                                </td>
-                            </tr>
-                            {formData.hasPt && (
-                                <tr>
-                                    <td>
-                                        <label htmlFor="ptCost">Chi phí </label>
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            id="ptCost"
-                                            name="ptcost"
-                                            value={formatMoney(formData.ptcost)}
-                                            onChange={handlePriceChange}
-                                            onKeyDown={handleKeyDown}
-                                            required
-                                            placeholder="0đ"
-                                        />
-                                    </td>
-                                </tr>
-                            )}
-                            <tr>
-                                <td className='radio-field' colSpan={2}>
-                                    <div>
-                                        <input
-                                            type="checkbox"
-                                            name="hasNe"
-                                            checked={formData.hasNe}
-                                            onChange={handleChange}
-                                        />
-                                        Bác sỹ dinh dưỡng
-                                    </div>
-                                </td>
-                            </tr>
-                            {formData.hasNe && (
-                                <tr>
-                                    <td>
-                                        <label htmlFor="neCost">Chi phí </label>
-                                    </td>
-                                    <td>
-                                        <input
-                                            type="text"
-                                            id="neCost"
-                                            name="necost"
-                                            value={formatMoney(formData.necost)}
-                                            onChange={handlePriceChange}
-                                            onKeyDown={handleKeyDown}
-                                            required
-                                            placeholder="0đ"
-                                        />
-                                    </td>
-                                </tr>
-                            )}
+                            {formData.hasPt &&
+                                <>
+                                    <tr>
+                                        <td colSpan={2}>
+                                            <div className="sep-container">
+                                                <div className="sep-text">Huấn luyện viên</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="numberOfsession">Tổng số buổi</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type='number'
+                                                id="numberOfsession"
+                                                name='numberOfsession'
+                                                value={formData.numberOfsession}
+                                                onChange={handleChange}
+                                                min={1}
+                                                required
+                                                placeholder='1'
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="ptCost">Chi phí / buổi</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                id="ptCost"
+                                                name="ptcost"
+                                                value={formatMoney(formData.ptcost)}
+                                                onChange={handlePriceChange}
+                                                onKeyDown={handleKeyDown}
+                                                required
+                                                placeholder="0đ"
+                                            />
+                                        </td>
+                                    </tr>
+                                </>
+                            }
+                            {formData.hasNe &&
+                                <>
+                                    <tr>
+                                        <td colSpan={2}>
+                                            <div className="sep-container">
+                                                <div className="sep-text">Bác sỹ dinh dưỡng</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="neCost">Chi phí </label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                id="neCost"
+                                                name="necost"
+                                                value={formatMoney(formData.necost)}
+                                                onChange={handlePriceChange}
+                                                onKeyDown={handleKeyDown}
+                                                required
+                                                placeholder="0đ"
+                                            />
+                                        </td>
+                                    </tr>
+                                </>
+                            }
                             <tr>
                                 <td colSpan={2}>
                                     <div className="sep-container">

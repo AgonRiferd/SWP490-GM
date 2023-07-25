@@ -18,7 +18,7 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
             try {
                 if (!isLoading)
                     setIsLoading(true);
-                // Fetch data from the API and update the state
+
                 const response = await axiosInstance.get(`/Accounts/GetAccountByID/${dataUser.id}`);
                 //Fetch thành công
                 const { data } = response;
@@ -226,8 +226,8 @@ const OtherProfile = ({ user }) => {
                                 {qualification ?
                                     <a href={qualification.certificate} target="_blank" rel="noopener noreferrer">
                                         {qualification.certificate}
-                                    </a> : <span>
-                                        Empty
+                                    </a> : <span className="status-error">
+                                        Chưa có
                                     </span>
                                 }
                             </td>
@@ -240,8 +240,8 @@ const OtherProfile = ({ user }) => {
                                 {qualification ?
                                     <span>
                                         {qualification.experience}
-                                    </span> : <span>
-                                        Empty
+                                    </span> : <span className="status-error">
+                                        Chưa có
                                     </span>
                                 }
                             </td>

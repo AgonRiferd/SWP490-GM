@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTable, useSortBy, useGlobalFilter, usePagination } from "react-table";
 import Dialog from "./dialog";
 
@@ -15,9 +15,15 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
-    const [isShowAll, setIsShowAll] = useState(false);
+    const [status, setStatus] = useState('1');
     const [hasIsLocked, setHasIsLocked] = useState(false);
     const { dialogCreate, dialogView, dialogEdit, dialogDelete } = dialogs;
+
+    const options = [
+        { value: 0, label: 'All' },
+        { value: 1, label: 'Hoạt động' },
+        { value: 2, label: 'Bị khóa' },
+    ];
 
     const columns = useMemo(
         () => [
@@ -85,12 +91,27 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
                 return {
                     ...column,
                     sortType: booleanSortFunction,
-                    disableSortBy: !isShowAll// Sử dụng custom sort function cho cột kiểu boolean
+                    disableSortBy: status === 0 // Sử dụng custom sort function cho cột kiểu boolean
                 };
             }
             return column;
         });
-    }, [columns, isShowAll]);
+    }, [columns, status]);
+
+    const handleStatusChange = (e) => {
+        console.log(e.target.value);
+        setStatus(e.target.value);
+    }
+
+    const handleData = useCallback(() => {
+        if (data) {
+            if (status === '1')
+                return data.filter(row => !row.isDelete);
+            if (status === '2')
+                return data.filter(row => row.isDelete);
+        }
+        return data;
+    }, [data, status]);
 
     const {
         getTableProps,
@@ -110,9 +131,9 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
     } = useTable(
         useMemo(() => ({
             columns: customColumns,
-            data: isShowAll ? data : (data ? data.filter(row => !row.isDelete) : data),
+            data: handleData(),
             initialState: { sortBy: sortees },
-        }), [customColumns, data, isShowAll, sortees]
+        }), [customColumns, handleData, sortees]
         ), useGlobalFilter, useSortBy, usePagination
     );
 
@@ -231,12 +252,13 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
                     <div className="show-all-checkbox">
                         <label>
                             Trạng Thái:
-                            <input
-                                type="checkbox"
-                                checked={isShowAll}
-                                onChange={() => setIsShowAll(!isShowAll)}
-                            />
-                            Hiển thị tất cả
+                            <select onChange={handleStatusChange} value={status}>
+                                {options.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
                     </div>
                 }

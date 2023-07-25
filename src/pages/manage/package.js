@@ -136,7 +136,7 @@ const PackageManage = () => {
                 <div className={`common-tab ${isTabActive(4) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(4)}>
                     <div className="common-tab-container">
                         <span className="common-tab-name">
-                            Gói Super Vip Pro Max Plus Ultra Limited
+                            Gói Cao Cấp
                         </span>
                     </div>
                 </div>

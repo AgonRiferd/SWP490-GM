@@ -226,8 +226,8 @@ const OtherProfile = ({ user }) => {
                                 {qualification ?
                                     <a href={qualification.certificate} target="_blank" rel="noopener noreferrer">
                                         {qualification.certificate}
-                                    </a> : <span>
-                                        Empty
+                                    </a> : <span className="status-error">
+                                        Chưa có
                                     </span>
                                 }
                             </td>
@@ -240,8 +240,8 @@ const OtherProfile = ({ user }) => {
                                 {qualification ?
                                     <span>
                                         {qualification.experience}
-                                    </span> : <span>
-                                        Empty
+                                    </span> : <span className="status-error">
+                                        Chưa có
                                     </span>
                                 }
                             </td>
