@@ -1244,13 +1244,16 @@ hr.view-divider {
   height: 100%;
 }
 
-.dialog-user-avatar #file-input {
+.dialog-user-avatar #file-input,
+.certificate #file-input {
   display: none;
 }
 
-.dialog-user-avatar #file-input-label {
+.dialog-user-avatar #file-input-label,
+.certificate #file-input-label {
   background-color: whitesmoke;
   display: block;
+  width: fit-content;
 }
 
 .strip {
@@ -1313,4 +1316,9 @@ hr.view-divider {
 .progress-bar {
   height: 100%;
   background-color: #4caf50;
+}
+
+.certificate img {
+  width: 200px;
+  height: 150px;
 }

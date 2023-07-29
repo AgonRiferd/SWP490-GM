@@ -6,6 +6,7 @@ import { Delete, View } from "../exercises/dialog";
 import { LoadingTable } from "../../flagments/loading-table";
 import { AdvanceTable } from "../../flagments/advance-table";
 import { formatPhoneNumber } from "../../utils/convert";
+import { ImageInput } from "../../utils/imageConvert";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -159,37 +160,45 @@ const OtherProfile = ({ user }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (!isLoading)
-                    setIsLoading(true);
-                // Fetch data from the API and update the state
-                const response = await axiosInstance.get(`/Qualifications/GetQualificationByAccountId/${user.id}`);
-                //Fetch thành công
-                const { data } = response;
-                setQualification(data);
-                setIsLoading(false); // Kết thúc quá trình fetch
-            } catch (error) {
-                if (error.response) {
-                    // Lỗi được trả về từ phía server
-                    setErrorMessage(error.response.data.message);
-                } else {
-                    // Lỗi không có phản hồi từ server
-                    setErrorMessage(
-                        <>
-                            <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
-                            <span>Mã lỗi: {error.code}</span>
-                        </>
-                    );
-                }
-                setIsLoading(false); // Kết thúc quá trình fetch
+    const fetchData = async () => {
+        try {
+            if (!isLoading)
+                setIsLoading(true);
+            // Fetch data from the API and update the state
+            const response = await axiosInstance.get(`/Qualifications/GetQualificationByAccountId/${user.id}`);
+            //Fetch thành công
+            const { data } = response;
+            setQualification(data);
+            setIsLoading(false); // Kết thúc quá trình fetch
+        } catch (error) {
+            if (error.response) {
+                // Lỗi được trả về từ phía server
+                setErrorMessage(error.response.data.message);
+            } else {
+                // Lỗi không có phản hồi từ server
+                setErrorMessage(
+                    <>
+                        <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                        <span>Mã lỗi: {error.code}</span>
+                    </>
+                );
             }
-        };
+            setIsLoading(false); // Kết thúc quá trình fetch
+        }
+    };
+
+    useEffect(() => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const handleCertificateChange = (url) => {
+        setQualification((prevFormData) => ({
+            ...prevFormData,
+            certificate: url,
+        }));
+    }
+    
     return (
         <div>
             {isLoading ? (
@@ -224,9 +233,10 @@ const OtherProfile = ({ user }) => {
                             </td>
                             <td>
                                 {qualification ?
-                                    <a href={qualification.certificate} target="_blank" rel="noopener noreferrer">
-                                        {qualification.certificate}
-                                    </a> : <span className="status-error">
+                                    <div className="certificate">
+                                        <img src={qualification.certificate} alt="certificate" />
+                                        <ImageInput userId={user.id} btnName="Thay đổi" setImageUrl={handleCertificateChange}/>
+                                    </div> : <span className="status-error">
                                         Chưa có
                                     </span>
                                 }

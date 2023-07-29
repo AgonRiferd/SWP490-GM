@@ -5,10 +5,11 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png'];
 
-export const ImageInput = ({ setImageUrl, userId }) => {
+export const ImageInput = ({ setImageUrl, userId, ...props }) => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(101);
     const [onProgress, setOnProgress] = useState(false);
+    const [showMessage, setShowMessage] = useState(false);
 
     const isImageValid = (file) => {
         // Kiểm tra kích thước ảnh
@@ -42,9 +43,17 @@ export const ImageInput = ({ setImageUrl, userId }) => {
                         setErrorMessage(error);
                     },
                     () => {
-                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                            setImageUrl(downloadURL);
-                        });
+                        if (setImageUrl) {
+                            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                                setImageUrl(downloadURL);
+                            });
+                        }
+                        if (uploadProgress === 100) {
+                            setShowMessage(true);
+                            setTimeout(() => {
+                                setShowMessage(false);
+                            }, 3000);
+                        }
                     }
                 );
             };
@@ -56,7 +65,7 @@ export const ImageInput = ({ setImageUrl, userId }) => {
         <>
             <input type="file" id="file-input" onChange={handleImageChange} accept="image/jpeg, image/png" disabled={onProgress} />
             <label id="file-input-label" className="any-button" htmlFor="file-input">
-                Chọn ảnh
+                {props.btnName ? props.btnName : 'Chọn ảnh'}
             </label>
             {errorMessage && <div>{errorMessage}</div>}
             {uploadProgress < 100 &&
@@ -67,7 +76,7 @@ export const ImageInput = ({ setImageUrl, userId }) => {
                     <span>{uploadProgress.toFixed(2)}%</span>
                 </div>
             }
-            {uploadProgress === 100 &&
+            {showMessage &&
                 <div>
                     <span>Tải ảnh thành công</span>
                 </div>

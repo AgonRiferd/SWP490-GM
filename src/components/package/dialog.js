@@ -118,23 +118,27 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     />
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <label htmlFor="price">Phí phòng tập</label>
-                                </td>
-                                <td>
-                                    <input
-                                        type='text'
-                                        id="price"
-                                        name='centerCost'
-                                        value={formatMoney(formData.centerCost)}
-                                        onChange={handlePriceChange}
-                                        onKeyDown={handleKeyDown}
-                                        required
-                                        placeholder='0đ'
-                                    />
-                                </td>
-                            </tr>
+                            {type === 4 &&
+                                <>
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="price">Phí phòng tập</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type='text'
+                                                id="price"
+                                                name='centerCost'
+                                                value={formatMoney(formData.centerCost)}
+                                                onChange={handlePriceChange}
+                                                onKeyDown={handleKeyDown}
+                                                required
+                                                placeholder='0đ'
+                                            />
+                                        </td>
+                                    </tr>
+                                </>
+                            }
                             {formData.hasPt &&
                                 <>
                                     <tr>

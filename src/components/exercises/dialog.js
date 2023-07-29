@@ -1,22 +1,29 @@
 import { format } from 'date-fns';
 import React, { useState } from 'react';
 
+function getVideoIdFromUrl(url) {
+    const regex = /(?:\?v=|\/embed\/|\.be\/)([\w-]+)(?:&.*|$)/;
+    const match = url.match(regex);
+    return match ? match[1] : 'dQw4w9WgXcQ';
+}
+
 export const Create = ({ onClose }) => {
 };
 
 export const View = ({ data, onClose }) => {
     const [initialData] = useState(data);
-
+    const videoId = getVideoIdFromUrl(data.video);
     return (
         <>
             <div className='dialog-fields flex-column'>
                 <div className='iframe-video'>
-                    <iframe 
-                        width="400" 
-                        height="200" 
-                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" 
-                        title="Never Gonna Give You Up" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    <iframe
+                        width="400"
+                        height="200"
+                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`}
+                        frameborder="0"
+                        title="Video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
                     />
                 </div>

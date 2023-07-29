@@ -91,7 +91,7 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
                 return {
                     ...column,
                     sortType: booleanSortFunction,
-                    disableSortBy: status === 0 // Sử dụng custom sort function cho cột kiểu boolean
+                    disableSortBy: status !== '0' // Sử dụng custom sort function cho cột kiểu boolean
                 };
             }
             return column;
