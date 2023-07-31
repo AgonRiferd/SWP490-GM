@@ -21,7 +21,6 @@ export const View = ({ data, onClose }) => {
                         width="400"
                         height="200"
                         src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`}
-                        frameborder="0"
                         title="Video"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen

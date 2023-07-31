@@ -136,7 +136,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
             }
         } catch (error) {
             // Xử lý lỗi nếu có
-            console.log('Certification: ' + certData.experience);
             if (error.response) {
                 console.log(error);
                 setErrorMessage(

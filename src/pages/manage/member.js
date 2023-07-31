@@ -13,7 +13,7 @@ const MemberManage = () => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
-    const [dataView, setDataView] = useState();
+    const [dataView, setDataView] = useState(null);
     const columns = useMemo(() => COLUMNS, []);
     const sortees = useMemo(
         () => [
@@ -112,7 +112,9 @@ const MemberManage = () => {
                 </div>
             )}
             {dataView &&
-                <CustomView dataUser={dataView} isMainLoading={isLoading} />
+                <> 
+                    <CustomView dataUser={dataView} isMainLoading={isLoading} setDataView={setDataView} />
+                </>
             }
         </>
     )

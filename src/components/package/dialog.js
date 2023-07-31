@@ -118,7 +118,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     />
                                 </td>
                             </tr>
-                            {type === 4 &&
+                            {(type === 1) &&
                                 <>
                                     <tr>
                                         <td>

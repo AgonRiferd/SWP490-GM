@@ -75,7 +75,7 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
 
     const handleDelete = async (e) => {
         e.preventDefault();
-        
+
         try {
             onLoading(true);
             const response = await axiosInstance.put(`/Accounts/UpdateAccount?id=${data.id}`, formData);
@@ -124,7 +124,7 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
             ) : (
                 <>
                     <center>
-                        {data.isDelete ? 
+                        {data.isDelete ?
                             <p>Cho phép Hoạt động trở lại?</p> : <p>Bạn có chắc muốn khóa người dùng này?</p>
                         }
                     </center>
@@ -147,7 +147,7 @@ export const Delete = ({ data, onClose, isLoading, onLoading, ...props }) => {
 
     const handleDelete = async (e) => {
         e.preventDefault();
-        
+
         try {
             onLoading(true);
             const response = await axiosInstance.delete(`/Accounts/DeleteAccount/${data.id}`);
@@ -156,9 +156,9 @@ export const Delete = ({ data, onClose, isLoading, onLoading, ...props }) => {
                 props.fetchData();
             } else {
                 setErrorMessage(<>
-                        <p>Xóa không thành công</p>
-                        <p>Status: {response.status}</p>
-                    </>
+                    <p>Xóa không thành công</p>
+                    <p>Status: {response.status}</p>
+                </>
                 );
                 onLoading(false);
             }
@@ -210,3 +210,53 @@ export const Delete = ({ data, onClose, isLoading, onLoading, ...props }) => {
         </div>
     );
 };
+
+export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }) => {
+    const [initialData,] = useState(data);
+    const nutritionData = initialData.filter((item) => item.nutritionScheduleId).sort((a, b) => a.mealTime - b.mealTime);
+
+    const formatMealTime = (mealTime) => {
+        switch (mealTime) {
+            case 1:
+                return "Sáng";
+            case 2:
+                return "Trưa";
+            case 3:
+                return "Tối";
+            case 4:
+                return "Trước tập";
+            default:
+                return "";
+        }
+    };
+
+    return (
+        <div className="schedule-content">
+            {nutritionData.length > 0 &&
+                <div className="nutrition-container">
+                    <div className="title">
+                        Thực đơn
+                    </div>
+                    <div className="nutrition-content">
+                        {nutritionData.map((item) => (
+                            <div key={item.id} className="item">
+                                <div className="title">
+                                    <span>{formatMealTime(item.mealTime)}</span>
+                                    <span className="fa fa-angle-down pull-right"></span>
+                                </div>
+                                <div className="details">
+
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
+            <div className="dialog-button-tray">
+                <button type="button" className="any-button button-cancel" onClick={onClose}>
+                    Hủy bỏ
+                </button>
+            </div>
+        </div>
+    );
+}

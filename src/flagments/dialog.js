@@ -1,12 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
 
-const Dialog = ({ mode, rowData, onClose}) => {
+const Dialog = ({ mode, rowData, onClose , children}) => {
     const { title, component: Component, ...props } = mode;
     const [isLoading, setIsLoading] = useState(false);
 
     return (
         <BasicDialog title={title} onClose={onClose} isLoading={isLoading} >
+            {children}
             <Component data={rowData} onClose={onClose} {...props} isLoading={isLoading} onLoading={setIsLoading} />
         </BasicDialog>
     );

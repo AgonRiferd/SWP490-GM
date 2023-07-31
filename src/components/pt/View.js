@@ -7,6 +7,7 @@ import { LoadingTable } from "../../flagments/loading-table";
 import { AdvanceTable } from "../../flagments/advance-table";
 import { formatPhoneNumber } from "../../utils/convert";
 import { ImageInput } from "../../utils/imageConvert";
+import Dialog from "../../flagments/dialog";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -158,6 +159,7 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
 const OtherProfile = ({ user }) => {
     const [qualification, setQualification] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
 
     const fetchData = async () => {
@@ -192,15 +194,24 @@ const OtherProfile = ({ user }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const handleCertificateChange = (url) => {
-        setQualification((prevFormData) => ({
-            ...prevFormData,
-            certificate: url,
-        }));
-    }
-    
+    const handleOpenDialog = () => {
+        setIsDialogOpen(true);
+    };
+
+    const handleCloseDialog = () => {
+        setIsDialogOpen(false);
+    };
+
+    const dialogMode = {
+        title: "Chứng chỉ",
+        icon: <i className="fa-solid fa-user-lock"></i>,
+        component: CertificationEdit,
+        userId: user.id,
+        fetchData: fetchData
+    };
+
     return (
-        <div>
+        <>
             {isLoading ? (
                 <div className="loading-overlay">
                     <i className="fa-solid fa-spinner fa-spin-pulse"></i>
@@ -209,57 +220,80 @@ const OtherProfile = ({ user }) => {
             ) : errorMessage ? (
                 <span className="status-error">{errorMessage}</span>
             ) : (
-                <table className='dialog-field'>
-                    <tbody>
-                        <tr>
-                            <td width={200}>
-                                <label>Giới Tính</label>
-                            </td>
-                            <td>
-                                <span>{user.gender === 'M' ? 'Nam' : user.gender === 'F' ? 'Nữ' : user.gender}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Ngày tham gia</label>
-                            </td>
-                            <td>
-                                <span>{format(new Date(user.createDate), 'dd/MM/yyyy')}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Chứng chỉ</label>
-                            </td>
-                            <td>
-                                {qualification ?
-                                    <div className="certificate">
-                                        <img src={qualification.certificate} alt="certificate" />
-                                        <ImageInput userId={user.id} btnName="Thay đổi" setImageUrl={handleCertificateChange}/>
-                                    </div> : <span className="status-error">
-                                        Chưa có
-                                    </span>
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label>Số năm kinh nghiệm</label>
-                            </td>
-                            <td>
-                                {qualification ?
-                                    <span>
-                                        {qualification.experience}
-                                    </span> : <span className="status-error">
-                                        Chưa có
-                                    </span>
-                                }
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <>
+                    {isDialogOpen && (
+                        <Dialog mode={dialogMode} rowData={qualification} onClose={handleCloseDialog} />
+                    )}
+                    <div className="profile-overview">
+                        <div className="certificate">
+                            <div className="sep-container">
+                                <div className="sep-text">Chứng chỉ</div>
+                            </div>
+                            {qualification ?
+                                <>
+                                    <img src={qualification.certificate} alt="certificate" />
+                                    <button className="any-button" onClick={handleOpenDialog}>Chỉnh sửa</button>
+                                </> : <>
+                                    <button className="any-button" onClick={handleOpenDialog}>Chỉnh sửa</button>
+                                </>
+                            }
+                        </div>
+                        <div className="strip">
+                            <div className="sep-text"></div>
+                        </div>
+                        <div className="user-info">
+                            <div className="sep-container">
+                                <div className="sep-text">Thông tin</div>
+                            </div>
+                            <table className='dialog-field'>
+                                <tbody>
+                                    <tr>
+                                        <td width={200}>
+                                            <label>Giới Tính</label>
+                                        </td>
+                                        <td>
+                                            <span>{user.gender === 'M' ? 'Nam' : user.gender === 'F' ? 'Nữ' : user.gender}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label>Ngày tham gia</label>
+                                        </td>
+                                        <td>
+                                            <span>{format(new Date(user.createDate), 'dd/MM/yyyy')}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label>Số năm kinh nghiệm</label>
+                                        </td>
+                                        <td>
+                                            {qualification ?
+                                                <span>
+                                                    {qualification.experience}
+                                                </span> : <span className="status-error">
+                                                    Chưa có
+                                                </span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label>Giới thiệu</label>
+                                        </td>
+                                        <td>
+                                            <span>
+                                                {qualification && qualification.descrition}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </>
             )}
-        </div>
+        </>
     )
 }
 
@@ -341,5 +375,133 @@ const Exercise = ({ userId }) => {
         </>
     )
 }
+
+const CertificationEdit = ({ data, onClose, isLoading, onLoading, ...props }) => {
+    const [errorMessage, setErrorMessage] = useState('');
+    const id = data ? data.expertId : props.userId;
+    const [imageUrl, setImageUrl] = useState(data ? data.certificate : "");
+    const [certData, setCertData] = useState({
+        experience: data ? data.experience : 0,
+        expertId: id,
+        certificate: imageUrl,
+        descrition: data ? data.descrition : ""
+    });
+
+    const handleExpChange = (e) => {
+        const { name, value } = e.target;
+
+        setCertData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
+        }));
+    }
+
+    useEffect(() => {
+        setCertData((prevData) => ({
+            ...prevData,
+            certificate: imageUrl
+        }));
+    }, [imageUrl])
+
+    const handleCreateCertificate = async (e) => {
+        e.preventDefault();
+
+        if (!certData.certificate || certData.certificate.length === 0) {
+            alert('Ảnh chứng chỉ hiện chưa có!');
+            return;
+        }
+        try {
+            onLoading(true);
+            const response = data ? await axiosInstance.put('/Qualifications/UpdateQualification', certData)
+                : await axiosInstance.post('/Qualifications/CreateQualification', certData);
+            if (response.status === 200 || response.status === 201 || response.status === 204) {
+                alert('Cập nhật thành công');
+                props.fetchData();
+                onClose();
+            }
+        } catch (error) {
+            // Xử lý lỗi nếu có
+            if (error.response) {
+                setErrorMessage(
+                    <>
+                        <p>Cập nhật thành công</p>
+                        <p>Mã lỗi: {error.response.status}</p>
+                    </>
+                );
+            } else {
+                setErrorMessage(
+                    <>
+                        <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                        <p>Mã lỗi: {error.code}</p>
+                    </>
+                );
+            }
+            onLoading(false);
+        }
+    }
+
+    const handleKeyDown = (e) => {
+        const { key } = e;
+
+        if (!/[0-9]/.test(key) && key !== "Backspace") {
+            e.preventDefault();
+        }
+    };
+
+    return (
+        <>
+            {id ?
+                <>
+                    {errorMessage && <span className="status-error">{errorMessage}</span>}
+                    <form onSubmit={handleCreateCertificate}>
+                        <div className='dialog-fields'>
+                            <table className='dialog-field'>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>Chứng Chỉ</label>
+                                            <label className='status-lock'>*</label>
+                                        </td>
+                                        <td className="normal-file-input">
+                                            <ImageInput userId={id} setImageUrl={setImageUrl} imageUrl={imageUrl}/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="experience">Số năm kinh nghiệm</label>
+                                            <label className='status-lock'>*</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                id="experience"
+                                                name="experience"
+                                                pattern="\d+"
+                                                value={certData.experience}
+                                                onChange={handleExpChange}
+                                                onKeyDown={handleKeyDown}
+                                                required
+                                                placeholder="0"
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className='dialog-button-tray'>
+                            <button type='submit' className='any-button button-submit' disabled={isLoading || !imageUrl}>Xác nhận</button>
+                            <button type='button' className='any-button button-cancel' onClick={onClose}>Bỏ qua</button>
+                        </div>
+                    </form>
+                </> : <>
+                    <span className="status-error">ID người dùng không xác định</span>
+                    <div className='dialog-button-tray'>
+                        <button type='button' className='any-button button-cancel' onClick={onClose}>Đóng</button>
+                    </div>
+                </>
+            }
+        </>
+    );
+};
 
 export default CustomView;

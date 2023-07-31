@@ -246,6 +246,16 @@ const OtherProfile = ({ user }) => {
                                 }
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <label>Giới thiệu</label>
+                            </td>
+                            <td>
+                                <span>
+                                    {qualification && qualification.description}
+                                </span>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             )}
@@ -271,7 +281,7 @@ const FoodAndSuppliments = ({ userId }) => {
         try {
             setIsLoading(true);
             // Fetch data from the API and update the state
-            const response = await axiosInstance.get(`/Excercises/GetExcercisesByPTID/${UID}`);
+            const response = await axiosInstance.get(`/FoodAndSuppliments/GetFoodAndSupplimentsBYNE/${UID}`);
             //Fetch thành công
             const { data } = response.data;
             setData(data);

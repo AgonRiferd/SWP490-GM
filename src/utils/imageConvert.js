@@ -63,6 +63,11 @@ export const ImageInput = ({ setImageUrl, userId, ...props }) => {
 
     return (
         <>
+            {props.imageUrl &&
+                <div className='certificate'>
+                    <img src={props.imageUrl} alt="certificate" />
+                </div>
+            }
             <input type="file" id="file-input" onChange={handleImageChange} accept="image/jpeg, image/png" disabled={onProgress} />
             <label id="file-input-label" className="any-button" htmlFor="file-input">
                 {props.btnName ? props.btnName : 'Chọn ảnh'}

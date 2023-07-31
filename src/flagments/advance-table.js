@@ -40,7 +40,7 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
                             </span>
                         }
                         {viewData &&
-                            <span onClick={() => viewData.setDataView(row.original)} title={viewData.title ? viewData.title : 'View'}>
+                            <span onClick={()=> viewData.setDataView(row.original)} title={viewData.title ? viewData.title : 'View'}>
                                 {viewData.icon ? viewData.icon : viewData.title ? viewData.title : 'View'}
                             </span>
                         }
@@ -58,7 +58,8 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
                 ),
                 width: 170
             },
-        ], [initialColumns, dialogView, viewData, dialogEdit, dialogDelete]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        ], [initialColumns, dialogView, dialogEdit, dialogDelete]
     );
 
     const handleAction = (mode, rowData) => {

@@ -1,6 +1,6 @@
 :root {
   --primary-color: #313e4b;
-  --secondary-color: #5686e1;
+  --secondary-color: rgb(86, 134, 225);
   --tertiary-color: #cbb682;
   --tertiary-color-lighter: color-mix(in srgb, var(--tertiary-color), #fff 15%);
   ;
@@ -846,6 +846,7 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 1em 1.5em;
   background: none;
   overflow: auto;
+  min-width: 200px;
 }
 
 .dialog-fields {
@@ -1279,6 +1280,7 @@ hr.view-divider {
 
 .iframe-video {
   margin: 5px 0 10px;
+  text-align: center;
 }
 
 .dialog-steps {
@@ -1318,7 +1320,140 @@ hr.view-divider {
   background-color: #4caf50;
 }
 
-.certificate img {
-  width: 200px;
-  height: 150px;
+.profile-overview {
+  display: flex;
 }
+
+.certificate {
+  margin: 0 20px;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.certificate img {
+  width: 300px;
+  height: 200px;
+  margin: 10px 0 0;
+}
+
+.certificate .any-button {
+  margin: 10px auto 0;
+  width: fit-content;
+}
+
+.user-info {
+  width: 100%;
+}
+
+.calendar-table th {
+  height: 30px;
+  color: white;
+  width: calc(100%/7);
+}
+
+.calendar-table tr + tr {
+  border-top: 1px solid var(--tertiary-color-lighter);
+}
+
+.calendar-table tr + tr > th:not(:first-child) {
+  border-left: 1px solid var(--tertiary-color-lighter);
+}
+
+.calendar-table tr > td:not(:first-child) {
+  border-left: 1px solid var(--tertiary-color-lighter);
+}
+
+.calendar-table td.empty-cell {
+  background-color: var(--text-color);
+}
+
+.calendar-table td {
+  height: 50px;
+  text-align: center;
+}
+
+.calendar-table td:not(.empty-cell):hover {
+  background-color: var(--tertiary-color-lighter);
+}
+
+.calendar-table .date-handle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.calendar-table .has-data {
+  background-color: #4caf50;
+  cursor: pointer;
+}
+
+.calendar-table .current-day {
+  font-weight: bold;
+  background-color: var(--secondary-color);
+}
+
+#tooltip {
+  padding: 10px;
+  opacity: 1;
+}
+
+#tooltip span {
+  border-radius: 5px;
+  padding: 4px 8px;
+}
+
+#tooltip span:not(:first-child) {
+  margin-left: 5px;
+}
+
+#tooltip .nutrition-bar span:first-child {
+  background-color: #4caf50;
+}
+
+#tooltip .exercise-bar span:first-child {
+  background-color: #33a4d8;
+}
+
+#tooltip span:last-child {
+  background-color: orange;
+}
+
+.dialog-content .schedule-date {
+  border: 1px solid #000;
+  font-weight: bold;
+  padding: 5px 0;
+  text-align: center;
+  background-color: var(--text-color);
+  font-size: 18px;
+}
+
+.dialog-content .schedule-content {
+  margin-top: 2px;
+  max-height: 500px;
+}
+
+.nutrition-container > .title {
+  background-color: #4caf50;
+  padding: 4px 8px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.nutrition-container .nutrition-content {
+  padding: 3px 0;
+  overflow-y: auto;
+}
+
+.nutrition-content .item {
+  margin: 2px 0;
+}
+
+.nutrition-content .item:not(:last-child) {
+  border-bottom: 1px solid var(--primary-color);
+}
+
+.nutrition-content .item > .title {
+  background-color: var(--text-color);
+  padding: 3px 2px;
+}
+
