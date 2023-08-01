@@ -1,14 +1,5 @@
 const COLUMNS = [
     {
-        Header: 'Tên Gói',
-        accessor: 'name'
-    },
-    {
-        Header: 'Tổng số buổi',
-        accessor: 'numberOfsession',
-        width: 80
-    },
-    {
         Header: 'PT',
         accessor: 'hasPt',
         disableGlobalFilter: true,
@@ -42,6 +33,7 @@ const COLUMNS = [
         Cell: ({ value }) => {
             return Number(value).toLocaleString() + ' đ'
         },
+        width: 80
     }
 ]
 

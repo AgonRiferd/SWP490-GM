@@ -8,7 +8,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [formData, setFormData] = useState({
         name: '',
         numberOfsession: 1,
-        numberOfMonth: 0,
+        numberOfMonth: 1,
         centerCost: 0,
         hasPt: (type === 2) || (type === 4),
         ptCost: 0,
@@ -19,12 +19,12 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 
     // Cập nhật giá trị của price khi các thành phần thay đổi
     useEffect(() => {
-        const total = formData.centerCost + (formData.hasPt ? formData.ptCost * formData.numberOfsession : 0) + (formData.hasNe ? formData.neCost : 0);
+        const total = (formData.centerCost * formData.numberOfMonth) + (formData.hasPt ? formData.ptCost * formData.numberOfsession : 0) + (formData.hasNe ? formData.neCost : 0);
         setFormData((prevFormData) => ({
             ...prevFormData,
             price: total,
         }));
-    }, [formData.centerCost, formData.ptCost, formData.hasPt, formData.neCost, formData.hasNe, formData.numberOfsession]);
+    }, [formData.centerCost, formData.numberOfMonth, formData.ptCost, formData.hasPt, formData.neCost, formData.hasNe, formData.numberOfsession]);
 
     const handleKeyDown = (e) => {
         const { key } = e;
@@ -256,7 +256,8 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     );
 };
 
-export const View = ({ data, onClose }) => {
+export const View = ({ data, onClose, ...props }) => {
+    const type = props.packageType;
     return (
         <>
             <div className='dialog-fields'>
@@ -270,14 +271,26 @@ export const View = ({ data, onClose }) => {
                                 <span>{data.name}</span>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <span>Phí phòng tập</span>
-                            </td>
-                            <td>
-                                <span>{formatMoney(data.centerCost)} đ</span>
-                            </td>
-                        </tr>
+                        {type === 1 &&
+                            <>
+                                <tr>
+                                    <td>
+                                        <span>Số tháng</span>
+                                    </td>
+                                    <td>
+                                        <span>{data.numberOfMonth}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span>Phí phòng tập</span>
+                                    </td>
+                                    <td>
+                                        <span>{formatMoney(data.centerCost)} đ</span>
+                                    </td>
+                                </tr>
+                            </>
+                        }
                         {data.hasPt && (
                             <>
                                 <tr>
@@ -352,14 +365,15 @@ export const View = ({ data, onClose }) => {
 export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState(data);
+    const type = props.packageType;
 
     useEffect(() => {
-        const total = formData.centerCost + (formData.hasPt ? formData.ptcost * formData.numberOfsession : 0) + (formData.hasNe ? formData.necost : 0);
+        const total = (formData.centerCost * formData.numberOfMonth) + (formData.hasPt ? formData.ptcost * formData.numberOfsession : 0) + (formData.hasNe ? formData.necost : 0);
         setFormData((prevFormData) => ({
             ...prevFormData,
             price: total,
         }));
-    }, [formData.centerCost, formData.ptcost, formData.hasPt, formData.necost, formData.hasNe, formData.numberOfsession]);
+    }, [formData.centerCost, formData.numberOfMonth, formData.ptcost, formData.hasPt, formData.necost, formData.hasNe, formData.numberOfsession]);
 
     const handleKeyDown = (e) => {
         const { key } = e;
@@ -454,23 +468,43 @@ export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
                                     />
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <label htmlFor="price">Phí phòng tập</label>
-                                </td>
-                                <td>
-                                    <input
-                                        type='text'
-                                        id="price"
-                                        name='centerCost'
-                                        value={formatMoney(formData.centerCost)}
-                                        onChange={handlePriceChange}
-                                        onKeyDown={handleKeyDown}
-                                        required
-                                        placeholder='0đ'
-                                    />
-                                </td>
-                            </tr>
+                            {type === 1 &&
+                                <>
+                                    <tr>
+                                        <td>
+                                            <label>Số tháng</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type='text'
+                                                name="numberOfMonth"
+                                                value={formData.numberOfMonth}
+                                                onChange={handleChange}
+                                                onKeyDown={handleKeyDown}
+                                                required
+                                                placeholder="0"
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="price">Phí phòng tập</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type='text'
+                                                id="price"
+                                                name='centerCost'
+                                                value={formatMoney(formData.centerCost)}
+                                                onChange={handlePriceChange}
+                                                onKeyDown={handleKeyDown}
+                                                required
+                                                placeholder='0đ'
+                                            />
+                                        </td>
+                                    </tr>
+                                </>
+                            }
                             {formData.hasPt &&
                                 <>
                                     <tr>

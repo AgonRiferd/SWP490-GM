@@ -214,7 +214,6 @@ export const Delete = ({ data, onClose, isLoading, onLoading, ...props }) => {
 export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }) => {
     const [initialData,] = useState(data);
     const nutritionData = initialData.filter((item) => item.nutritionScheduleId).sort((a, b) => a.mealTime - b.mealTime);
-
     const formatMealTime = (mealTime) => {
         switch (mealTime) {
             case 1:
@@ -229,6 +228,15 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                 return "";
         }
     };
+    const [nutritionItemExpands, setNutritionItemExpands] = useState([]);
+
+    const handleNutritionItemClick = (index) => {
+        if (nutritionItemExpands.includes(index)) {
+            setNutritionItemExpands(nutritionItemExpands.filter((i) => i !== index));
+        } else {
+            setNutritionItemExpands([...nutritionItemExpands, index]);
+        }
+    };
 
     return (
         <div className="schedule-content">
@@ -238,21 +246,41 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                         Thực đơn
                     </div>
                     <div className="nutrition-content">
-                        {nutritionData.map((item) => (
-                            <div key={item.id} className="item">
-                                <div className="title">
+                        {nutritionData.map((item, index) => (
+                            <div key={index} className={`item ${nutritionItemExpands.includes(index) ? 'show' : ''}`}>
+                                <div className="title" onClick={() => handleNutritionItemClick(index)} >
                                     <span>
                                         {formatMealTime(item.mealTime)}
                                     </span>
                                     <span className="fa fa-angle-down pull-right"></span>
                                 </div>
                                 <div className="details">
-                                    <table>
-                                        <tbody>
+                                    <table className="schedule-table">
+                                        <thead>
                                             <tr>
-                                                <td>
-                                                </td>
+                                                <th>Tên</th>
+                                                <th>Số lượng</th>
+                                                <th>Đơn vị</th>
+                                                <th>Năng lượng</th>
                                             </tr>
+                                        </thead>
+                                        <tbody>
+                                            {item.foodAndSuppliment.map((fas) => (
+                                                <tr key={fas.id}>
+                                                    <td>
+                                                        <span>{fas.name}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{fas.ammount}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{fas.unitOfMesuament}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{fas.calories}</span>
+                                                    </td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -261,6 +289,7 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                     </div>
                 </div>
             }
+            {}
             <div className="dialog-button-tray">
                 <button type="button" className="any-button button-cancel" onClick={onClose}>
                     Hủy bỏ

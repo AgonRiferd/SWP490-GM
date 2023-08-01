@@ -243,21 +243,23 @@ const Schedule = ({ userId }) => {
 
     const dialog = useMemo(() => ({
         scheduleDetail: {
-            title: "Thời khóa biểu",
+            title: "Danh biểu",
             component: ScheduleDetail
         }
     }), [])
 
     return (
         <div>
-            <h1>Thời Khóa Biểu</h1>
+            <div className="schedule-title">
+                <h1>Danh biểu</h1>
+            </div>
             {isLoading ? (
                 <div className="loading-overlay">
                     <i className="fa-solid fa-spinner fa-spin-pulse"></i>
                     <span>Đang tải dữ liệu...</span>
                 </div>
             ) : (
-                <Calendar data={scheduleData} tooltipOpt={tooltipOpt} dialog={dialog}/>
+                <Calendar data={scheduleData} tooltipOpt={tooltipOpt} dialog={dialog} />
             )}
         </div>
     );

@@ -1418,6 +1418,10 @@ hr.view-divider {
   background-color: orange;
 }
 
+.schedule-title {
+  text-align: center;
+}
+
 .dialog-content .schedule-date {
   border: 1px solid #000;
   font-weight: bold;
@@ -1457,3 +1461,10 @@ hr.view-divider {
   padding: 3px 2px;
 }
 
+.nutrition-content .item .details {
+  display: none;
+}
+
+.nutrition-content .item.show .details {
+  display: block;
+}

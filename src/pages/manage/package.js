@@ -12,7 +12,40 @@ const PackageManage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
     const [activeTabItem, setActiveTabItem] = useState(1);
-    const columns = useMemo(() => COLUMNS, []);
+    const commonColumns = useMemo(() => COLUMNS, []);
+    const column1 = useMemo(() => [
+        {
+            Header: 'Tên Gói',
+            accessor: 'name'
+        },
+        {
+            Header: 'Tổng số buổi',
+            accessor: 'numberOfsession',
+            width: 80
+        },
+        ...commonColumns
+    ], [commonColumns]);
+    const column2 = useMemo(() => [
+        {
+            Header: 'Tên Gói',
+            accessor: 'name'
+        },{
+            Header: 'Tổng số tháng',
+            accessor: 'numberOfMonth',
+            width: 80
+        },
+        ...commonColumns
+    ], [commonColumns]);
+    const column3 = useMemo(() => [
+        {
+            Header: 'Tên Gói',
+            accessor: 'name'
+        },
+        ...commonColumns
+    ], [commonColumns]);
+    const columns = (activeTabItem === 1) ? column2 : 
+                    (activeTabItem === 2 || activeTabItem === 4)  ? column1 : column3;
+
     const sortees = useMemo(
         () => [
             {
@@ -66,13 +99,15 @@ const PackageManage = () => {
         dialogView: {
             title: "Thông tin",
             icon: <i className="fa-solid fa-eye"></i>,
-            component: View
+            component: View,
+            packageType: activeTabItem
         },
         dialogEdit: {
             title: "Chỉnh sửa",
             icon: <i className="fa-solid fa-pen-to-square"></i>,
             component: Edit,
-            fetchData: fetchData
+            fetchData: fetchData,
+            packageType: activeTabItem
         },
         dialogDelete: {
             title: "Loại bỏ",
@@ -122,14 +157,14 @@ const PackageManage = () => {
                 <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
                     <div className="common-tab-container">
                         <span className="common-tab-name">
-                            Gói Tập Luyện
+                            Gói Sức Khỏe
                         </span>
                     </div>
                 </div>
                 <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
                     <div className="common-tab-container">
                         <span className="common-tab-name">
-                            Gói Sức Khỏe
+                            Gói Dinh Dưỡng
                         </span>
                     </div>
                 </div>
@@ -164,15 +199,15 @@ const PackageManage = () => {
         </>
     )
 }
-const NomalPackage = ({data, columns, sortees, dialogs}) => {
+const NomalPackage = ({ data, columns, sortees, dialogs }) => {
     const customData = data.filter(row => !row.hasNe && !row.hasPt);
 
     return (
-        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs}/>
+        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs} />
     )
 }
 
-const PremiumPackage = ({data, columns, sortees, dialogs}) => {
+const PremiumPackage = ({ data, columns, sortees, dialogs }) => {
     const customData = data.filter(row => row.hasPt && !row.hasNe);
 
     return (
@@ -180,7 +215,7 @@ const PremiumPackage = ({data, columns, sortees, dialogs}) => {
     )
 }
 
-const PremiumPlusPackage = ({data, columns, sortees, dialogs}) => {
+const PremiumPlusPackage = ({ data, columns, sortees, dialogs }) => {
     const customData = data.filter(row => !row.hasPt && row.hasNe);
 
     return (
@@ -188,7 +223,7 @@ const PremiumPlusPackage = ({data, columns, sortees, dialogs}) => {
     )
 }
 
-const GalaxyPackage = ({data, columns, sortees, dialogs}) => {
+const GalaxyPackage = ({ data, columns, sortees, dialogs }) => {
     const customData = data.filter(row => row.hasNe && row.hasPt);
 
     return (

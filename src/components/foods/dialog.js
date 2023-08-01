@@ -8,6 +8,15 @@ export const Create = ({ onClose }) => {
 };
 
 export const View = ({ data, onClose }) => {
+    return (
+        <>
+            <div className="dialog-button-tray">
+                <button type="button" className="any-button button-cancel" onClick={onClose}>
+                    Hủy bỏ
+                </button>
+            </div>
+        </>
+    );
 };
 
 export const Edit = ({ data, onClose }) => {

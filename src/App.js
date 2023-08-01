@@ -8,7 +8,6 @@ import HomePage from './pages/home';
 import PTManage from './pages/manage/pt';
 import PackageManage from './pages/manage/package';
 import NEManage from './pages/manage/ne';
-import CalendarPage from './pages/calendar';
 import React, { useState } from 'react';
 import { PageLoader } from './flagments/preloader';
 
@@ -31,7 +30,6 @@ function App() {
               <Route exact path="ne" element={<NEManage />} />
               <Route exact path="package" element={<PackageManage />} />
             </Route>
-            <Route exact path="calendar" element={<CalendarPage />} />
           </Route>
           <Route path="/404" element={<PageNotFound />} />
           <Route path="*" element={<Navigate to="/404" />} />

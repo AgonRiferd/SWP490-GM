@@ -75,11 +75,23 @@ const Calendar = () => {
         <thead>
           <tr>
             <th colSpan={7}>
-              <button onClick={handlePrevYear}>Previous Year</button>
-              <button onClick={handlePrevMonth}>Previous Month</button>
+              <button onClick={handlePrevYear}>
+                <i className="fa-sharp fa-regular fa-angle-left"></i>
+                <i className="fa-sharp fa-regular fa-angle-left"></i>
+                <i className="fa-sharp fa-regular fa-angle-left"></i>
+              </button>
+              <button onClick={handlePrevMonth}>
+                <i className="fa-sharp fa-regular fa-angle-left"></i>
+              </button>
               <span>{`${currentMonth + 1}/${currentYear}`}</span>
-              <button onClick={handleNextMonth}>Next Month</button>
-              <button onClick={handleNextYear}>Next Year</button>
+              <button onClick={handleNextMonth}>
+                <i className="fa-sharp fa-regular fa-angle-right"></i>
+              </button>
+              <button onClick={handleNextYear}>
+                <i className="fa-sharp fa-regular fa-angle-right"></i>
+                <i className="fa-sharp fa-regular fa-angle-right"></i>
+                <i className="fa-sharp fa-regular fa-angle-right"></i>
+              </button>
             </th>
           </tr>
           <tr>
