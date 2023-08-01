@@ -241,11 +241,20 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                         {nutritionData.map((item) => (
                             <div key={item.id} className="item">
                                 <div className="title">
-                                    <span>{formatMealTime(item.mealTime)}</span>
+                                    <span>
+                                        {formatMealTime(item.mealTime)}
+                                    </span>
                                     <span className="fa fa-angle-down pull-right"></span>
                                 </div>
                                 <div className="details">
-
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         ))}

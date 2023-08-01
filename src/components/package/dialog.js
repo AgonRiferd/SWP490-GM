@@ -8,6 +8,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [formData, setFormData] = useState({
         name: '',
         numberOfsession: 1,
+        numberOfMonth: 0,
         centerCost: 0,
         hasPt: (type === 2) || (type === 4),
         ptCost: 0,
@@ -122,7 +123,23 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                 <>
                                     <tr>
                                         <td>
-                                            <label htmlFor="price">Phí phòng tập</label>
+                                            <label>Số tháng</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type='text'
+                                                name="numberOfMonth"
+                                                value={formData.numberOfMonth}
+                                                onChange={handleChange}
+                                                onKeyDown={handleKeyDown}
+                                                required
+                                                placeholder="0"
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label>Phí phòng tập</label>
                                         </td>
                                         <td>
                                             <input
