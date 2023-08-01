@@ -1382,6 +1382,22 @@ hr.view-divider {
   justify-content: space-between;
 }
 
+.date-handle .year > .previous {
+  margin-left: 10px;
+}
+
+.date-handle .year > .next {
+  margin-right: 10px;
+}
+
+.date-handle .day > .previous {
+  margin-right: 10px;
+}
+
+.date-handle .day > .next {
+  margin-left: 10px;
+}
+
 .calendar-table .has-data {
   background-color: #4caf50;
   cursor: pointer;

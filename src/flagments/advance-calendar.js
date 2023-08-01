@@ -118,13 +118,29 @@ const Calendar = ({ data, tooltipOpt, ...props }) => {
                     <tr>
                         <th colSpan={7}>
                             <div className='date-handle'>
-                                <button onClick={handlePrevYear}>Previous Year</button>
-                                <div>
-                                    <button onClick={handlePrevMonth}>Previous Month</button>
-                                    <span>{`${currentMonth + 1}/${currentYear}`}</span>
-                                    <button onClick={handleNextMonth}>Next Month</button>
+                                <div className='year'>
+                                    <button type='button' onClick={handlePrevYear} className='previous'>
+                                        <i className="fa-solid fa-chevron-left"></i>
+                                        <i className="fa-solid fa-chevron-left"></i>
+                                        <i className="fa-solid fa-chevron-left"></i>
+                                    </button>
                                 </div>
-                                <button onClick={handleNextYear}>Next Year</button>
+                                <div className='day'>
+                                    <button type='button' onClick={handlePrevMonth} className='previous'>
+                                        <i className="fa-solid fa-chevron-left"></i>
+                                    </button>
+                                    <span>{`${currentMonth + 1}/${currentYear}`}</span>
+                                    <button type='button' onClick={handleNextMonth} className='next'>
+                                        <i className="fa-solid fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div className='year'>
+                                    <button type='button' onClick={handleNextYear} className='next'>
+                                        <i className="fa-solid fa-chevron-right"></i>
+                                        <i className="fa-solid fa-chevron-right"></i>
+                                        <i className="fa-solid fa-chevron-right"></i>
+                                    </button>
+                                </div>
                             </div>
                         </th>
                     </tr>
