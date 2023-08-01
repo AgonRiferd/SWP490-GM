@@ -1452,27 +1452,39 @@ hr.view-divider {
   max-height: 500px;
 }
 
-.nutrition-container > .title {
-  background-color: #4caf50;
+.nutrition-container > .title,
+.exercise-container > .title {
   padding: 4px 8px;
   text-align: center;
   font-size: 16px;
 }
 
-.nutrition-container .nutrition-content {
+.nutrition-container > .title {
+  background-color: #4caf50;
+}
+
+.exercise-container > .title {
+  background-color: #33a4d8;
+}
+
+.nutrition-container .nutrition-content,
+.exercise-container .exercise-content {
   padding: 3px 0;
   overflow-y: auto;
 }
 
-.nutrition-content .item {
+.nutrition-content .item,
+.exercise-content .item {
   margin: 2px 0;
 }
 
-.nutrition-content .item:not(:last-child) {
+.nutrition-content .item:not(:last-child),
+.exercise-content .item:not(:last-child) {
   border-bottom: 1px solid var(--primary-color);
 }
 
-.nutrition-content .item > .title {
+.nutrition-content .item > .title,
+.exercise-content .item > .title {
   background-color: var(--text-color);
   padding: 3px 2px;
 }

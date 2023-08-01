@@ -214,6 +214,7 @@ export const Delete = ({ data, onClose, isLoading, onLoading, ...props }) => {
 export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }) => {
     const [initialData,] = useState(data);
     const nutritionData = initialData.filter((item) => item.nutritionScheduleId).sort((a, b) => a.mealTime - b.mealTime);
+    const exerciseData = initialData.filter((item) => item.scheduleId).sort((a, b) => a.dateAndTime - b.dateAndTime);
     const formatMealTime = (mealTime) => {
         switch (mealTime) {
             case 1:
@@ -228,7 +229,13 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                 return "";
         }
     };
+
+    const formatTime = (date) => {
+        return format(new Date(date), "HH:mm:ss");
+    }
+    
     const [nutritionItemExpands, setNutritionItemExpands] = useState([]);
+    const [exerciseItemExpands, setExerciseItemExpands] = useState([]);
 
     const handleNutritionItemClick = (index) => {
         if (nutritionItemExpands.includes(index)) {
@@ -238,8 +245,35 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
         }
     };
 
+    const handleExerciseItemClick = (index) => {
+        if (exerciseItemExpands.includes(index)) {
+            setExerciseItemExpands(exerciseItemExpands.filter((i) => i !== index));
+        } else {
+            setExerciseItemExpands([...exerciseItemExpands, index]);
+        }
+    };
+
     return (
         <div className="schedule-content">
+            {exerciseData.length > 0 &&
+                <div className="exercise-container">
+                    <div className="title">
+                        Bài tập
+                    </div>
+                    <div className="exercise-content">
+                        {exerciseData.map((item, index) => (
+                            <div key={index} className={`item ${exerciseItemExpands.includes(index) ? 'show' : ''}`}>
+                                <div className="title" onClick={() => handleExerciseItemClick(index)} >
+                                    <span>
+                                        {formatTime(item.dateAndTime)}
+                                    </span>
+                                    <span className="fa fa-angle-down pull-right"></span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
             {nutritionData.length > 0 &&
                 <div className="nutrition-container">
                     <div className="title">
