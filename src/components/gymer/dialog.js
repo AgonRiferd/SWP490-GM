@@ -292,7 +292,7 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
             {}
             <div className="dialog-button-tray">
                 <button type="button" className="any-button button-cancel" onClick={onClose}>
-                    Hủy bỏ
+                    Đóng
                 </button>
             </div>
         </div>
