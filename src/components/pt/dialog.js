@@ -2,13 +2,19 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosConfig";
 import { formatPhoneNumber } from "../../utils/convert";
 import { ImageInput } from "../../utils/imageConvert";
+import { format } from "date-fns";
 // import { storageRef } from '../../utils/firebaseConfig';
 
 const GENDER_MALE = 'M';
 const GENDER_FEMALE = 'F';
 
+const formatTime = (date) => {
+    return format(new Date(date), "HH:mm:ss");
+}
+
 export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
     const [id, setId] = useState(null);
     const [imageUrl, setImageUrl] = useState(null);
     const [formData, setFormData] = useState({
@@ -19,7 +25,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         role: 'PT'
     });
 
-    const [certData , setCertData] = useState({
+    const [certData, setCertData] = useState({
         experience: 0
     });
 
@@ -72,22 +78,15 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         setErrorMessage('');
 
         if (!formData.phoneNo || !formData.password || !formData.fullname) {
-            alert('Vui lòng điền đầy đủ thông tin!');
+            setErrorMessage('Vui lòng điền đầy đủ thông tin!');
             return;
         }
 
         try {
             onLoading(true);
             const response = await axiosInstance.post('/Accounts/CreateAccount', formData);
-            if (response.status === 200 || response.status === 201) {
+            if (response) {
                 setId(response.data);
-                onLoading(false);
-            } else {
-                setErrorMessage(<>
-                    <p>Tạo không thành công</p>
-                    <p>Status: {response.status}</p>
-                </>
-                );
                 onLoading(false);
             }
         } catch (error) {
@@ -116,23 +115,16 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         e.preventDefault();
 
         if (!imageUrl) {
-            alert('Ảnh chứng chỉ hiện chưa có!');
+            setErrorMessage('Ảnh chứng chỉ hiện chưa có!');
             return;
         }
 
         try {
             onLoading(true);
             const response = await axiosInstance.post('/Qualifications/CreateQualification', certData);
-            if (response.status === 200 || response.status === 201 || response.status === 204) {
-                alert('Tạo mới thành công');
-                props.fetchData();
-            } else {
-                setErrorMessage(<>
-                    <p>Tạo không thành công</p>
-                    <p>Status: {response.status}</p>
-                </>
-                );
+            if (response) {
                 onLoading(false);
+                setIsSuccess(true);
             }
         } catch (error) {
             // Xử lý lỗi nếu có
@@ -156,13 +148,18 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         }
     }
 
-    const handleCertOnClose = () => {
+    const handleOnClose = () => {
+        onClose();
         props.fetchData();
     }
 
     return (
         <>
-            {id ?
+            {isSuccess ? (
+                <Success onClose={handleOnClose}>
+                    <span>Tạo người dùng thành công</span>
+                </Success>
+            ) : id ?
                 <>
                     <ol className="dialog-steps breadcrumb">
                         <li>Tạo Tài Khoản</li>
@@ -209,7 +206,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                         </div>
                         <div className='dialog-button-tray'>
                             <button type='submit' className='any-button button-submit' disabled={isLoading || !imageUrl}>Xác nhận</button>
-                            <button type='button' className='any-button button-cancel' onClick={handleCertOnClose}>Bỏ qua</button>
+                            <button type='button' className='any-button button-cancel' onClick={handleOnClose}>Bỏ qua</button>
                         </div>
                     </form>
                 </> : <>
@@ -324,6 +321,7 @@ export const View = ({ data, onClose }) => {
 
 export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
     const [formData] = useState({
         phoneNo: '',
         password: '',
@@ -340,17 +338,9 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
         try {
             onLoading(true);
             const response = await axiosInstance.put(`/Accounts/UpdateAccount?id=${data.id}`, formData);
-            if (response.status === 200 || response.status === 204) {
-                alert('Trạng thái đã được cập nhật.');
-                props.fetchData();
-            } else {
-                setErrorMessage(
-                    <>
-                        <p>Cập nhật không thành công</p>
-                        <p>Status: {response.status}</p>
-                    </>
-                );
+            if (response) {
                 onLoading(false);
+                setIsSuccess(true);
             }
         } catch (error) {
             // Xử lý lỗi nếu có
@@ -369,38 +359,183 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
         }
     };
 
+    const handleOnClose = () => {
+        onClose();
+        props.fetchData();
+    }
+
     return (
-        <div className="content-status">
-            {errorMessage ? (
-                <>
-                    <center>
-                        <span className="status-error">{errorMessage}</span>
-                    </center>
-                    <div className="dialog-button-tray">
-                        <button type="button" className="any-button button-cancel" onClick={onClose}>
-                            Trở về
-                        </button>
-                    </div>
-                </>
+        <>
+            {isSuccess ? (
+                <Success onClose={handleOnClose}>
+                    <span>Cập nhật thành công</span>
+                </Success>
             ) : (
-                <>
-                    <center>
-                        {data.isDelete ?
-                            <p>Cho phép user Hoạt động trở lại?</p> : <p>Bạn có chắc muốn khóa user?</p>
-                        }
-                    </center>
-                    <div className="dialog-button-tray">
-                        <button type="button" className="any-button button-submit" onClick={handleDelete} disabled={isLoading}>
-                            Xác nhận
-                        </button>
-                        <button type="button" className="any-button button-cancel" onClick={onClose}>
-                            Hủy bỏ
-                        </button>
-                    </div>
-                </>
+                <div className="content-status">
+                    {errorMessage ? (
+                        <>
+                            <center>
+                                <span className="status-error">{errorMessage}</span>
+                            </center>
+                            <div className="dialog-button-tray">
+                                <button type="button" className="any-button button-cancel" onClick={onClose}>
+                                    Trở về
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <center>
+                                {data.isDelete ?
+                                    <p>Cho phép user Hoạt động trở lại?</p> : <p>Bạn có chắc muốn khóa user?</p>
+                                }
+                            </center>
+                            <div className="dialog-button-tray">
+                                <button type="button" className="any-button button-submit" onClick={handleDelete} disabled={isLoading}>
+                                    Xác nhận
+                                </button>
+                                <button type="button" className="any-button button-cancel" onClick={onClose}>
+                                    Hủy bỏ
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
             )}
-        </div>
+        </>
     );
 };
 
 export const Delete = ({ data, onClose }) => { };
+
+export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }) => {
+    const [initialData,] = useState(data);
+    const exerciseData = initialData.sort((a, b) => {
+        const dateA = new Date(a.dateAndTime);
+        const dateB = new Date(b.dateAndTime);
+        return dateA - dateB;
+    });
+    
+    const [exerciseItemExpands, setExerciseItemExpands] = useState([]);
+
+    const handleExerciseItemClick = (index) => {
+        if (exerciseItemExpands.includes(index)) {
+            setExerciseItemExpands(exerciseItemExpands.filter((i) => i !== index));
+        } else {
+            setExerciseItemExpands([...exerciseItemExpands, index]);
+        }
+    };
+
+    return (
+        <div className="schedule-content">
+            {exerciseData.length > 0 &&
+                <div className="exercise-container">
+                    <div className="title">
+                        Bài tập
+                    </div>
+                    <div className="exercise-content">
+                        {exerciseData.map((item, index) => (
+                            <div key={index} className={`item ${exerciseItemExpands.includes(index) ? 'show' : ''}`}>
+                                <ExerciseSchedule data={item} index={index} handleExerciseItemClick={handleExerciseItemClick} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
+            <div className="dialog-button-tray">
+                <button type="button" className="any-button button-cancel" onClick={onClose}>
+                    Đóng
+                </button>
+            </div>
+        </div>
+    );
+}
+
+const ExerciseSchedule = ({ data, index, handleExerciseItemClick }) => {
+    const [initialData,] = useState(data);
+
+    return (
+        <>
+            <div className="title" onClick={() => handleExerciseItemClick(index)} >
+                <span>
+                    {formatTime(initialData.dateAndTime)}
+                </span>
+                <span className="fa fa-angle-down pull-right"></span>
+            </div>
+            <div className="details">
+                <table className='dialog-field'>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label>Thành viên</label>
+                            </td>
+                            <td>
+                                <span>{initialData.gymerName}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Danh sách bài tập:</label>
+                            </td>
+                            <td>
+                                {!initialData.excercises || initialData.excercises.length === 0 ? (
+                                    <span className="status-error">Không có bài tập</span>
+                                ) : initialData.excercises.map((item) => (
+                                    <li key={item.id}>
+                                        {item.name}
+                                    </li>
+                                ))}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </>
+    )
+}
+
+const SUCCESS_COUNTDOWN = 5;
+
+const Success = ({ onClose, children }) => {
+    const [autoCloseCountdown, setAutoCloseCountdown] = useState(SUCCESS_COUNTDOWN + 1);
+    const [autoCloseTimeout, setAutoCloseTimeout] = useState(null);
+
+    useEffect(() => {
+        if (autoCloseCountdown > 0) {
+            const timeoutId = setTimeout(() => {
+                setAutoCloseCountdown((prevCountdown) => prevCountdown - 1);
+            }, 1000);
+            setAutoCloseTimeout(timeoutId);
+        } else if (autoCloseCountdown === 0) {
+            onClose();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [autoCloseCountdown]);
+
+    const handleOnClose = () => {
+        if (autoCloseTimeout) {
+            clearTimeout(autoCloseTimeout);
+        }
+        onClose();
+    }
+
+    return (
+        <>
+            <div className="success-checkmark">
+                <div className="check-icon">
+                    <span className="icon-line line-tip"></span>
+                    <span className="icon-line line-long"></span>
+                    <div className="icon-circle"></div>
+                    <div className="icon-fix"></div>
+                </div>
+            </div>
+            {children}
+            <div>
+                {`Cửa sổ sẽ tự động đóng sau ${autoCloseCountdown === SUCCESS_COUNTDOWN + 1 ? autoCloseCountdown - 1 : autoCloseCountdown} giây`}
+            </div>
+            <div className='dialog-button-tray'>
+                <button type='button' className='any-button button-cancel' onClick={handleOnClose}>Đóng</button>
+            </div>
+        </>
+    )
+}

@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { format } from 'date-fns';
 import axiosInstance from "../../utils/axiosConfig";
 
+const formatTime = (date) => {
+    return format(new Date(date), "HH:mm:ss");
+}
+
 export const Create = ({ onClose }) => {
     return (
         <>
@@ -227,7 +231,12 @@ export const Delete = ({ data, onClose, isLoading, onLoading, ...props }) => {
 export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }) => {
     const [initialData,] = useState(data);
     const nutritionData = initialData.filter((item) => item.nutritionScheduleId).sort((a, b) => a.mealTime - b.mealTime);
-    const exerciseData = initialData.filter((item) => item.scheduleId).sort((a, b) => a.dateAndTime - b.dateAndTime);
+    const exerciseData = initialData.filter((item) => item.scheduleId).sort((a, b) => {
+        const dateA = new Date(a.dateAndTime);
+        const dateB = new Date(b.dateAndTime);
+        return dateA - dateB;
+    });
+
     const formatMealTime = (mealTime) => {
         switch (mealTime) {
             case 1:
@@ -242,10 +251,6 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                 return "";
         }
     };
-
-    const formatTime = (date) => {
-        return format(new Date(date), "HH:mm:ss");
-    }
 
     const [nutritionItemExpands, setNutritionItemExpands] = useState([]);
     const [exerciseItemExpands, setExerciseItemExpands] = useState([]);
@@ -276,12 +281,7 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                     <div className="exercise-content">
                         {exerciseData.map((item, index) => (
                             <div key={index} className={`item ${exerciseItemExpands.includes(index) ? 'show' : ''}`}>
-                                <div className="title" onClick={() => handleExerciseItemClick(index)} >
-                                    <span>
-                                        {formatTime(item.dateAndTime)}
-                                    </span>
-                                    <span className="fa fa-angle-down pull-right"></span>
-                                </div>
+                                <ExerciseSchedule data={item} index={index} handleExerciseItemClick={handleExerciseItemClick} exerciseItemExpands={exerciseItemExpands} />
                             </div>
                         ))}
                     </div>
@@ -336,7 +336,6 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                     </div>
                 </div>
             }
-            { }
             <div className="dialog-button-tray">
                 <button type="button" className="any-button button-cancel" onClick={onClose}>
                     Đóng
@@ -344,6 +343,89 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
             </div>
         </div>
     );
+}
+
+const ExerciseSchedule = ({ data, index, handleExerciseItemClick, exerciseItemExpands }) => {
+    const [initialData, setInitialData] = useState(data);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            let ptName = null;
+            if (!isLoading)
+                setIsLoading(true);
+            try {
+                let response = await axiosInstance.get(`/ExcerciseSchedules/GetExcerciseSchedule/${initialData.scheduleId}`);
+                const { data } = response.data;
+                const ptId = data ? data.ptid : null;
+                if (ptId) {
+                    response = await axiosInstance.get(`/Accounts/GetAccountByID/${ptId}`);
+                    const { data } = response;
+                    ptName = data ? data.fullname : null;
+                }
+            } catch (error) {
+                console.error('Xảy ra lỗi khi lấy id của PT: ', error);
+            }
+            setInitialData((prevData) => ({
+                ...prevData,
+                ptName: ptName
+            }))
+            setIsLoading(false);
+        }
+
+        if (exerciseItemExpands.includes(index) && !initialData.ptName) {
+            fetchData();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [exerciseItemExpands])
+
+    return (
+        <>
+            <div className="title" onClick={() => handleExerciseItemClick(index)} >
+                <span>
+                    {formatTime(initialData.dateAndTime)}
+                </span>
+                <span className="fa fa-angle-down pull-right"></span>
+            </div>
+            <div className="details">
+                {isLoading ? (
+                    <div className="loading-overlay">
+                        <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+                        <span>Đang tải dữ liệu...</span>
+                    </div>
+                ) : (
+                    <>
+                        <table className='dialog-field'>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label>Huấn luyện viên</label>
+                                    </td>
+                                    <td>
+                                        <span>{initialData.ptName}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Danh sách bài tập:</label>
+                                    </td>
+                                    <td>
+                                        {!initialData.excercises || initialData.excercises.length === 0 ? (
+                                            <span className="status-error">Không có bài tập</span>
+                                        ) : initialData.excercises.map((item) => (
+                                            <li key={item.id}>
+                                                {item.name}
+                                            </li>
+                                        ))}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </>
+                )}
+            </div>
+        </>
+    )
 }
 
 const SUCCESS_COUNTDOWN = 5;

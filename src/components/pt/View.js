@@ -8,6 +8,8 @@ import { AdvanceTable } from "../../flagments/advance-table";
 import { formatPhoneNumber } from "../../utils/convert";
 import { ImageInput } from "../../utils/imageConvert";
 import Dialog from "../../flagments/dialog";
+import Calendar from "../../flagments/advance-calendar";
+import { ScheduleDetail } from "./dialog";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -148,6 +150,9 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                         }
                         {isTabActive(2) &&
                             <Exercise userId={user.id} />
+                        }
+                        {isTabActive(3) &&
+                            <Schedule userId={user.id} />
                         }
                     </div>
                 </>
@@ -503,5 +508,80 @@ const CertificationEdit = ({ data, onClose, isLoading, onLoading, ...props }) =>
         </>
     );
 };
+
+const Schedule = ({ userId }) => {
+    const [scheduleData, setScheduleData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchScheduleData = async () => {
+            if (!isLoading) setIsLoading(true);
+            try {
+                const response = await axiosInstance.get(`/ExcerciseSchedules/GetWorkingScheduleByPTID/${userId}`);
+                const { data } = response.data;
+                setScheduleData(data);
+            } catch (error) {
+                console.error('Xảy ra lỗi khi lấy danh sách dinh dưỡng: ', error);
+            }
+            setIsLoading(false);
+        };
+
+        fetchScheduleData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId]);
+
+    const Tooltip = ({ data }) => {
+        const totalMembers = Array.from(new Set(data.map(item => item.gymerID)));
+        const totalWorkShifts = new Set(data.map(item => item.dateAndTime));
+
+        return (
+            <>
+                {totalWorkShifts.size > 0 && (
+                    <div className="bar nutrition-bar">
+                        <span>Ca làm việc</span>
+                        {totalWorkShifts.size > 1 &&
+                            <span>x{totalWorkShifts.size}</span>
+                        }
+                    </div>
+                )}
+                {totalMembers.length > 0 && (
+                    <div className="bar exercise-bar">
+                        <span>Thành viên</span>
+                        {totalMembers.length > 1 &&
+                            <span>x{totalMembers.length}</span>
+                        }
+                    </div>
+                )}
+            </>
+        )
+    }
+
+    const tooltipOpt = useMemo(() => ({
+        component: Tooltip
+    }), []);
+
+    const dialog = useMemo(() => ({
+        scheduleDetail: {
+            title: "Danh biểu",
+            component: ScheduleDetail
+        }
+    }), [])
+
+    return (
+        <div>
+            <div className="schedule-title">
+                <h1>Danh biểu</h1>
+            </div>
+            {isLoading ? (
+                <div className="loading-overlay">
+                    <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+                    <span>Đang tải dữ liệu...</span>
+                </div>
+            ) : (
+                <Calendar data={scheduleData} tooltipOpt={tooltipOpt} dialog={dialog} />
+            )}
+        </div>
+    );
+}
 
 export default CustomView;

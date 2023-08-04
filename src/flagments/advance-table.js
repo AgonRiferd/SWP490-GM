@@ -18,6 +18,14 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
     const [status, setStatus] = useState('1');
     const [hasIsLocked, setHasIsLocked] = useState(false);
     const { dialogCreate, dialogView, dialogEdit, dialogDelete } = dialogs;
+    const sortees_default = useMemo (
+        () => [
+            {
+                id: "",
+                desc: false
+            }
+        ], []
+    );
 
     const options = [
         { value: 0, label: 'All' },
@@ -133,7 +141,8 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
         useMemo(() => ({
             columns: customColumns,
             data: handleData(),
-            initialState: { sortBy: sortees },
+            initialState: { sortBy: (sortees ? sortees : sortees_default) },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         }), [customColumns, handleData, sortees]
         ), useGlobalFilter, useSortBy, usePagination
     );

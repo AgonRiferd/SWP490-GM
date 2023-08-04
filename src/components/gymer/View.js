@@ -125,7 +125,7 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                                 </span>
                             </div>
                         </div>
-                        <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
+                        <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
                             <div className="common-tab-container">
                                 <span className="common-tab-name">
                                     Danh biểu
@@ -137,7 +137,7 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                         {isTabActive(1) &&
                             <OtherProfile user={user} />
                         }
-                        {isTabActive(2) &&
+                        {isTabActive(3) &&
                             <Schedule userId={user.id} />
                         }
                     </div>
@@ -191,15 +191,9 @@ const Schedule = ({ userId }) => {
                 console.error('Xảy ra lỗi khi lấy danh sách dinh dưỡng: ', error);
             }
             try {
-                const response = await axiosInstance.get('/Sessions/GetListOfActiveSessionByGymerID', {
-                    params: {
-                        GymerID: userId
-                    }
-                });
+                const response = await axiosInstance.get(`/ExcerciseSchedules/GetExcerciseScheduleByGymerIDV2/${userId}`);
                 const { data } = response.data;
-                data.forEach((item) => {
-                    mergedData.push(...item.sessionList);
-                });
+                mergedData.push(...data);
             } catch (error) {
                 console.error('Xảy ra lỗi khi lấy danh sách bài tập: ', error);
             }
@@ -218,7 +212,7 @@ const Schedule = ({ userId }) => {
         return (
             <>
                 {exerciseData.length > 0 && (
-                    <div className="exercise-bar">
+                    <div className="bar exercise-bar">
                         <span>Danh sách bài tập</span>
                         {exerciseData.length > 1 &&
                             <span>x{exerciseData.length}</span>
@@ -226,7 +220,7 @@ const Schedule = ({ userId }) => {
                     </div>
                 )}
                 {nutritionData.length > 0 && (
-                    <div className="nutrition-bar">
+                    <div className="bar nutrition-bar">
                         <span>Thực đơn dinh dưỡng</span>
                         {nutritionData.length > 1 &&
                             <span>x{nutritionData.length}</span>
