@@ -312,8 +312,8 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {item.foodAndSuppliment.map((fas) => (
-                                                <tr key={fas.id}>
+                                            {item.foodAndSuppliment.map((fas, index) => (
+                                                <tr key={index}>
                                                     <td>
                                                         <span>{fas.name}</span>
                                                     </td>

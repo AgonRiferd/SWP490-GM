@@ -1674,3 +1674,7 @@ hr.view-divider {
   transform: rotate(-45deg);
   background-color: rgba(209, 209, 209);
 }
+
+.schedule-table th {
+  min-width: 80px;
+}
