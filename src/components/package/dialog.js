@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../utils/axiosConfig';
 import { formatMoney } from '../../utils/convert';
 
+const SUCCESS_COUNTDOWN = 5;
+
 export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
-    const [type,] = useState(props.packageType);
+    const type = props.packageType;
     const [errorMessage, setErrorMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
-        numberOfsession: 1,
-        numberOfMonth: 1,
+        numberOfsession: (type === 2) || (type === 4) ? 1 : 0,
+        numberOfMonth: type === 1 ? 1 : 0,
         centerCost: 0,
         hasPt: (type === 2) || (type === 4),
         ptCost: 0,
@@ -64,16 +67,9 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         try {
             onLoading(true);
             const response = await axios.post('/Packages/CreatePackage', formData);
-            if (response.status === 200) {
-                alert('Tạo mới thành công');
-                props.fetchData();
-            } else {
-                setErrorMessage(<>
-                    <p>Tạo không thành công</p>
-                    <p>Status: {response.status}</p>
-                </>
-                );
+            if (response) {
                 onLoading(false);
+                setIsSuccess(true);
             }
         } catch (error) {
             // Xử lý lỗi nếu có
@@ -96,162 +92,175 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         }
     };
 
+    const handleOnClose = () => {
+        onClose();
+        props.fetchData();
+    }
+
     return (
         <>
-            {errorMessage && <span className="status-error">{errorMessage}</span>}
-            <form onSubmit={handleCreate}>
-                <div className='dialog-fields'>
-                    <table className='dialog-field'>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <label htmlFor="name">Tên</label>
-                                    <label className='status-lock'>*</label>
-                                </td>
-                                <td>
-                                    <input
-                                        type='text'
-                                        id="name"
-                                        name='name'
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </td>
-                            </tr>
-                            {(type === 1) &&
-                                <>
+            {isSuccess ? (
+                <Success onClose={handleOnClose}>
+                    <span>Tạo mới thành công</span>
+                </Success>
+            ) : (
+                <>
+                    {errorMessage && <span className="status-error">{errorMessage}</span>}
+                    <form onSubmit={handleCreate}>
+                        <div className='dialog-fields'>
+                            <table className='dialog-field'>
+                                <tbody>
                                     <tr>
                                         <td>
-                                            <label>Số tháng</label>
+                                            <label htmlFor="name">Tên</label>
+                                            <label className='status-lock'>*</label>
                                         </td>
                                         <td>
                                             <input
                                                 type='text'
-                                                name="numberOfMonth"
-                                                value={formData.numberOfMonth}
+                                                id="name"
+                                                name='name'
+                                                value={formData.name}
                                                 onChange={handleChange}
-                                                onKeyDown={handleKeyDown}
                                                 required
-                                                placeholder="0"
                                             />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <label>Phí phòng tập</label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type='text'
-                                                id="price"
-                                                name='centerCost'
-                                                value={formatMoney(formData.centerCost)}
-                                                onChange={handlePriceChange}
-                                                onKeyDown={handleKeyDown}
-                                                required
-                                                placeholder='0đ'
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            }
-                            {formData.hasPt &&
-                                <>
+                                    {(type === 1) &&
+                                        <>
+                                            <tr>
+                                                <td>
+                                                    <label>Số tháng</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type='text'
+                                                        name="numberOfMonth"
+                                                        value={formData.numberOfMonth}
+                                                        onChange={handleChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder="0"
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label>Phí phòng tập</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type='text'
+                                                        id="price"
+                                                        name='centerCost'
+                                                        value={formatMoney(formData.centerCost)}
+                                                        onChange={handlePriceChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder='0đ'
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </>
+                                    }
+                                    {formData.hasPt &&
+                                        <>
+                                            <tr>
+                                                <td colSpan={2}>
+                                                    <div className="sep-container">
+                                                        <div className="sep-text">Huấn luyện viên</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label htmlFor="numberOfsession">Tổng buổi tập</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type='number'
+                                                        id="numberOfsession"
+                                                        name='numberOfsession'
+                                                        value={formData.numberOfsession}
+                                                        onChange={handleChange}
+                                                        min={1}
+                                                        required
+                                                        placeholder='1'
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label htmlFor="ptCost">Chi phí / buổi</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        id="ptCost"
+                                                        name="ptCost"
+                                                        value={formatMoney(formData.ptCost)}
+                                                        onChange={handlePriceChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder="0đ"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </>
+                                    }
+                                    {formData.hasNe &&
+                                        <>
+                                            <tr>
+                                                <td colSpan={2}>
+                                                    <div className="sep-container">
+                                                        <div className="sep-text">Bác sỹ dinh dưỡng</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label htmlFor="neCost">Chi phí </label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        id="neCost"
+                                                        name="neCost"
+                                                        value={formatMoney(formData.neCost)}
+                                                        onChange={handlePriceChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder="0đ"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </>
+                                    }
                                     <tr>
                                         <td colSpan={2}>
                                             <div className="sep-container">
-                                                <div className="sep-text">Huấn luyện viên</div>
+                                                <div className="sep-text"></div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label htmlFor="numberOfsession">Tổng buổi tập</label>
+                                            Tổng cộng :
                                         </td>
                                         <td>
-                                            <input
-                                                type='number'
-                                                id="numberOfsession"
-                                                name='numberOfsession'
-                                                value={formData.numberOfsession}
-                                                onChange={handleChange}
-                                                min={1}
-                                                required
-                                                placeholder='1'
-                                            />
+                                            {formatMoney(formData.price)} đ
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <label htmlFor="ptCost">Chi phí / buổi</label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                id="ptCost"
-                                                name="ptCost"
-                                                value={formatMoney(formData.ptCost)}
-                                                onChange={handlePriceChange}
-                                                onKeyDown={handleKeyDown}
-                                                required
-                                                placeholder="0đ"
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            }
-                            {formData.hasNe &&
-                                <>
-                                    <tr>
-                                        <td colSpan={2}>
-                                            <div className="sep-container">
-                                                <div className="sep-text">Bác sỹ dinh dưỡng</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label htmlFor="neCost">Chi phí </label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                id="neCost"
-                                                name="neCost"
-                                                value={formatMoney(formData.neCost)}
-                                                onChange={handlePriceChange}
-                                                onKeyDown={handleKeyDown}
-                                                required
-                                                placeholder="0đ"
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            }
-                            <tr>
-                                <td colSpan={2}>
-                                    <div className="sep-container">
-                                        <div className="sep-text"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Tổng cộng :
-                                </td>
-                                <td>
-                                    {formatMoney(formData.price)} đ
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div className='dialog-button-tray'>
-                    <button type='submit' className='any-button button-submit' disabled={isLoading}>Xác nhận</button>
-                    <button type='button' className='any-button button-cancel' onClick={onClose}>Hủy bỏ</button>
-                </div>
-            </form>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className='dialog-button-tray'>
+                            <button type='submit' className='any-button button-submit' disabled={isLoading}>Xác nhận</button>
+                            <button type='button' className='any-button button-cancel' onClick={onClose}>Hủy bỏ</button>
+                        </div>
+                    </form>
+                </>
+            )}
         </>
     );
 };
@@ -365,6 +374,7 @@ export const View = ({ data, onClose, ...props }) => {
 export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState(data);
+    const [isSuccess, setIsSuccess] = useState(false);
     const type = props.packageType;
 
     useEffect(() => {
@@ -413,16 +423,9 @@ export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
         try {
             onLoading(true);
             const response = await axios.put('/Packages/UpdatePackage', formData);
-            if (response.status === 200) {
-                alert('Cập nhật thành công');
-                props.fetchData();
-            } else {
-                setErrorMessage(<>
-                    <p>Cập nhật không thành công</p>
-                    <p>Status: {response.status}</p>
-                </>
-                );
+            if (response) {
                 onLoading(false);
+                setIsSuccess(true);
             }
         } catch (error) {
             // Xử lý lỗi nếu có
@@ -445,162 +448,175 @@ export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
         }
     };
 
+    const handleOnClose = () => {
+        onClose();
+        props.fetchData();
+    }
+
     return (
         <>
-            {errorMessage && <span className="status-error">{errorMessage}</span>}
-            <form onSubmit={handleUpdate}>
-                <div className='dialog-fields'>
-                    <table className='dialog-field'>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <label htmlFor="name">Tên</label>
-                                    <label className='status-lock'>*</label>
-                                </td>
-                                <td>
-                                    <input
-                                        type='text'
-                                        id="name"
-                                        name='name'
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </td>
-                            </tr>
-                            {type === 1 &&
-                                <>
+            {isSuccess ? (
+                <Success onClose={handleOnClose}>
+                    <span>Cập nhật thành công</span>
+                </Success>
+            ) : (
+                <>
+                    {errorMessage && <span className="status-error">{errorMessage}</span>}
+                    <form onSubmit={handleUpdate}>
+                        <div className='dialog-fields'>
+                            <table className='dialog-field'>
+                                <tbody>
                                     <tr>
                                         <td>
-                                            <label>Số tháng</label>
+                                            <label htmlFor="name">Tên</label>
+                                            <label className='status-lock'>*</label>
                                         </td>
                                         <td>
                                             <input
                                                 type='text'
-                                                name="numberOfMonth"
-                                                value={formData.numberOfMonth}
+                                                id="name"
+                                                name='name'
+                                                value={formData.name}
                                                 onChange={handleChange}
-                                                onKeyDown={handleKeyDown}
                                                 required
-                                                placeholder="0"
                                             />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <label htmlFor="price">Phí phòng tập</label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type='text'
-                                                id="price"
-                                                name='centerCost'
-                                                value={formatMoney(formData.centerCost)}
-                                                onChange={handlePriceChange}
-                                                onKeyDown={handleKeyDown}
-                                                required
-                                                placeholder='0đ'
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            }
-                            {formData.hasPt &&
-                                <>
+                                    {type === 1 &&
+                                        <>
+                                            <tr>
+                                                <td>
+                                                    <label>Số tháng</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type='text'
+                                                        name="numberOfMonth"
+                                                        value={formData.numberOfMonth}
+                                                        onChange={handleChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder="0"
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label htmlFor="price">Phí phòng tập</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type='text'
+                                                        id="price"
+                                                        name='centerCost'
+                                                        value={formatMoney(formData.centerCost)}
+                                                        onChange={handlePriceChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder='0đ'
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </>
+                                    }
+                                    {formData.hasPt &&
+                                        <>
+                                            <tr>
+                                                <td colSpan={2}>
+                                                    <div className="sep-container">
+                                                        <div className="sep-text">Huấn luyện viên</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label htmlFor="numberOfsession">Tổng số buổi</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type='number'
+                                                        id="numberOfsession"
+                                                        name='numberOfsession'
+                                                        value={formData.numberOfsession}
+                                                        onChange={handleChange}
+                                                        min={1}
+                                                        required
+                                                        placeholder='1'
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label htmlFor="ptCost">Chi phí / buổi</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        id="ptCost"
+                                                        name="ptcost"
+                                                        value={formatMoney(formData.ptcost)}
+                                                        onChange={handlePriceChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder="0đ"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </>
+                                    }
+                                    {formData.hasNe &&
+                                        <>
+                                            <tr>
+                                                <td colSpan={2}>
+                                                    <div className="sep-container">
+                                                        <div className="sep-text">Bác sỹ dinh dưỡng</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label htmlFor="neCost">Chi phí </label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        id="neCost"
+                                                        name="necost"
+                                                        value={formatMoney(formData.necost)}
+                                                        onChange={handlePriceChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder="0đ"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </>
+                                    }
                                     <tr>
                                         <td colSpan={2}>
                                             <div className="sep-container">
-                                                <div className="sep-text">Huấn luyện viên</div>
+                                                <div className="sep-text"></div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label htmlFor="numberOfsession">Tổng số buổi</label>
+                                            Tổng cộng :
                                         </td>
                                         <td>
-                                            <input
-                                                type='number'
-                                                id="numberOfsession"
-                                                name='numberOfsession'
-                                                value={formData.numberOfsession}
-                                                onChange={handleChange}
-                                                min={1}
-                                                required
-                                                placeholder='1'
-                                            />
+                                            {formatMoney(formData.price)} đ
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <label htmlFor="ptCost">Chi phí / buổi</label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                id="ptCost"
-                                                name="ptcost"
-                                                value={formatMoney(formData.ptcost)}
-                                                onChange={handlePriceChange}
-                                                onKeyDown={handleKeyDown}
-                                                required
-                                                placeholder="0đ"
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            }
-                            {formData.hasNe &&
-                                <>
-                                    <tr>
-                                        <td colSpan={2}>
-                                            <div className="sep-container">
-                                                <div className="sep-text">Bác sỹ dinh dưỡng</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label htmlFor="neCost">Chi phí </label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                id="neCost"
-                                                name="necost"
-                                                value={formatMoney(formData.necost)}
-                                                onChange={handlePriceChange}
-                                                onKeyDown={handleKeyDown}
-                                                required
-                                                placeholder="0đ"
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            }
-                            <tr>
-                                <td colSpan={2}>
-                                    <div className="sep-container">
-                                        <div className="sep-text"></div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Tổng cộng :
-                                </td>
-                                <td>
-                                    {formatMoney(formData.price)} đ
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div className='dialog-button-tray'>
-                    <button type='submit' className='any-button button-submit' disabled={isLoading}>Cập nhật</button>
-                    <button type='button' className='any-button button-cancel' onClick={onClose}>Hủy bỏ</button>
-                </div>
-            </form>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className='dialog-button-tray'>
+                            <button type='submit' className='any-button button-submit' disabled={isLoading}>Cập nhật</button>
+                            <button type='button' className='any-button button-cancel' onClick={onClose}>Hủy bỏ</button>
+                        </div>
+                    </form>
+                </>
+            )};
         </>
     );
 };
@@ -674,3 +690,47 @@ export const Delete = ({ data, isLoading, onLoading, onClose, ...props }) => {
         </div>
     );
 };
+
+const Success = ({ onClose, children }) => {
+    const [autoCloseCountdown, setAutoCloseCountdown] = useState(SUCCESS_COUNTDOWN + 1);
+    const [autoCloseTimeout, setAutoCloseTimeout] = useState(null);
+
+    useEffect(() => {
+        if (autoCloseCountdown > 0) {
+            const timeoutId = setTimeout(() => {
+                setAutoCloseCountdown((prevCountdown) => prevCountdown - 1);
+            }, 1000);
+            setAutoCloseTimeout(timeoutId);
+        } else if (autoCloseCountdown === 0) {
+            onClose();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [autoCloseCountdown]);
+
+    const handleOnClose = () => {
+        if (autoCloseTimeout) {
+            clearTimeout(autoCloseTimeout);
+        }
+        onClose();
+    }
+
+    return (
+        <>
+            <div className="success-checkmark">
+                <div className="check-icon">
+                    <span className="icon-line line-tip"></span>
+                    <span className="icon-line line-long"></span>
+                    <div className="icon-circle"></div>
+                    <div className="icon-fix"></div>
+                </div>
+            </div>
+            {children}
+            <div>
+                {`Cửa sổ sẽ tự động đóng sau ${autoCloseCountdown === SUCCESS_COUNTDOWN + 1 ? autoCloseCountdown - 1 : autoCloseCountdown} giây`}
+            </div>
+            <div className='dialog-button-tray'>
+                <button type='button' className='any-button button-cancel' onClick={handleOnClose}>Đóng</button>
+            </div>
+        </>
+    )
+}
