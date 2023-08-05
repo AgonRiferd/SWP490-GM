@@ -60,7 +60,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         e.preventDefault();
 
         if (formData.name.trim().length === 0) {
-            alert('Vui lòng điền đầy đủ thông tin!');
+            setErrorMessage('Vui lòng điền đầy đủ thông tin!');
             return;
         }
 
@@ -416,7 +416,7 @@ export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
         e.preventDefault();
 
         if (formData.name.trim().length === 0) {
-            alert('Vui lòng điền đầy đủ thông tin!');
+            setErrorMessage('Vui lòng điền đầy đủ thông tin!');
             return;
         }
 
@@ -623,6 +623,7 @@ export const Edit = ({ data, onClose, isLoading, onLoading, ...props }) => {
 
 export const Delete = ({ data, isLoading, onLoading, onClose, ...props }) => {
     const [errorMessage, setErrorMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const handleDelete = async (e) => {
         e.preventDefault();
@@ -630,17 +631,10 @@ export const Delete = ({ data, isLoading, onLoading, onClose, ...props }) => {
         try {
             onLoading(true);
             const response = await axios.delete(`/Packages/DeletePackage/${data.id}`);
-            if (response.status === 200 || response.status === 204) {
-                alert('Package đã được xóa.');
-                props.fetchData();
-            } else {
-                setErrorMessage(<>
-                    <p>Xóa không thành công</p>
-                    <p>Status: {response.status}</p>
-                </>
-                );
-                onLoading(false);
+            if (response) {
+                setIsSuccess(true);
             }
+            onLoading(false);
         } catch (error) {
             // Xử lý lỗi nếu có
             if (error.response) {
@@ -658,36 +652,49 @@ export const Delete = ({ data, isLoading, onLoading, onClose, ...props }) => {
         }
     };
 
+    const handleOnClose = () => {
+        onClose();
+        props.fetchData();
+    }
+
     return (
-        <div className="content-delete">
-            {errorMessage ? (
-                <>
-                    <center>
-                        <span className="status-error">{errorMessage}</span>
-                    </center>
-                    <div className="dialog-button-tray">
-                        <button type="button" className="any-button button-cancel" onClick={onClose}>
-                            Trở về
-                        </button>
-                    </div>
-                </>
+        <>
+            {isSuccess ? (
+                <Success onClose={handleOnClose}>
+                    <span>Đã xóa thành công</span>
+                </Success>
             ) : (
-                <>
-                    <center>
-                        <p>Tên Dịch vụ : <span className='status-error'>{data.name}</span></p>
-                        <p>Bạn có chắc chắn muốn xóa?</p>
-                    </center>
-                    <div className="dialog-button-tray">
-                        <button type="button" className="any-button" onClick={handleDelete} disabled={isLoading}>
-                            Xác nhận
-                        </button>
-                        <button type="button" className="any-button button-cancel button-remarquable" onClick={onClose}>
-                            Hủy bỏ
-                        </button>
-                    </div>
-                </>
+                <div className="content-delete">
+                    {errorMessage ? (
+                        <>
+                            <center>
+                                <span className="status-error">{errorMessage}</span>
+                            </center>
+                            <div className="dialog-button-tray">
+                                <button type="button" className="any-button button-cancel" onClick={onClose}>
+                                    Trở về
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <center>
+                                <p>Tên Dịch vụ : <span className='status-error'>{data.name}</span></p>
+                                <p>Bạn có chắc chắn muốn xóa?</p>
+                            </center>
+                            <div className="dialog-button-tray">
+                                <button type="button" className="any-button" onClick={handleDelete} disabled={isLoading}>
+                                    Xác nhận
+                                </button>
+                                <button type="button" className="any-button button-cancel button-remarquable" onClick={onClose}>
+                                    Hủy bỏ
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
             )}
-        </div>
+        </>
     );
 };
 

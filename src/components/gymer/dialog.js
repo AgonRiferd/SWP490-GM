@@ -85,9 +85,9 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
             onLoading(true);
             const response = await axiosInstance.put(`/Accounts/UpdateAccount?id=${data.id}`, formData);
             if (response) {
-                onLoading(false);
                 setIsSuccess(true);
             }
+            onLoading(false);
         } catch (error) {
             // Xử lý lỗi nếu có
             if (error.response) {
