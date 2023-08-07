@@ -10,13 +10,13 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [isSuccess, setIsSuccess] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
-        numberOfsession: (type === 2) || (type === 4) ? 1 : 0,
-        numberOfMonth: type === 1 ? 1 : 0,
-        centerCost: 0,
+        numberOfsession: (type === 2) || (type === 4) ? 1 : null,
+        numberOfMonth: (type === 1 || type === 3 || type === 4) ? 1 : null,
+        centerCost: type === 1 ? 0 : null,
         hasPt: (type === 2) || (type === 4),
-        ptCost: 0,
+        ptCost: (type === 2) || (type === 4) ? 0 : null,
         hasNe: (type === 3) || (type === 4),
-        neCost: 0,
+        neCost: (type === 3) || (type === 4) ? 0 : null,
         price: 0,
         discount: null,
     });
@@ -24,13 +24,26 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 
     // Cập nhật giá trị của price khi các thành phần thay đổi
     useEffect(() => {
-        let total = (formData.centerCost * formData.numberOfMonth) + (formData.hasPt ? formData.ptCost * formData.numberOfsession : 0) + (formData.hasNe ? formData.neCost : 0);
+        let total = 0;
+        if (type === 1) {
+            total = formData.centerCost * formData.numberOfMonth;
+        } else if (type === 2) {
+            total = formData.ptCost * formData.numberOfsession;
+        } else if (type === 3) {
+            total = formData.neCost * formData.numberOfMonth;
+        } else if (type === 4) {
+            total = formData.ptCost * formData.numberOfsession + formData.neCost * formData.numberOfMonth;
+        } else {
+            total = 0;
+        }
+
         if (formData.discount)
-            total = total - total * formData.discount / 100;
+            total -= total * formData.discount / 100;
         setFormData((prevFormData) => ({
             ...prevFormData,
             price: total,
         }));
+        // eslint-disable-next-line
     }, [formData.discount, formData.centerCost, formData.numberOfMonth, formData.ptCost, formData.hasPt, formData.neCost, formData.hasNe, formData.numberOfsession]);
 
     const handleKeyDown = (e) => {
@@ -239,6 +252,22 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                             </tr>
                                             <tr>
                                                 <td>
+                                                    <label>Số tháng</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type='text'
+                                                        name="numberOfMonth"
+                                                        value={formData.numberOfMonth}
+                                                        onChange={handleChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder="0"
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
                                                     <label htmlFor="neCost">Chi phí </label>
                                                 </td>
                                                 <td>
@@ -258,8 +287,8 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     }
                                     <tr>
                                         <td>
-                                            <input 
-                                                type='checkbox' 
+                                            <input
+                                                type='checkbox'
                                                 checked={hasDiscount}
                                                 onChange={handleHasDiscountChange}
                                             />
@@ -273,16 +302,17 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                             </td>
                                             <td>
                                                 <input
-                                                        type="number"
-                                                        id="discount"
-                                                        name="discount"
-                                                        value={formData.discount}
-                                                        onChange={handleChange}
-                                                        required
-                                                        placeholder="0"
-                                                        min={0}
-                                                        max={100}
-                                                    />
+                                                    type="number"
+                                                    id="discount"
+                                                    name="discount"
+                                                    value={formData.discount}
+                                                    onChange={handleChange}
+                                                    required
+                                                    placeholder="0"
+                                                    min={0}
+                                                    max={100}
+                                                />
+                                                %
                                             </td>
                                         </tr>
                                     }
