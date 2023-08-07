@@ -35,7 +35,8 @@ const PTManage = () => {
             });
             //Fetch thành công
             const { data } = response.data;
-            setData(data);
+            if (data)
+                setData(data);
             setIsLoading(false); // Kết thúc quá trình fetch
         } catch (error) {
             if (error.response) {

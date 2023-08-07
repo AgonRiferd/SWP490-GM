@@ -18,16 +18,20 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         hasNe: (type === 3) || (type === 4),
         neCost: 0,
         price: 0,
+        discount: null,
     });
+    const [hasDiscount, setHasDiscount] = useState(false);
 
     // Cập nhật giá trị của price khi các thành phần thay đổi
     useEffect(() => {
-        const total = (formData.centerCost * formData.numberOfMonth) + (formData.hasPt ? formData.ptCost * formData.numberOfsession : 0) + (formData.hasNe ? formData.neCost : 0);
+        let total = (formData.centerCost * formData.numberOfMonth) + (formData.hasPt ? formData.ptCost * formData.numberOfsession : 0) + (formData.hasNe ? formData.neCost : 0);
+        if (formData.discount)
+            total = total - total * formData.discount / 100;
         setFormData((prevFormData) => ({
             ...prevFormData,
             price: total,
         }));
-    }, [formData.centerCost, formData.numberOfMonth, formData.ptCost, formData.hasPt, formData.neCost, formData.hasNe, formData.numberOfsession]);
+    }, [formData.discount, formData.centerCost, formData.numberOfMonth, formData.ptCost, formData.hasPt, formData.neCost, formData.hasNe, formData.numberOfsession]);
 
     const handleKeyDown = (e) => {
         const { key } = e;
@@ -43,6 +47,22 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
             ...prevFormData,
             [name]: value,
         }));
+    };
+
+    const handleHasDiscountChange = (e) => {
+        const { checked } = e.target;
+        if (checked) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                discount: 0,
+            }));
+        } else {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                discount: null,
+            }));
+        }
+        setHasDiscount(checked);
     };
 
     const handlePriceChange = (e) => {
@@ -235,6 +255,36 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                 </td>
                                             </tr>
                                         </>
+                                    }
+                                    <tr>
+                                        <td>
+                                            <input 
+                                                type='checkbox' 
+                                                checked={hasDiscount}
+                                                onChange={handleHasDiscountChange}
+                                            />
+                                            Giảm giá
+                                        </td>
+                                    </tr>
+                                    {hasDiscount &&
+                                        <tr>
+                                            <td>
+                                                <label htmlFor='discount'>Mức giảm</label>
+                                            </td>
+                                            <td>
+                                                <input
+                                                        type="number"
+                                                        id="discount"
+                                                        name="discount"
+                                                        value={formData.discount}
+                                                        onChange={handleChange}
+                                                        required
+                                                        placeholder="0"
+                                                        min={0}
+                                                        max={100}
+                                                    />
+                                            </td>
+                                        </tr>
                                     }
                                     <tr>
                                         <td colSpan={2}>

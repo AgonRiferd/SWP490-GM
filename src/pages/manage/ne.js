@@ -35,7 +35,8 @@ const NEManage = () => {
             });
             //Fetch thành công (Chấp nhận code: 2xx)
             const { data } = response.data;
-            setData(data);
+            if (data)
+                setData(data);
             setIsLoading(false);
         } catch (error) {
             if (error.response) {

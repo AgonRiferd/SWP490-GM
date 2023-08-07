@@ -34,9 +34,10 @@ const MemberManage = () => {
                 }
             });
             //Fetch thành công
-            if (response.status === 200) {
+            if (response) {
                 const { data } = response.data;
-                setData(data);
+                if (data)
+                    setData(data);
             }
             setIsLoading(false); // Kết thúc quá trình fetch
         } catch (error) {

@@ -102,13 +102,6 @@ const PackageManage = () => {
             component: View,
             packageType: activeTabItem
         },
-        dialogEdit: {
-            title: "Chỉnh sửa",
-            icon: <i className="fa-solid fa-pen-to-square"></i>,
-            component: Edit,
-            fetchData: fetchData,
-            packageType: activeTabItem
-        },
         dialogDelete: {
             title: "Loại bỏ",
             icon: <i className="fa-solid fa-trash"></i>,
