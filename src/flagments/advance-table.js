@@ -5,27 +5,19 @@ import Dialog from "./dialog";
 /**
  * @param {JSON} data dữ liệu đầu vào dưới dạng json
  * @param {Array} columns một mảng xác định các cột của bảng
- * @param {Array} sortees một mảng chứa tên cột và giá trị boolean dùng để xác định cột sắp xếp mặc định.
+ * @param {Array} initialState một mảng chứa các giá trị dựa theo initialState của React-table.
  * @param {JSON} dialogs một mảng chứa các chức năng cho dialog: tạo: dialogCreate, 
  * sửa: dialogEdit, xóa: dialogDelete.
  * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, phân trang và dialog cho CRUD.
  */
 
-export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, viewData }) => {
+export const AdvanceTable = ({ data, columns: initialColumns, initialState, dialogs, viewData }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
     const [status, setStatus] = useState('1');
     const [hasIsLocked, setHasIsLocked] = useState(false);
     const { dialogCreate, dialogView, dialogEdit, dialogDelete } = dialogs;
-    const sortees_default = useMemo (
-        () => [
-            {
-                id: "",
-                desc: false
-            }
-        ], []
-    );
 
     const options = [
         { value: 0, label: 'All' },
@@ -48,7 +40,7 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
                             </span>
                         }
                         {viewData &&
-                            <span onClick={()=> viewData.setDataView(row.original)} title={viewData.title ? viewData.title : 'View'}>
+                            <span onClick={() => viewData.setDataView(row.original)} title={viewData.title ? viewData.title : 'View'}>
                                 {viewData.icon ? viewData.icon : viewData.title ? viewData.title : 'View'}
                             </span>
                         }
@@ -66,7 +58,7 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
                 ),
                 width: 170
             },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         ], [initialColumns, dialogView, dialogEdit, dialogDelete]
     );
 
@@ -141,9 +133,9 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
         useMemo(() => ({
             columns: customColumns,
             data: handleData(),
-            initialState: { sortBy: (sortees ? sortees : sortees_default) },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        }), [customColumns, handleData, sortees]
+            initialState: initialState,
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }), [customColumns, handleData]
         ), useGlobalFilter, useSortBy, usePagination
     );
 
@@ -279,3 +271,35 @@ export const AdvanceTable = ({ data, columns: initialColumns, sortees, dialogs, 
         </>
     )
 };
+
+export const LoadingTable = () => {
+    return (
+        <div className="loading-table">
+            <table className="custom-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {Array(5).fill(null).map((_, rowIndex) => (
+                        <tr key={rowIndex}>
+                            {Array(6).fill(null).map((_, cellIndex) => (
+                                <td key={cellIndex}></td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <div className="loading-overlay">
+                <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+                <span>Đang tải dữ liệu...</span>
+            </div>
+        </div>
+    )
+}

@@ -24,9 +24,10 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         gender: GENDER_MALE,
         role: 'PT'
     });
+    const [retypePw, setRetypePw] = useState('');
 
     const [certData, setCertData] = useState({
-        experience: 0
+        experience: 1
     });
 
     useEffect(() => {
@@ -45,6 +46,11 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
             [name]: value,
         }));
     };
+
+    const handleRePasswordChange = (e) => {
+        const { value } = e.target;
+        setRetypePw(value);
+    }
 
     const handleKeyDown = (e) => {
         const { key } = e;
@@ -73,12 +79,22 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         }));
     }
 
+    const checkValid = () => {
+        if (!formData.phoneNo || !formData.password || !formData.fullname) {
+            setErrorMessage('Vui lòng điền đầy đủ thông tin!');
+            return false;
+        }
+        if (formData.password !== retypePw) {
+            setErrorMessage('Mật khẩu và mật khẩu nhập lại không khớp.');
+            return false;
+        }
+        return true;
+    }
+
     const handleCreateAccount = async (e) => {
         e.preventDefault();
         setErrorMessage('');
-
-        if (!formData.phoneNo || !formData.password || !formData.fullname) {
-            setErrorMessage('Vui lòng điền đầy đủ thông tin!');
+        if (!checkValid()) {
             return;
         }
 
@@ -87,7 +103,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
             const response = await axiosInstance.post('/Accounts/CreateAccount', formData);
             if (response) {
                 setId(response.data);
-                onLoading(false);
             }
         } catch (error) {
             // Xử lý lỗi nếu có
@@ -107,6 +122,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                     </>
                 );
             }
+        } finally {
             onLoading(false);
         }
     };
@@ -123,13 +139,11 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
             onLoading(true);
             const response = await axiosInstance.post('/Qualifications/CreateQualification', certData);
             if (response) {
-                onLoading(false);
                 setIsSuccess(true);
             }
         } catch (error) {
             // Xử lý lỗi nếu có
             if (error.response) {
-                console.log(error);
                 setErrorMessage(
                     <>
                         <p>Tạo không thành công</p>
@@ -144,6 +158,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                     </>
                 );
             }
+        } finally {
             onLoading(false);
         }
     }
@@ -253,6 +268,22 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                 name="password"
                                                 value={formData.password}
                                                 onChange={handleChange}
+                                                required
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="retypePw">Nhập lại mật khẩu</label>
+                                            <label className='status-lock'>*</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="password"
+                                                id="retypePw"
+                                                name="retypePw"
+                                                value={retypePw}
+                                                onChange={handleRePasswordChange}
                                                 required
                                             />
                                         </td>
@@ -406,7 +437,82 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
     );
 };
 
-export const Delete = ({ data, onClose }) => { };
+export const Delete = ({ data, onLoading, isLoading, onClose, ...props }) => {
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    const handleDelete = async (e) => {
+        e.preventDefault();
+
+        try {
+            onLoading(true);
+            const response = await axiosInstance.delete(`/Accounts/DeleteAccountPERMANENT/${data.id}`);
+            if (response) {
+                setIsSuccess(true);
+            }
+            onLoading(false);
+        } catch (error) {
+            // Xử lý lỗi nếu có
+            if (error.response) {
+                setErrorMessage(<>
+                    <p>Xóa không thành công</p>
+                    <p>Mã lỗi: {error.response.status}</p>
+                </>);
+            } else {
+                setErrorMessage(<>
+                    <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                    <p>Mã lỗi: {error.code}</p>
+                </>);
+            }
+            onLoading(false);
+        }
+    };
+
+    const handleOnClose = () => {
+        onClose();
+        props.fetchData();
+    }
+
+    return (
+        <>
+            {isSuccess ? (
+                <Success onClose={handleOnClose}>
+                    <span>Đã xóa thành công</span>
+                </Success>
+            ) : (
+                <div className="content-delete">
+                    {errorMessage ? (
+                        <>
+                            <center>
+                                <span className="status-error">{errorMessage}</span>
+                            </center>
+                            <div className="dialog-button-tray">
+                                <button type="button" className="any-button button-cancel" onClick={onClose}>
+                                    Trở về
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <center>
+                                <p>Tên Dịch vụ : <span className='status-error'>{data.name}</span></p>
+                                <p>Bạn có chắc chắn muốn xóa?</p>
+                            </center>
+                            <div className="dialog-button-tray">
+                                <button type="button" className="any-button" onClick={handleDelete} disabled={isLoading}>
+                                    Xác nhận
+                                </button>
+                                <button type="button" className="any-button button-cancel button-remarquable" onClick={onClose}>
+                                    Hủy bỏ
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            )}
+        </>
+    );
+};
 
 export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }) => {
     const [initialData,] = useState(data);

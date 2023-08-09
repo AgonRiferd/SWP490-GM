@@ -3,8 +3,7 @@ import axiosInstance from "../../utils/axiosConfig";
 import { format } from 'date-fns'
 import COLUMNS from "../exercises/Columns";
 import { Delete, View } from "../exercises/dialog";
-import { LoadingTable } from "../../flagments/loading-table";
-import { AdvanceTable } from "../../flagments/advance-table";
+import { AdvanceTable, LoadingTable } from "../../flagments/advance-table";
 import { formatPhoneNumber } from "../../utils/convert";
 import { ImageInput } from "../../utils/imageConvert";
 import Dialog from "../../flagments/dialog";

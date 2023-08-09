@@ -1,9 +1,8 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import COLUMNS from '../../components/pt/Columns';
-import { Create, Edit, Delete } from '../../components/pt/dialog';
-import { AdvanceTable } from '../../flagments/advance-table';
-import { LoadingTable } from '../../flagments/loading-table';
+import { Create, Edit } from '../../components/pt/dialog';
+import { AdvanceTable, LoadingTable } from '../../flagments/advance-table';
 import CustomView from '../../components/pt/View';
 import axiosInstance from '../../utils/axiosConfig';
 
@@ -15,14 +14,14 @@ const PTManage = () => {
     const [data, setData] = useState([]);
     const [dataView, setDataView] = useState();
     const columns = useMemo(() => COLUMNS, []);
-    const sortees = useMemo(
-        () => [
+    const initialState =  useMemo (() => ({ 
+        sortBy: [
             {
                 id: "fullname",
                 desc: false
             }
-        ], []
-    );
+        ]
+    }), []);
 
     const fetchData = async () => {
         try {
@@ -72,11 +71,6 @@ const PTManage = () => {
             icon: <i className="fa-solid fa-user-lock"></i>,
             component: Edit,
             fetchData: fetchData
-        },
-        dialogDelete: {
-            title: "Loại bỏ",
-            icon: <i className="fa-solid fa-trash"></i>,
-            component: Delete
         }
     }), []);
 
@@ -115,7 +109,7 @@ const PTManage = () => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData} />
+                    <AdvanceTable data={data} columns={columns} initialState={initialState} dialogs={dialogs} viewData={viewData} />
                 </div>
             )}
             {dataView &&

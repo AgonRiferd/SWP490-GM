@@ -1,10 +1,9 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Edit, Delete } from '../../components/gymer/dialog';
+import { Edit } from '../../components/gymer/dialog';
 import CustomView from '../../components/gymer/View';
 import COLUMNS from '../../components/gymer/Columns';
-import { AdvanceTable } from '../../flagments/advance-table';
-import { LoadingTable } from '../../flagments/loading-table';
+import { AdvanceTable, LoadingTable } from '../../flagments/advance-table';
 import axiosInstance from '../../utils/axiosConfig';
 
 const DATA_PARAM_ROLE_NAME = 'gymer';
@@ -15,14 +14,14 @@ const MemberManage = () => {
     const [data, setData] = useState([]);
     const [dataView, setDataView] = useState(null);
     const columns = useMemo(() => COLUMNS, []);
-    const sortees = useMemo(
-        () => [
+    const initialState =  useMemo (() => ({ 
+        sortBy: [
             {
                 id: "fullname",
                 desc: false
             }
-        ], []
-    );
+        ]
+    }), []);
 
     const fetchData = async () => {
         try {
@@ -68,12 +67,12 @@ const MemberManage = () => {
             component: Edit,
             fetchData: fetchData
         },
-        dialogDelete: {
-            title: "Loại bỏ",
-            icon: <i className="fa-solid fa-trash"></i>,
-            component: Delete,
-            fetchData: fetchData
-        }
+        // dialogDelete: {
+        //     title: "Loại bỏ",
+        //     icon: <i className="fa-solid fa-trash"></i>,
+        //     component: Delete,
+        //     fetchData: fetchData
+        // }
     }), []);
 
     const viewData = useMemo(() => ({
@@ -109,7 +108,7 @@ const MemberManage = () => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData} />
+                    <AdvanceTable data={data} columns={columns} initialState={initialState} dialogs={dialogs} viewData={viewData} />
                 </div>
             )}
             {dataView &&

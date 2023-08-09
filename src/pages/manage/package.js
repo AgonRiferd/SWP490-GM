@@ -1,10 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import COLUMNS from "../../components/package/Columns";
-import { Create, Edit, Delete, View } from "../../components/package/dialog";
-import { AdvanceTable } from '../../flagments/advance-table';
-import { useEffect } from 'react';
-import { LoadingTable } from '../../flagments/loading-table';
+import { Create, Delete, View } from "../../components/package/dialog";
+import { AdvanceTable, LoadingTable } from '../../flagments/advance-table';
 import axios from '../../utils/axiosConfig';
 
 const PackageManage = () => {
@@ -12,48 +10,53 @@ const PackageManage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
     const [activeTabItem, setActiveTabItem] = useState(1);
-    const commonColumns = useMemo(() => COLUMNS, []);
-    const column1 = useMemo(() => [
-        {
-            Header: 'Tên Gói',
-            accessor: 'name'
-        },
-        {
-            Header: 'Tổng số buổi',
-            accessor: 'numberOfsession',
-            width: 80
-        },
-        ...commonColumns
-    ], [commonColumns]);
-    const column2 = useMemo(() => [
-        {
-            Header: 'Tên Gói',
-            accessor: 'name'
-        },{
-            Header: 'Tổng số tháng',
-            accessor: 'numberOfMonth',
-            width: 80
-        },
-        ...commonColumns
-    ], [commonColumns]);
-    const column3 = useMemo(() => [
-        {
-            Header: 'Tên Gói',
-            accessor: 'name'
-        },
-        ...commonColumns
-    ], [commonColumns]);
-    const columns = (activeTabItem === 1) ? column2 : 
-                    (activeTabItem === 2 || activeTabItem === 4)  ? column1 : column3;
+    const columns = useMemo(() => {
+        const commonColumns = COLUMNS;
+        
+        return (activeTabItem === 1 || activeTabItem === 3)
+            ? [
+                {
+                    Header: 'Tên Gói',
+                    accessor: 'name'
+                },
+                {
+                    Header: 'Tổng số tháng',
+                    accessor: 'numberOfMonth',
+                    width: 90
+                },
+                ...commonColumns
+            ]
+            : ((activeTabItem === 2)
+                ? [
+                    {
+                        Header: 'Tên Gói',
+                        accessor: 'name'
+                    },
+                    {
+                        Header: 'Tổng số buổi',
+                        accessor: 'numberOfsession',
+                        width: 80
+                    },
+                    ...commonColumns
+                ]
+                : [
+                    {
+                        Header: 'Tên Gói',
+                        accessor: 'name'
+                    },
+                    ...commonColumns
+                ]);
+    }, [activeTabItem]);
 
-    const sortees = useMemo(
-        () => [
+    const initialState =  useMemo (() => ({ 
+        hiddenColumns: ['createDate'],
+        sortBy: [
             {
-                id: "name",
-                desc: false
+                id: "createDate",
+                desc: true
             }
-        ], []
-    )
+        ]
+    }), []);
 
     const fetchData = async () => {
         try {
@@ -172,55 +175,77 @@ const PackageManage = () => {
             {isLoading ? (
                 <LoadingTable />
             ) : errorMessage ? (
-                <span className="status-error">{errorMessage}</span>
+                <span className="status-error">
+                    {errorMessage}
+                </span>
             ) : (
                 <div className="list-content">
                     {isTabActive(1) &&
-                        <NomalPackage data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                        <NormalPackage 
+                            data={data} 
+                            columns={columns} 
+                            initialState={initialState} 
+                            dialogs={dialogs}
+                        />
                     }
                     {isTabActive(2) &&
-                        <PremiumPackage data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                        <PremiumPackage 
+                            data={data}
+                            columns={columns}
+                            initialState={initialState}
+                            dialogs={dialogs}
+                        />
                     }
                     {isTabActive(3) &&
-                        <PremiumPlusPackage data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                        <PremiumPlusPackage
+                            data={data} 
+                            columns={columns} 
+                            initialState={initialState} 
+                            dialogs={dialogs} 
+                        />
                     }
                     {isTabActive(4) &&
-                        <GalaxyPackage data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                        <GalaxyPackage 
+                            data={data} 
+                            columns={columns} 
+                            initialState={initialState} 
+                            dialogs={dialogs} 
+                        />
                     }
                 </div>
             )}
         </>
     )
 }
-const NomalPackage = ({ data, columns, sortees, dialogs }) => {
+const NormalPackage = ({ data, columns, dialogs, ...props }) => {
     const customData = data.filter(row => !row.hasNe && !row.hasPt);
 
     return (
-        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs} />
+        <AdvanceTable data={customData} columns={columns} dialogs={dialogs} {...props} />
     )
 }
 
-const PremiumPackage = ({ data, columns, sortees, dialogs }) => {
+const PremiumPackage = ({ data, columns, dialogs, ...props }) => {
     const customData = data.filter(row => row.hasPt && !row.hasNe);
 
     return (
-        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs} />
+        <AdvanceTable data={customData} columns={columns} dialogs={dialogs} {...props} />
     )
 }
 
-const PremiumPlusPackage = ({ data, columns, sortees, dialogs }) => {
+const PremiumPlusPackage = ({ data, columns, dialogs, ...props }) => {
     const customData = data.filter(row => !row.hasPt && row.hasNe);
 
     return (
-        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs} />
+        <AdvanceTable data={customData} columns={columns} dialogs={dialogs} {...props} />
     )
 }
 
-const GalaxyPackage = ({ data, columns, sortees, dialogs }) => {
+const GalaxyPackage = ({ data, columns, dialogs, ...props }) => {
     const customData = data.filter(row => row.hasNe && row.hasPt);
 
     return (
-        <AdvanceTable data={customData} columns={columns} sortees={sortees} dialogs={dialogs} />
+        <AdvanceTable data={customData} columns={columns} dialogs={dialogs} {...props} />
     )
 }
 
