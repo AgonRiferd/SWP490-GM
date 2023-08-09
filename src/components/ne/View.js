@@ -3,7 +3,8 @@ import axiosInstance from "../../utils/axiosConfig";
 import { format } from 'date-fns'
 import COLUMNS from "../foods/Columns";
 import { Delete, View } from "../foods/dialog";
-import { AdvanceTable, LoadingTable} from "../../flagments/advance-table";
+import { LoadingTable } from "../../flagments/loading-table";
+import {AdvanceTable} from "../../flagments/advance-table";
 import { formatPhoneNumber } from "../../utils/convert";
 import Dialog from "../../flagments/dialog";
 import { ImageInput } from "../../utils/imageConvert";
@@ -294,14 +295,14 @@ const FoodAndSuppliments = ({ userId }) => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
-    const initialState =  useMemo (() => ({ 
-        sortBy: [
+    const sortees = useMemo(
+        () => [
             {
                 id: "name",
                 desc: false
             }
-        ]
-    }), []);
+        ], []
+    );
 
     const fetchData = async (UID) => {
         try {
@@ -355,7 +356,7 @@ const FoodAndSuppliments = ({ userId }) => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} initialState={initialState} dialogs={dialogs} />
+                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
                 </div>
             )}
         </>

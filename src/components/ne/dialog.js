@@ -20,10 +20,9 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         gender: GENDER_MALE,
         role: 'NE'
     });
-    const [retypePw, setRetypePw] = useState('');
 
     const [certData, setCertData] = useState({
-        experience: 1
+        experience: 0
     });
 
     useEffect(() => {
@@ -61,11 +60,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         }));
     };
 
-    const handleRePasswordChange = (e) => {
-        const { value } = e.target;
-        setRetypePw(value);
-    }
-
     const handleExpChange = (e) => {
         const { name, value } = e.target;
 
@@ -75,23 +69,12 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         }));
     }
 
-    const checkValid = () => {
-        if (!formData.phoneNo || !formData.password || !formData.fullname) {
-            setErrorMessage('Vui lòng điền đầy đủ thông tin!');
-            return false;
-        }
-        if (formData.password !== retypePw) {
-            setErrorMessage('Mật khẩu và mật khẩu nhập lại không khớp.');
-            return false;
-        }
-        return true;
-    }
-
     const handleCreateAccount = async (e) => {
         e.preventDefault();
         setErrorMessage('');
 
-        if (!checkValid()) {
+        if (!formData.phoneNo || !formData.password || !formData.fullname) {
+            setErrorMessage('Vui lòng điền đầy đủ thông tin!');
             return;
         }
 
@@ -101,6 +84,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
             if (response) {
                 setId(response.data);
             }
+            onLoading(false);
         } catch (error) {
             // Xử lý lỗi nếu có
             if (error.response) {
@@ -119,7 +103,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                     </>
                 );
             }
-        } finally {
             onLoading(false);
         }
     };
@@ -267,22 +250,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                 name="password"
                                                 value={formData.password}
                                                 onChange={handleChange}
-                                                required
-                                            />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label htmlFor="retypePw">Nhập lại mật khẩu</label>
-                                            <label className='status-lock'>*</label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="password"
-                                                id="retypePw"
-                                                name="retypePw"
-                                                value={retypePw}
-                                                onChange={handleRePasswordChange}
                                                 required
                                             />
                                         </td>

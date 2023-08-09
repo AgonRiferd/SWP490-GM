@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import COLUMNS from '../../components/ne/Columns';
-import { Create, Edit } from '../../components/ne/dialog';
-import { AdvanceTable, LoadingTable } from '../../flagments/advance-table';
+import { Create, Delete, Edit } from '../../components/ne/dialog';
+import { AdvanceTable } from '../../flagments/advance-table';
+import { LoadingTable } from '../../flagments/loading-table';
 import CustomView from '../../components/ne/View';
 import axiosInstance from '../../utils/axiosConfig';
 
@@ -14,14 +15,14 @@ const NEManage = () => {
     const [data, setData] = useState([]);
     const [dataView, setDataView] = useState();
     const columns = useMemo(() => COLUMNS, []);
-    const initialState =  useMemo (() => ({ 
-        sortBy: [
-            {
-                id: "fullname",
-                desc: false
+    const sortees = useMemo(
+        () => [
+            { 
+                id: "fullname", 
+                desc: false 
             }
-        ]
-    }), []);
+        ], []
+    );
 
     const fetchData = async () => {
         try {
@@ -71,6 +72,11 @@ const NEManage = () => {
             icon: <i className="fa-solid fa-user-lock"></i>, 
             component: Edit,
             fetchData: fetchData
+        },
+        dialogDelete: { 
+            title: "Loại bỏ", 
+            icon: <i className="fa-solid fa-trash"></i>, 
+            component: Delete 
         }
     }), []);
 
@@ -106,25 +112,14 @@ const NEManage = () => {
             {isLoading ? (
                 <LoadingTable />
             ) : errorMessage ? (
-                <span className="status-error">
-                    {errorMessage}
-                </span>
+                <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable 
-                        data={data} 
-                        columns={columns} 
-                        initialState={initialState} 
-                        dialogs={dialogs} 
-                        viewData={viewData}
-                    />
+                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} viewData={viewData} />
                 </div>
             )}
             {dataView && 
-                <CustomView 
-                    dataUser={dataView}
-                    isMainLoading={isLoading}
-                />
+                <CustomView dataUser={dataView} isMainLoading={isLoading} />
             }
         </>
     )

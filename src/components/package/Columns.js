@@ -1,9 +1,8 @@
-import { format } from "date-fns"
-
 const COLUMNS = [
     {
         Header: 'PT',
         accessor: 'hasPt',
+        disableGlobalFilter: true,
         Cell: ({ value }) => {
             return (
                 <center>
@@ -11,13 +10,13 @@ const COLUMNS = [
                 </center>
             )
         },
-        disableGlobalFilter: true,
         disableSortBy: true,
         width: 30
     },
     {
         Header: 'NE',
         accessor: 'hasNe',
+        disableGlobalFilter: true,
         Cell: ({ value }) => {
             return (
                 <center>
@@ -25,18 +24,8 @@ const COLUMNS = [
                 </center>
             )
         },
-        disableGlobalFilter: true,
         disableSortBy: true,
         width: 30
-    },
-    {
-        Header: 'Ngày Tạo',
-        accessor: 'createDate',
-        Cell: ({ value }) => {
-            return format(new Date(value), 'dd/MM/yyyy')
-        },
-        disableGlobalFilter: true,
-        width: 40
     },
     {
         Header: 'Tổng giá',
