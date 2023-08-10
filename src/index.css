@@ -948,6 +948,11 @@ table.dialog-field td:first-child {
   padding-right: 20px;
 }
 
+table.dialog-field td:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+}
+
 .dialog-field input {
   min-height: 25px;
   display: inline-block;
@@ -1677,4 +1682,30 @@ hr.view-divider {
 
 .schedule-table th {
   min-width: 80px;
+}
+
+.package-price {
+  display: flex;
+}
+
+.package-price:has(.discount) .price {
+  flex-grow: 1;
+  color: green;
+}
+
+.package-price .discount {
+  margin-left: 10px;
+}
+
+.price-header .title {
+  margin-right: 10px;
+}
+
+.price-header i.fa-circle-exclamation {
+  cursor: help;
+  font-size: 12px;
+}
+
+.pg-dialog {
+  min-width: 300px;
 }

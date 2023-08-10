@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import axios from '../../utils/axiosConfig';
 import { formatMoney } from '../../utils/convert';
 
@@ -11,7 +11,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [formData, setFormData] = useState({
         name: '',
         numberOfsession: (type === 2) || (type === 4) ? 1 : null,
-        numberOfMonth: (type === 1 || type === 3 || type === 4) ? 1 : null,
+        numberOfMonth: (type === 1 || type === 3) ? 1 : null,
         centerCost: type === 1 ? 0 : null,
         hasPt: (type === 2) || (type === 4),
         ptCost: (type === 2) || (type === 4) ? 0 : null,
@@ -32,7 +32,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         } else if (type === 3) {
             total = formData.neCost * formData.numberOfMonth;
         } else if (type === 4) {
-            total = formData.ptCost * formData.numberOfsession + formData.neCost * formData.numberOfMonth;
+            total = formData.ptCost * formData.numberOfsession + formData.neCost;
         } else {
             total = 0;
         }
@@ -250,25 +250,27 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                     </div>
                                                 </td>
                                             </tr>
+                                            {(type === 3) &&
+                                                <tr>
+                                                    <td>
+                                                        <label>Số tháng</label>
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            type='text'
+                                                            name="numberOfMonth"
+                                                            value={formData.numberOfMonth}
+                                                            onChange={handleChange}
+                                                            onKeyDown={handleKeyDown}
+                                                            required
+                                                            placeholder="0"
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            }
                                             <tr>
                                                 <td>
-                                                    <label>Số tháng</label>
-                                                </td>
-                                                <td>
-                                                    <input
-                                                        type='text'
-                                                        name="numberOfMonth"
-                                                        value={formData.numberOfMonth}
-                                                        onChange={handleChange}
-                                                        onKeyDown={handleKeyDown}
-                                                        required
-                                                        placeholder="0"
-                                                    />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label htmlFor="neCost">Chi phí </label>
+                                                    <label htmlFor="neCost">Chi phí {type === 3 && "/ tháng"}</label>
                                                 </td>
                                                 <td>
                                                     <input
@@ -286,6 +288,13 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                         </>
                                     }
                                     <tr>
+                                        <td colSpan={2}>
+                                            <div className="sep-container">
+                                                <div className="sep-text">Tùy Chọn</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>
                                             <input
                                                 type='checkbox'
@@ -294,12 +303,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                             />
                                             Giảm giá
                                         </td>
-                                    </tr>
-                                    {hasDiscount &&
-                                        <tr>
-                                            <td>
-                                                <label htmlFor='discount'>Mức giảm</label>
-                                            </td>
+                                        {hasDiscount &&
                                             <td>
                                                 <input
                                                     type="number"
@@ -314,8 +318,8 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                 />
                                                 %
                                             </td>
-                                        </tr>
-                                    }
+                                        }
+                                    </tr>
                                     <tr>
                                         <td colSpan={2}>
                                             <div className="sep-container">
@@ -347,6 +351,22 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 
 export const View = ({ data, onClose, ...props }) => {
     const type = props.packageType;
+    const beforePrice = useMemo(() => {
+        let total = 0;
+        if (type === 1) {
+            total = data.centerCost * data.numberOfMonth;
+        } else if (type === 2) {
+            total = data.ptcost * data.numberOfsession;
+        } else if (type === 3) {
+            total = data.necost * data.numberOfMonth;
+        } else if (type === 4) {
+            total = data.ptcost * data.numberOfsession + data.necost * data.numberOfMonth;
+        }
+
+        return total;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [type]);
+
     return (
         <>
             <div className='dialog-fields'>
@@ -416,9 +436,19 @@ export const View = ({ data, onClose, ...props }) => {
                                         </div>
                                     </td>
                                 </tr>
+                                {type === 3 &&
+                                    <tr>
+                                        <td>
+                                            <span>Số tháng</span>
+                                        </td>
+                                        <td>
+                                            <span>{data.numberOfMonth}</span>
+                                        </td>
+                                    </tr>
+                                }
                                 <tr>
                                     <td>
-                                        <span>Chi phí</span>
+                                        <span>Chi phí {type === 3 && "/ tháng"}</span>
                                     </td>
                                     <td>
                                         <span>{formatMoney(data.necost)} đ</span>
@@ -433,9 +463,36 @@ export const View = ({ data, onClose, ...props }) => {
                                 </div>
                             </td>
                         </tr>
+                        {data.discount && (
+                            <>
+                                <tr>
+                                    <td>
+                                        Tống
+                                    </td>
+                                    <td>
+                                        {formatMoney(beforePrice)}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Giảm giá
+                                    </td>
+                                    <td>
+                                        {data.discount} %
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={2}>
+                                        <div className="sep-container">
+                                            <div className="sep-text"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </>
+                        )}
                         <tr>
                             <td>
-                                Tổng cộng :
+                                Tổng cộng
                             </td>
                             <td>
                                 {formatMoney(data.price)} đ

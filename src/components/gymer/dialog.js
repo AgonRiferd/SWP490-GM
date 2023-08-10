@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import axiosInstance from "../../utils/axiosConfig";
 
 const formatTime = (date) => {
-    return format(new Date(date), "HH:mm:ss");
+    return format(new Date(date), "HH:mm");
 }
 
 export const Create = ({ onClose }) => {
@@ -232,8 +232,8 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
     const [initialData,] = useState(data);
     const nutritionData = initialData.filter((item) => item.nutritionScheduleId).sort((a, b) => a.mealTime - b.mealTime);
     const exerciseData = initialData.filter((item) => item.scheduleId).sort((a, b) => {
-        const dateA = new Date(a.dateAndTime);
-        const dateB = new Date(b.dateAndTime);
+        const dateA = new Date(a.from);
+        const dateB = new Date(b.from);
         return dateA - dateB;
     });
 
@@ -383,7 +383,7 @@ const ExerciseSchedule = ({ data, index, handleExerciseItemClick, exerciseItemEx
         <>
             <div className="title" onClick={() => handleExerciseItemClick(index)} >
                 <span>
-                    {formatTime(initialData.dateAndTime)}
+                    {formatTime(initialData.from)} - {formatTime(initialData.to)}
                 </span>
                 <span className="fa fa-angle-down pull-right"></span>
             </div>

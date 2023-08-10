@@ -10,6 +10,7 @@ import PackageManage from './pages/manage/package';
 import NEManage from './pages/manage/ne';
 import React, { useState } from 'react';
 import { PageLoader } from './flagments/preloader';
+import ReportPage from './pages/report';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +31,7 @@ function App() {
               <Route exact path="ne" element={<NEManage />} />
               <Route exact path="package" element={<PackageManage />} />
             </Route>
+            <Route path="/report" element={<ReportPage />} />
           </Route>
           <Route path="/404" element={<PageNotFound />} />
           <Route path="*" element={<Navigate to="/404" />} />

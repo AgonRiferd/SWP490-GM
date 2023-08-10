@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosConfig";
 import { format } from 'date-fns'
 import Calendar from "../../flagments/advance-calendar";
 import { ScheduleDetail } from "./dialog";
+import { AdvanceTable, LoadingTable } from "../../flagments/advance-table";
+import COLUMNS from "../package_gymer/Columns";
+import { View } from "../package_gymer/dialog";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -125,6 +126,13 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                                 </span>
                             </div>
                         </div>
+                        <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
+                            <div className="common-tab-container">
+                                <span className="common-tab-name">
+                                    Gói tập
+                                </span>
+                            </div>
+                        </div>
                         <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
                             <div className="common-tab-container">
                                 <span className="common-tab-name">
@@ -136,6 +144,9 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                     <div className="common-plain">
                         {isTabActive(1) &&
                             <OtherProfile user={user} />
+                        }
+                        {isTabActive(2) &&
+                            <PackageHistory userId={user.id} />
                         }
                         {isTabActive(3) &&
                             <Schedule userId={user.id} />
@@ -173,6 +184,79 @@ const OtherProfile = ({ user }) => {
         </div>
     )
 }
+
+const PackageHistory = ({ userId }) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [packageData, setPackageData] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const columns = useMemo(() => COLUMNS, []);
+    const initialState =  useMemo (() => ({ 
+        hiddenColumns: ['packageName'],
+        sortBy: [
+            {
+                id: "from",
+                desc: true
+            }
+        ]
+    }), []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!isLoading) setIsLoading(true);
+            try {
+                const response = await axiosInstance.get('/PackageGymers/GetPackageGymerByGymerID', {
+                    params: {
+                        request: userId
+                    }
+                });
+                const { data } = response.data;
+                if (data)
+                    setPackageData(data);
+            } catch (error) {
+                if (error.response) {
+                    // Lỗi được trả về từ phía server
+                    setErrorMessage(error.response.data.message);
+                } else {
+                    // Lỗi không có phản hồi từ server
+                    setErrorMessage(
+                        <>
+                            <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                            <span>Mã lỗi: {error.code}</span>
+                        </>
+                    );
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId]);
+
+    const dialogs = useMemo(() => ({
+        dialogView: {
+            title: "Thông tin",
+            icon: <i className="fa-solid fa-eye"></i>,
+            component: View
+        }
+    }), []);
+
+    return (
+        <>
+            {isLoading ? (
+                <LoadingTable />
+            ) : errorMessage ? (
+                <span className="status-error">{errorMessage}</span>
+            ) : (
+                <div className="list-content">
+                    <AdvanceTable data={packageData} columns={columns} initialState={initialState} dialogs={dialogs}/>
+                </div>
+            )}
+        </>
+    )
+}
+
 
 const Schedule = ({ userId }) => {
     const [scheduleData, setScheduleData] = useState([]);
@@ -252,8 +336,12 @@ const Schedule = ({ userId }) => {
                     <i className="fa-solid fa-spinner fa-spin-pulse"></i>
                     <span>Đang tải dữ liệu...</span>
                 </div>
-            ) : (
+            ) : scheduleData.length > 0 ? (
                 <Calendar data={scheduleData} tooltipOpt={tooltipOpt} dialog={dialog} />
+            ) : (
+                <span className="status-error">
+                    Thành viên hiện không có danh biểu
+                </span>
             )}
         </div>
     );

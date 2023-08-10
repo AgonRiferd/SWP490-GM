@@ -39,10 +39,29 @@ const COLUMNS = [
         width: 40
     },
     {
-        Header: 'Tổng giá',
+        Header: (
+            <div className="price-header">
+                <span className="title">
+                    Tổng giá
+                </span>
+                <i className="fa-solid fa-circle-exclamation" title="Đã tính giảm giá (nếu có)"/>
+            </div>
+        ),
         accessor: 'price',
-        Cell: ({ value }) => {
-            return Number(value).toLocaleString() + ' đ'
+        Cell: ({ row  }) => {
+            const { price, discount } = row.original;
+            return (
+                <div className="package-price">
+                    <div className="price">
+                        {Number(price).toLocaleString()} đ
+                    </div>
+                    { discount && (
+                        <div className="discount">
+                            - {discount}%
+                        </div>
+                    )}
+                </div>
+            );
         },
         width: 80
     }

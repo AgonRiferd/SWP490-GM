@@ -1,9 +1,10 @@
 import React, { useMemo, useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosConfig";
 import { format } from 'date-fns'
-import COLUMNS from "../foods/Columns";
+import FOOD_COLUMNS from "../foods/Columns";
+import PACKAGE_GYMER_COLUMNS from "../package_gymer/Columns";
 import { Delete, View } from "../foods/dialog";
-import { AdvanceTable, LoadingTable} from "../../flagments/advance-table";
+import { AdvanceTable, LoadingTable } from "../../flagments/advance-table";
 import { formatPhoneNumber } from "../../utils/convert";
 import Dialog from "../../flagments/dialog";
 import { ImageInput } from "../../utils/imageConvert";
@@ -21,7 +22,6 @@ const CustomView = ({ dataUser, isMainLoading }) => {
                     setIsLoading(true);
                 // Fetch data from the API and update the state
                 const response = await axiosInstance.get(`/Accounts/GetAccountByID/${dataUser.id}`);
-                console.log("fetching");
                 //Fetch thành công
                 const { data } = response;
                 setUser(data);
@@ -133,6 +133,13 @@ const CustomView = ({ dataUser, isMainLoading }) => {
                                 </span>
                             </div>
                         </div>
+                        <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
+                            <div className="common-tab-container">
+                                <span className="common-tab-name">
+                                    Công việc
+                                </span>
+                            </div>
+                        </div>
                     </div>
                     <div className="common-plain">
                         {isTabActive(1) &&
@@ -140,6 +147,9 @@ const CustomView = ({ dataUser, isMainLoading }) => {
                         }
                         {isTabActive(2) &&
                             <FoodAndSuppliments userId={user.id} />
+                        }
+                        {isTabActive(3) &&
+                            <WorkingPackages userId={user.id} />
                         }
                     </div>
                 </>
@@ -289,12 +299,85 @@ const OtherProfile = ({ user }) => {
     )
 }
 
+const WorkingPackages = ({ userId }) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [packageData, setPackageData] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const columns = useMemo(() => [
+        {
+            Header: 'Tên thành viên',
+            accessor: 'gymerName'
+        },
+        ...PACKAGE_GYMER_COLUMNS
+    ], []);
+    const initialState =  useMemo (() => ({ 
+        hiddenColumns: ['name', 'status'],
+        sortBy: [
+            {
+                id: "from",
+                desc: true
+            }
+        ]
+    }), []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!isLoading) setIsLoading(true);
+            try {
+                const response = await axiosInstance.get('/PackageGymers/GetGymerPackageActiveByNE', {
+                    params: {
+                        NEID: userId
+                    }
+                });
+                const { data } = response.data;
+                if (data)
+                    setPackageData(data);
+            } catch (error) {
+                if (error.response) {
+                    // Lỗi được trả về từ phía server
+                    setErrorMessage(error.response.data.message);
+                } else {
+                    // Lỗi không có phản hồi từ server
+                    setErrorMessage(
+                        <>
+                            <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                            <span>Mã lỗi: {error.code}</span>
+                        </>
+                    );
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId]);
+
+    return (
+        <>
+            {isLoading ? (
+                <LoadingTable />
+            ) : errorMessage ? (
+                <span className="status-error">{errorMessage}</span>
+            ) : (
+                <>
+                    <h1>Danh sách công việc đang hoạt động</h1>
+                    <div className="list-content">
+                        <AdvanceTable data={packageData} columns={columns} initialState={initialState} />
+                    </div>
+                </>
+            )}
+        </>
+    )
+}
+
 const FoodAndSuppliments = ({ userId }) => {
-    const columns = useMemo(() => COLUMNS, []);
+    const columns = useMemo(() => FOOD_COLUMNS, []);
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
-    const initialState =  useMemo (() => ({ 
+    const initialState = useMemo(() => ({
         sortBy: [
             {
                 id: "name",
@@ -310,12 +393,16 @@ const FoodAndSuppliments = ({ userId }) => {
             const response = await axiosInstance.get(`/FoodAndSuppliments/GetFoodAndSupplimentsBYNE/${UID}`);
             //Fetch thành công
             const { data } = response.data;
-            setData(data);
-            setIsLoading(false); // Kết thúc quá trình fetch
+            if (data)
+                setData(data);
         } catch (error) {
             if (error.response) {
                 // Lỗi được trả về từ phía server
-                setErrorMessage(error.response.data.message);
+                setErrorMessage(
+                    <>
+                        <span>Mã lỗi: {error.response.status}</span>
+                    </>
+                );
             } else {
                 // Lỗi không có phản hồi từ server
                 setErrorMessage(
@@ -325,6 +412,7 @@ const FoodAndSuppliments = ({ userId }) => {
                     </>
                 );
             }
+        } finally {
             setIsLoading(false); // Kết thúc quá trình fetch
         }
     };
@@ -334,7 +422,7 @@ const FoodAndSuppliments = ({ userId }) => {
     }, [userId]);
 
     const dialogs = useMemo(() => ({
-        dialogEdit: {
+        dialogView: {
             title: "Thông tin",
             icon: <i className="fa-solid fa-eye"></i>,
             component: View
@@ -351,12 +439,15 @@ const FoodAndSuppliments = ({ userId }) => {
         <>
             {isLoading ? (
                 <LoadingTable />
-            ) : errorMessage ? (
-                <span className="status-error">{errorMessage}</span>
             ) : (
-                <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} initialState={initialState} dialogs={dialogs} />
-                </div>
+                <>
+                    {errorMessage &&
+                        <span className="status-error">{errorMessage}</span>
+                    }
+                    <div className="list-content">
+                        <AdvanceTable data={data} columns={columns} initialState={initialState} dialogs={dialogs} />
+                    </div>
+                </>
             )}
         </>
     )
@@ -449,7 +540,7 @@ const CertificationEdit = ({ data, onClose, isLoading, onLoading, ...props }) =>
                                             <label className='status-lock'>*</label>
                                         </td>
                                         <td className="normal-file-input">
-                                            <ImageInput userId={id} setImageUrl={setImageUrl} imageUrl={imageUrl}/>
+                                            <ImageInput userId={id} setImageUrl={setImageUrl} imageUrl={imageUrl} />
                                         </td>
                                     </tr>
                                     <tr>

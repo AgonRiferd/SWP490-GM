@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 const COLUMNS = [
     {
         Header: 'Tên thành viên',
@@ -6,6 +8,14 @@ const COLUMNS = [
     {
         Header: 'Tên gói tập',
         accessor: 'packageName',
+        disableGlobalFilter: true
+    },
+    {
+        Header: 'Ngày mua',
+        accessor: 'from',
+        Cell: ({ value }) => {
+            return format(new Date(value), 'dd/MM/yyyy')
+        },
         disableGlobalFilter: true
     }
 ]

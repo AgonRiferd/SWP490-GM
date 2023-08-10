@@ -20,9 +20,9 @@ const PackageManage = () => {
                     accessor: 'name'
                 },
                 {
-                    Header: 'Tổng số tháng',
+                    Header: 'Số tháng',
                     accessor: 'numberOfMonth',
-                    width: 90
+                    width: 60
                 },
                 ...commonColumns
             ]
@@ -33,9 +33,9 @@ const PackageManage = () => {
                         accessor: 'name'
                     },
                     {
-                        Header: 'Tổng số buổi',
+                        Header: 'Số buổi',
                         accessor: 'numberOfsession',
-                        width: 80
+                        width: 60
                     },
                     ...commonColumns
                 ]
@@ -68,7 +68,6 @@ const PackageManage = () => {
                 const { data } = response.data;
                 setData(data);
             }
-            setIsLoading(false);
         } catch (error) {
             if (error.response) {
                 // Lỗi được trả về từ phía server
@@ -217,6 +216,7 @@ const PackageManage = () => {
         </>
     )
 }
+
 const NormalPackage = ({ data, columns, dialogs, ...props }) => {
     const customData = data.filter(row => !row.hasNe && !row.hasPt);
 

@@ -70,6 +70,14 @@ const Sidebar = () => {
                             </li>
                         </ul>
                     </li>
+                    {/**Dashboard*/}
+                    <li>
+                        <NavLink to="/report" onClick={() => handleMenuClick('dashboard')}>
+                            <i className="fa-solid fa-box fa-sidebar-icon fa-custom"></i>
+                            <span>Danh Sách Gói Bán</span>
+                            <span className="arrow"></span>
+                        </NavLink>
+                    </li>
                 </ul>
             </section>
         </>

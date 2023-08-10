@@ -4,7 +4,7 @@ const COLUMNS = [
     {
         Header: 'Số điện thoại',
         accessor: 'phoneNo',
-        width: 120,
+        width: 60,
         disableSortBy: true,
         Cell: ({value}) => {
             return formatPhoneNumber(value)
@@ -13,7 +13,7 @@ const COLUMNS = [
     {
         Header: 'Họ và Tên',
         accessor: 'fullname',
-        width: 200
+        width: 100,
     },
     {
         Header: 'Giới tính',
@@ -22,7 +22,7 @@ const COLUMNS = [
             return value === 'M' ? 'Nam' : value === 'F' ? 'Nữ' : value
         },
         disableGlobalFilter: true, // Không cho phép tìm kiếm trong cột này
-        width: 80
+        width: 40
     },
     {
         Header: 'Trạng Thái',
@@ -31,7 +31,7 @@ const COLUMNS = [
             return value ? <span className="status-lock">Bị khóa</span> : <span className="status-active">Hoạt động</span>
         },
         disableGlobalFilter: true, // Không cho phép tìm kiếm trong cột này
-        width: 80
+        width: 50
     }
 ]
 

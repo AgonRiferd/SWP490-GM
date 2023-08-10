@@ -17,7 +17,7 @@ export const AdvanceTable = ({ data, columns: initialColumns, initialState, dial
     const [selectedRow, setSelectedRow] = useState(null);
     const [status, setStatus] = useState('1');
     const [hasIsLocked, setHasIsLocked] = useState(false);
-    const { dialogCreate, dialogView, dialogEdit, dialogDelete } = dialogs;
+    const { dialogCreate, dialogView, dialogEdit, dialogDelete } = dialogs ? dialogs : {};
 
     const options = [
         { value: 0, label: 'All' },
@@ -25,41 +25,51 @@ export const AdvanceTable = ({ data, columns: initialColumns, initialState, dial
         { value: 2, label: 'Bị khóa' },
     ];
 
-    const columns = useMemo(
-        () => [
-            ...initialColumns,
-            {
-                Header: 'Hoạt Động Quản Lý',
-                disableSortBy: true,
-                disableGlobalFilter: true,
-                Cell: ({ row }) => (
-                    <div className="table-actions">
-                        {dialogView &&
-                            <span onClick={() => handleAction(dialogView, row.original)} title={dialogView.title ? dialogView.title : 'View'}>
-                                {dialogView.icon ? dialogView.icon : dialogView.title ? dialogView.title : 'View'}
-                            </span>
-                        }
-                        {viewData &&
-                            <span onClick={() => viewData.setDataView(row.original)} title={viewData.title ? viewData.title : 'View'}>
-                                {viewData.icon ? viewData.icon : viewData.title ? viewData.title : 'View'}
-                            </span>
-                        }
-                        {dialogEdit &&
-                            <span onClick={() => handleAction(dialogEdit, row.original)} title={dialogEdit.title ? dialogEdit.title : 'Edit'}>
-                                {dialogEdit.icon ? dialogEdit.icon : dialogEdit.title ? dialogEdit.title : 'Edit'}
-                            </span>
-                        }
-                        {dialogDelete &&
-                            <span onClick={() => handleAction(dialogDelete, row.original)} title={dialogDelete.title ? dialogDelete.title : 'Delete'}>
-                                {dialogDelete.icon ? dialogDelete.icon : dialogDelete.title ? dialogDelete.title : 'Delete'}
-                            </span>
-                        }
-                    </div>
-                ),
-                width: 170
-            },
+    const columns = useMemo (
+        () => {
+            const commonColumns = initialColumns;
+            return (dialogs || viewData)
+                ? [
+                    ...commonColumns,
+                    {
+                        Header: (
+                            <div className="dialog-actions">
+                                <span>Hoạt Động Quản Lý</span>
+                            </div>
+                        ),
+                        accessor: 'managementActions',
+                        Cell: ({ row }) => (
+                            <div className="table-actions">
+                                {dialogView &&
+                                    <span onClick={() => handleAction(dialogView, row.original)} title={dialogView.title ? dialogView.title : 'View'}>
+                                        {dialogView.icon ? dialogView.icon : dialogView.title ? dialogView.title : 'View'}
+                                    </span>
+                                }
+                                {viewData &&
+                                    <span onClick={() => viewData.setDataView(row.original)} title={viewData.title ? viewData.title : 'View'}>
+                                        {viewData.icon ? viewData.icon : viewData.title ? viewData.title : 'View'}
+                                    </span>
+                                }
+                                {dialogEdit &&
+                                    <span onClick={() => handleAction(dialogEdit, row.original)} title={dialogEdit.title ? dialogEdit.title : 'Edit'}>
+                                        {dialogEdit.icon ? dialogEdit.icon : dialogEdit.title ? dialogEdit.title : 'Edit'}
+                                    </span>
+                                }
+                                {dialogDelete &&
+                                    <span onClick={() => handleAction(dialogDelete, row.original)} title={dialogDelete.title ? dialogDelete.title : 'Delete'}>
+                                        {dialogDelete.icon ? dialogDelete.icon : dialogDelete.title ? dialogDelete.title : 'Delete'}
+                                    </span>
+                                }
+                            </div>
+                        ),
+                        disableSortBy: true,
+                        disableGlobalFilter: true,
+                        width: dialogs && ((Object.keys(dialogs).length + (viewData ? 1 : 0)) * 50)
+                    },
+                    // eslint-disable-next-line react-hooks/exhaustive-deps
+                ] : commonColumns
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        ], [initialColumns, dialogView, dialogEdit, dialogDelete]
+        }, [initialColumns, dialogView, dialogEdit, dialogDelete]
     );
 
     const handleAction = (mode, rowData) => {
@@ -100,7 +110,6 @@ export const AdvanceTable = ({ data, columns: initialColumns, initialState, dial
     }, [columns, status]);
 
     const handleStatusChange = (e) => {
-        console.log(e.target.value);
         setStatus(e.target.value);
     }
 
@@ -181,16 +190,16 @@ export const AdvanceTable = ({ data, columns: initialColumns, initialState, dial
                 }
 
             </div>
-            <table {...getTableProps()} className="custom-table table-exercise">
+            <table {...getTableProps()} className="custom-table">
                 <thead>
                     {headerGroups.map((headerGroup) => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map((column) => (
-                                <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ width: column.width }}>
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ width: column.width }} title="">
                                     <div className="flex">
-                                        <span>{column.render("Header")}</span>
+                                        {column.render("Header")}
                                         {column.disableSortBy ? null : (
-                                            <span className="sort-toggle">
+                                            <span className="sort-toggle" title="Sort">
                                                 {column.isSorted ?
                                                     (column.isSortedDesc ?
                                                         <i className="fa-solid fa-sort-up" /> : <i className="fa-solid fa-sort-down" />
