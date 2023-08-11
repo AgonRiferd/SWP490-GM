@@ -2,6 +2,12 @@ import { formatPhoneNumber } from "../../utils/convert";
 
 const COLUMNS = [
     {
+        Header: 'ID',
+        accessor: 'id',
+        disableSortBy: true,
+        disableGlobalFilter: true
+    },
+    {
         Header: 'Số điện thoại',
         accessor: 'phoneNo',
         width: 60,

@@ -14,7 +14,8 @@ const MemberManage = () => {
     const [data, setData] = useState([]);
     const [dataView, setDataView] = useState(null);
     const columns = useMemo(() => COLUMNS, []);
-    const initialState =  useMemo (() => ({ 
+    const initialState =  useMemo (() => ({
+        hiddenColumns: ['id'],
         sortBy: [
             {
                 id: "fullname",
@@ -113,7 +114,7 @@ const MemberManage = () => {
             )}
             {dataView &&
                 <> 
-                    <CustomView dataUser={dataView} isMainLoading={isLoading} setDataView={setDataView} />
+                    <CustomView userId={dataView.id} isMainLoading={isLoading} setDataView={setDataView} />
                 </>
             }
         </>

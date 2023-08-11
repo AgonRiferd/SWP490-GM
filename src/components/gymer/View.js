@@ -7,7 +7,7 @@ import { AdvanceTable, LoadingTable } from "../../flagments/advance-table";
 import COLUMNS from "../package_gymer/Columns";
 import { View } from "../package_gymer/dialog";
 
-const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
+const CustomView = ({ userId, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -20,7 +20,7 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
             }
             try {
                 // Fetch data from the API and update the state
-                const response = await axiosInstance.get(`/Accounts/GetAccountByID/${dataUser.id}`);
+                const response = await axiosInstance.get(`/Accounts/GetAccountByID/${userId}`);
                 //Fetch thành công
                 const { data } = response;
                 setUser(data);
@@ -45,7 +45,7 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
             fetchData();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataUser, isMainLoading])
+    }, [userId, isMainLoading])
 
     const handleTabClick = (tabItem) => {
         activeTabItem !== tabItem && setActiveTabItem(tabItem);
