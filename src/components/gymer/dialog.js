@@ -237,31 +237,7 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
         return dateA - dateB;
     });
 
-    const formatMealTime = (mealTime) => {
-        switch (mealTime) {
-            case 1:
-                return "Sáng";
-            case 2:
-                return "Trưa";
-            case 3:
-                return "Tối";
-            case 4:
-                return "Trước tập";
-            default:
-                return "";
-        }
-    };
-
-    const [nutritionItemExpands, setNutritionItemExpands] = useState([]);
     const [exerciseItemExpands, setExerciseItemExpands] = useState([]);
-
-    const handleNutritionItemClick = (index) => {
-        if (nutritionItemExpands.includes(index)) {
-            setNutritionItemExpands(nutritionItemExpands.filter((i) => i !== index));
-        } else {
-            setNutritionItemExpands([...nutritionItemExpands, index]);
-        }
-    };
 
     const handleExerciseItemClick = (index) => {
         if (exerciseItemExpands.includes(index)) {
@@ -272,76 +248,39 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
     };
 
     return (
-        <div className="schedule-content">
-            {exerciseData.length > 0 &&
-                <div className="exercise-container">
-                    <div className="title">
-                        Bài tập
-                    </div>
-                    <div className="exercise-content">
-                        {exerciseData.map((item, index) => (
-                            <div key={index} className={`item ${exerciseItemExpands.includes(index) ? 'show' : ''}`}>
-                                <ExerciseSchedule data={item} index={index} handleExerciseItemClick={handleExerciseItemClick} exerciseItemExpands={exerciseItemExpands} />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            }
-            {nutritionData.length > 0 &&
-                <div className="nutrition-container">
-                    <div className="title">
-                        Thực đơn
-                    </div>
-                    <div className="nutrition-content">
-                        {nutritionData.map((item, index) => (
-                            <div key={index} className={`item ${nutritionItemExpands.includes(index) ? 'show' : ''}`}>
-                                <div className="title" onClick={() => handleNutritionItemClick(index)} >
-                                    <span>
-                                        {formatMealTime(item.mealTime)}
-                                    </span>
-                                    <span className="fa fa-angle-down pull-right"></span>
+        <>
+            <div className="schedule-content">
+                {exerciseData.length > 0 &&
+                    <div className="exercise-container">
+                        <div className="title">
+                            Bài tập
+                        </div>
+                        <div className="exercise-content">
+                            {exerciseData.map((item, index) => (
+                                <div key={index} className={`item ${exerciseItemExpands.includes(index) ? 'show' : ''}`}>
+                                    <ExerciseSchedule data={item} index={index} handleExerciseItemClick={handleExerciseItemClick} exerciseItemExpands={exerciseItemExpands} />
                                 </div>
-                                <div className="details">
-                                    <table className="schedule-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Tên</th>
-                                                <th>Số lượng</th>
-                                                <th>Đơn vị</th>
-                                                <th>Năng lượng</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {item.foodAndSuppliment.map((fas, index) => (
-                                                <tr key={index}>
-                                                    <td>
-                                                        <span>{fas.name}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span>{fas.ammount}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span>{fas.unitOfMesuament}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span>{fas.calories}</span>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
-            }
+                }
+                {nutritionData.length > 0 &&
+                    <div className="nutrition-container">
+                        <div className="title">
+                            Thực đơn
+                        </div>
+                        <div className="nutrition-content">
+                            <NutritionSchedule data={nutritionData} />
+                        </div>
+                    </div>
+                }
+            </div>
             <div className="dialog-button-tray">
                 <button type="button" className="any-button button-cancel" onClick={onClose}>
                     Đóng
                 </button>
             </div>
-        </div>
+        </>
     );
 }
 
@@ -412,9 +351,10 @@ const ExerciseSchedule = ({ data, index, handleExerciseItemClick, exerciseItemEx
                                     <td>
                                         {!initialData.excercises || initialData.excercises.length === 0 ? (
                                             <span className="status-error">Không có bài tập</span>
-                                        ) : initialData.excercises.map((item) => (
-                                            <li key={item.id}>
+                                        ) : initialData.excercises.map((item, index) => (
+                                            <li key={index}>
                                                 {item.name}
+                                                <span> ({item.repTime} {item.unitOfMeasurement})</span>
                                             </li>
                                         ))}
                                     </td>
@@ -424,6 +364,124 @@ const ExerciseSchedule = ({ data, index, handleExerciseItemClick, exerciseItemEx
                     </>
                 )}
             </div>
+        </>
+    )
+}
+
+const NutritionSchedule = ({ data }) => {
+    const initialData = data;
+    const [isLoading, setIsLoading] = useState(false);
+    const [neName, setNeName] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!isLoading)
+                setIsLoading(true);
+            try {
+                if (initialData) {
+                    let response = await axiosInstance.get(`/NutritionSchedules/GetNutritionSchedule/${initialData[0].nutritionScheduleId}`);
+                    const { data } = response;
+                    const neId = data ? data.neid : null;
+                    console.log(neId);
+                    if (neId) {
+                        response = await axiosInstance.get(`/Accounts/GetAccountByID/${neId}`);
+                        const { data } = response;
+                        setNeName(data ? data.fullname : null);
+                    }
+                }
+            } catch (error) {
+                console.error('Xảy ra lỗi khi lấy id của PT: ', error);
+            }
+            setIsLoading(false);
+        }
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const [nutritionItemExpands, setNutritionItemExpands] = useState([]);
+
+    const handleNutritionItemClick = (index) => {
+        if (nutritionItemExpands.includes(index)) {
+            setNutritionItemExpands(nutritionItemExpands.filter((i) => i !== index));
+        } else {
+            setNutritionItemExpands([...nutritionItemExpands, index]);
+        }
+    };
+
+    const formatMealTime = (mealTime) => {
+        switch (mealTime) {
+            case 1:
+                return "Sáng";
+            case 2:
+                return "Trưa";
+            case 3:
+                return "Tối";
+            case 4:
+                return "Trước tập";
+            default:
+                return "";
+        }
+    };
+
+    return (
+        <>
+            {isLoading ? (
+                <div className="loading-overlay">
+                    <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+                    <span>Đang tải dữ liệu...</span>
+                </div>
+            ) : (
+                <>
+                    <table className='dialog-field'>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label>Bác sỹ dinh dưỡng</label>
+                                </td>
+                                <td>
+                                    <span>{neName}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {initialData.map((item, index) => (
+                        <div key={index} className={`item ${nutritionItemExpands.includes(index) ? 'show' : ''}`}>
+                            <div className="title" onClick={() => handleNutritionItemClick(index)} >
+                                <span>
+                                    {formatMealTime(item.mealTime)}
+                                </span>
+                                <span className="fa fa-angle-down pull-right"></span>
+                            </div>
+                            <div className="details">
+                                <table className="schedule-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên</th>
+                                            <th>Số lượng</th>
+                                            <th>Đơn vị</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {item.foodAndSuppliment.map((fas, index) => (
+                                            <tr key={index}>
+                                                <td>
+                                                    <span>{fas.name}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{fas.ammount}</span>
+                                                </td>
+                                                <td>
+                                                    <span>{fas.unitOfMesuament}</span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    ))}
+                </>
+            )}
         </>
     )
 }

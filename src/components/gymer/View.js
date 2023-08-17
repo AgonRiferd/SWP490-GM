@@ -12,7 +12,6 @@ const CustomView = ({ userId, setDataView, isMainLoading }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
     const [activeTabItem, setActiveTabItem] = useState(1);
-
     useEffect(() => {
         const fetchData = async () => {
             if (!isLoading) {

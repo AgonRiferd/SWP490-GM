@@ -32,7 +32,7 @@ const Calendar = ({ data, tooltipOpt, ...props }) => {
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(currentYear, currentMonth, day);
             const dayData = data.filter((item) => {
-                const itemDate = new Date(item.from ? item.from : item.dateAndTime);
+                const itemDate = new Date(item.from ? item.from : item.datetime);
                 return checkDate(itemDate, date);
             });
 

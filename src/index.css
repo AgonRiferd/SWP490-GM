@@ -923,7 +923,9 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 1em 1.5em;
   background: none;
   overflow: auto;
-  min-width: 200px;
+  min-width: 20vw;
+  max-width: 70vw;
+  max-height: 80vh;
 }
 
 .dialog-fields {
@@ -1541,7 +1543,25 @@ hr.view-divider {
 
 .dialog-content .schedule-content {
   margin-top: 2px;
-  max-height: 500px;
+  min-height: 200px;
+  max-height: 300px;
+  display: flex;
+}
+
+.schedule-content:has(.nutrition-container) .exercise-container {
+  margin-right: 20px;
+}
+
+.exercise-container {
+  min-width: 400px;
+  max-width: 450px;
+  overflow: auto;
+}
+
+.nutrition-container {
+  min-width: 340px;
+  max-width: 400px;
+  overflow: auto;
 }
 
 .nutrition-container>.title,
@@ -1567,7 +1587,8 @@ hr.view-divider {
 
 .nutrition-content .item,
 .exercise-content .item {
-  margin: 2px 0;
+  margin: 10px 0;
+  margin-top: 5px;
 }
 
 .nutrition-content .item:not(:last-child),
@@ -1586,9 +1607,19 @@ hr.view-divider {
   display: none;
 }
 
+.exercise-content table td:first-child {
+  display: inline-block;
+}
+
 .nutrition-content .item.show .details,
 .exercise-content .item.show .details {
   display: block;
+}
+
+.exercise-content .item.show .details {
+  border: 1px solid var(--primary-color);
+  background-color: var(--text-color);
+  padding: 0 5px;
 }
 
 .success-checkmark {
@@ -1680,8 +1711,16 @@ hr.view-divider {
   background-color: rgba(209, 209, 209);
 }
 
+.schedule-table thead {
+  text-align: left;
+}
+
 .schedule-table th {
   min-width: 80px;
+}
+
+.schedule-table td {
+  padding: 3px 5px;
 }
 
 .package-price {
