@@ -23,7 +23,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
     const [hasDiscount, setHasDiscount] = useState(false);
 
     // Cập nhật giá trị của price khi các thành phần thay đổi
-    useEffect(() => {
+    useEffect(() => {   
         let total = 0;
         if (type === 1) {
             total = formData.centerCost * formData.numberOfMonth;
@@ -96,7 +96,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
             setErrorMessage('Vui lòng điền đầy đủ thông tin!');
             return;
         }
-
         try {
             onLoading(true);
             const response = await axios.post('/Packages/CreatePackage', formData);
@@ -167,13 +166,13 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                 </td>
                                                 <td>
                                                     <input
-                                                        type='text'
+                                                        type='number'
                                                         name="numberOfMonth"
                                                         value={formData.numberOfMonth}
                                                         onChange={handleChange}
-                                                        onKeyDown={handleKeyDown}
                                                         required
                                                         placeholder="0"
+                                                        min={1}
                                                     />
                                                 </td>
                                             </tr>
@@ -218,7 +217,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                         onChange={handleChange}
                                                         min={1}
                                                         required
-                                                        placeholder='1'
+                                                        placeholder='0'
                                                     />
                                                 </td>
                                             </tr>
