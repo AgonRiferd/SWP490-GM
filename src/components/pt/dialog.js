@@ -9,7 +9,7 @@ const GENDER_MALE = 'M';
 const GENDER_FEMALE = 'F';
 
 const formatTime = (date) => {
-    return format(new Date(date), "HH:mm:ss");
+    return format(new Date(date), "HH:mm");
 }
 
 export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
@@ -517,11 +517,11 @@ export const Delete = ({ data, onLoading, isLoading, onClose, ...props }) => {
 export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }) => {
     const [initialData,] = useState(data);
     const exerciseData = initialData.sort((a, b) => {
-        const dateA = new Date(a.dateAndTime);
-        const dateB = new Date(b.dateAndTime);
+        const dateA = new Date(a.from);
+        const dateB = new Date(b.from);
         return dateA - dateB;
     });
-    
+
     const [exerciseItemExpands, setExerciseItemExpands] = useState([]);
 
     const handleExerciseItemClick = (index) => {
@@ -533,27 +533,29 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
     };
 
     return (
-        <div className="schedule-content">
-            {exerciseData.length > 0 &&
-                <div className="exercise-container">
-                    <div className="title">
-                        Bài tập
+        <>
+            <div className="schedule-content">
+                {exerciseData.length > 0 &&
+                    <div className="exercise-container">
+                        <div className="title">
+                            Bài tập
+                        </div>
+                        <div className="exercise-content">
+                            {exerciseData.map((item, index) => (
+                                <div key={index} className={`item ${exerciseItemExpands.includes(index) ? 'show' : ''}`}>
+                                    <ExerciseSchedule data={item} index={index} handleExerciseItemClick={handleExerciseItemClick} />
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <div className="exercise-content">
-                        {exerciseData.map((item, index) => (
-                            <div key={index} className={`item ${exerciseItemExpands.includes(index) ? 'show' : ''}`}>
-                                <ExerciseSchedule data={item} index={index} handleExerciseItemClick={handleExerciseItemClick} />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            }
+                }
+            </div>
             <div className="dialog-button-tray">
                 <button type="button" className="any-button button-cancel" onClick={onClose}>
                     Đóng
                 </button>
             </div>
-        </div>
+        </>
     );
 }
 
@@ -564,7 +566,7 @@ const ExerciseSchedule = ({ data, index, handleExerciseItemClick }) => {
         <>
             <div className="title" onClick={() => handleExerciseItemClick(index)} >
                 <span>
-                    {formatTime(initialData.dateAndTime)}
+                    {formatTime(initialData.from)} - {formatTime(initialData.to)}
                 </span>
                 <span className="fa fa-angle-down pull-right"></span>
             </div>

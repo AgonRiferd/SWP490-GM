@@ -1,5 +1,6 @@
 import React, { createRef, useEffect, useMemo, useState } from "react";
 import Cookies from "universal-cookie";
+import Logo from "./logo";
 
 const Header = ({ setIsAuthenticated }) => {
     const [activeItem, setActiveItem] = useState(null);
@@ -19,7 +20,6 @@ const Header = ({ setIsAuthenticated }) => {
               setActiveItem(null);
             }
         };
-    
         document.addEventListener('click', handleClickItem);
     
         return () => {
@@ -40,6 +40,7 @@ const Header = ({ setIsAuthenticated }) => {
 
     return(
         <header className="header">
+            <Logo />
             <div className="navbar">
                 <div className="navbar-right">
                     <ul className="nav">
@@ -48,14 +49,14 @@ const Header = ({ setIsAuthenticated }) => {
                             <a href="##">
                                 <i className="fa-solid fa-bell fa-custom"></i>
                             </a>
-                            <ul className="dropdown-menu dropdown-messages">
-                                <li className="dropdown-title">You have 0 notifications</li>
+                            <ul className="dropdown-menu dropdown-messages" onClick={(e) => e.stopPropagation()}>
+                                <li className="dropdown-title">Bạn hiện có 0 thông báo</li>
                                 <li>
                                     <div className="notification-empty">
                                         <h2>Nothing new</h2>
                                     </div>
                                 </li>
-                                <li className="dropdown-footer">View All Notifications</li>
+                                <li className="dropdown-footer">Xem tất cả thông báo</li>
                             </ul>
                         </li>
                         <li className={`dropdown user ${activeItem === 'user' ? 'open' : ''}`}
@@ -72,16 +73,16 @@ const Header = ({ setIsAuthenticated }) => {
                                 </div>
                             </a>
                             <ul className="dropdown-menu">
-                                <li>
+                                {/* <li>
                                     <a href="##">
                                         <i className="fa fa-fw fa-gear"></i> 
                                         Account Settings
                                     </a>
-                                </li>
-                                <li className="divider"></li>
+                                </li> 
+                                <li className="divider"></li> */}
                                 <li className="user-footer">
                                     <a href="##" onClick={logout}>
-                                        <i className="fa fa-fw fa-sign-out"></i> Logout
+                                        <i className="fa fa-fw fa-sign-out"></i> Đăng xuất
                                     </a>
                                 </li>
                             </ul>
