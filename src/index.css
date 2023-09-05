@@ -581,7 +581,7 @@ i.fa-sidebar-icon {
   flex-grow: 1;
   background-color: var(--tertiary-color);
   height: 100vh;
-  overflow: scroll;
+  overflow-y: scroll;
 
   & header>.logo {
     opacity: 0;
@@ -908,7 +908,7 @@ input[type="number"]::-webkit-outer-spin-button {
 .footer {
   position: relative;
   box-sizing: border-box;
-  min-height: 30px;
+  min-height: 40px;
   box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.2);
   background-color: var(--tertiary-color-lighter);
   display: flex;
@@ -1287,35 +1287,53 @@ hr.view-divider {
   background-color: #d1d1d1;
 }
 
-.profile-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.profile-container .dialog-field td:first-child {
-  padding-right: 10px;
-}
-
 .profile-avatar {
-  width: 90px;
-  height: 90px;
   border-radius: 50%;
   background: var(--secondary-color);
-  font-size: 50px;
   color: #fff;
   text-align: center;
   line-height: 150px;
-  margin: 10px 0;
-  margin-right: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
+
+  & .dialog-field td:first-child {
+    padding-right: 10px;
+    vertical-align: top;
+  }
+
+  >.user-avatar {
+    display: flex;
+    width: 25%;
+    max-width: 250px;
+    margin: 20px 10px;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    & .profile-avatar {
+      width: 150px;
+      height: 150px;
+      font-size: 100px;
+      margin-bottom: 20px;
+    }
+  }
+
+  >.user-details {
+    flex-grow: 1;
+    padding: 0 10px;
+  }
 }
 
 .common-tabs {
   position: relative;
-  margin: 0 10px;
 }
 
 .common-tab {
@@ -1484,24 +1502,37 @@ hr.view-divider {
 
 .profile-overview {
   display: flex;
+  flex-direction: column;
 }
 
 .certificate {
-  margin: 0 20px;
   display: flex;
   flex-direction: column;
   min-width: 300px;
-}
 
-.certificate img {
-  width: 300px;
-  height: 200px;
-  margin: 10px 0 0;
-}
+  & img {
+    width: 300px;
+    height: 200px;
+    margin: 10px 0 0;
+  }
 
-.certificate .any-button {
-  margin: 10px auto 0;
-  width: fit-content;
+  & .any-button {
+    margin: 10px auto 0;
+    width: fit-content;
+  }
+
+  & table.dialog-field td:first-child span {
+    display: block;
+  }
+
+  & table.dialog-field td:last-child {
+    display: flex;
+    flex-direction: column;
+
+    & button.any-button {
+      margin: 0;
+    }
+  }
 }
 
 .user-info {
@@ -1628,6 +1659,17 @@ hr.view-divider {
 
 .schedule-content:has(.nutrition-container) .exercise-container {
   margin-right: 20px;
+}
+
+.row-link {
+  max-width: 150px;
+
+  & a>span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+  }
 }
 
 .exercise-container {

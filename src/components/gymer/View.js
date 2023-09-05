@@ -6,6 +6,7 @@ import { ScheduleDetail } from "./dialog";
 import { AdvanceTable, LoadingTable } from "../../flagments/advance-table";
 import COLUMNS from "../package_gymer/Columns";
 import { View } from "../package_gymer/dialog";
+import { formatPhoneNumber } from "../../utils/convert";
 
 const CustomView = ({ userId, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -73,83 +74,73 @@ const CustomView = ({ userId, setDataView, isMainLoading }) => {
                             <span className="status-error">{errorMessage}</span>
                         ) : (
                             <>
-                                <div className="profile-avatar">
-                                    {user.fullname.charAt(0).toUpperCase()}
+                                <div className="user-avatar">
+                                    <div className="profile-avatar">
+                                        {user.fullname.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <table className='dialog-field'>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span>{user.fullname}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        ({user.isDelete ?
+                                                            <span className="status-lock">
+                                                                Bị khóa
+                                                            </span>
+                                                            :
+                                                            <span className="status-active">
+                                                                Hoạt động
+                                                            </span>
+                                                        })
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div>
-                                    <table className='dialog-field'>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <label>Tên</label>
-                                                </td>
-                                                <td>
-                                                    <span>{user.fullname}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label>Số Điện Thoại</label>
-                                                </td>
-                                                <td>
-                                                    <span>{user.phoneNo}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label>Trạng Thái</label>
-                                                </td>
-                                                <td>
-                                                    {user.isLock ?
-                                                        <span className="status-lock">
-                                                            Bị khóa
-                                                        </span>
-                                                        :
-                                                        <span className="status-active">
-                                                            Hoạt động
-                                                        </span>
-                                                    }
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div className="user-details">
+                                    <div className="common-tabs">
+                                        <div className={`common-tab ${isTabActive(1) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(1)}>
+                                            <div className="common-tab-container">
+                                                <span className="common-tab-name">
+                                                    Tổng quan
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
+                                            <div className="common-tab-container">
+                                                <span className="common-tab-name">
+                                                    Gói tập
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
+                                            <div className="common-tab-container">
+                                                <span className="common-tab-name">
+                                                    Danh biểu
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="common-plain">
+                                        {isTabActive(1) &&
+                                            <OtherProfile user={user} />
+                                        }
+                                        {isTabActive(2) &&
+                                            <PackageHistory userId={user.id} />
+                                        }
+                                        {isTabActive(3) &&
+                                            <Schedule userId={user.id} />
+                                        }
+                                    </div>
                                 </div>
                             </>
                         )}
-                    </div>
-                    <div className="common-tabs">
-                        <div className={`common-tab ${isTabActive(1) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(1)}>
-                            <div className="common-tab-container">
-                                <span className="common-tab-name">
-                                    Tổng quan
-                                </span>
-                            </div>
-                        </div>
-                        <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
-                            <div className="common-tab-container">
-                                <span className="common-tab-name">
-                                    Gói tập
-                                </span>
-                            </div>
-                        </div>
-                        <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
-                            <div className="common-tab-container">
-                                <span className="common-tab-name">
-                                    Danh biểu
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="common-plain">
-                        {isTabActive(1) &&
-                            <OtherProfile user={user} />
-                        }
-                        {isTabActive(2) &&
-                            <PackageHistory userId={user.id} />
-                        }
-                        {isTabActive(3) &&
-                            <Schedule userId={user.id} />
-                        }
                     </div>
                 </>
             )}
@@ -159,27 +150,45 @@ const CustomView = ({ userId, setDataView, isMainLoading }) => {
 
 const OtherProfile = ({ user }) => {
     return (
-        <div>
-            <table className='dialog-field'>
-                <tbody>
-                    <tr>
-                        <td>
-                            <label>Giới Tính</label>
-                        </td>
-                        <td>
-                            <span>{user.gender === 'M' ? 'Nam' : user.gender === 'F' ? 'Nữ' : user.gender}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label>Ngày tham gia</label>
-                        </td>
-                        <td>
-                            <span>{format(new Date(user.createDate), 'dd/MM/yyyy')}</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div className="profile-overview">
+            <div className="user-info">
+                <table className='dialog-field'>
+                    <tbody>
+                        <tr>
+                            <td width={200}>
+                                <label>Họ Tên</label>
+                            </td>
+                            <td>
+                                <span>{user.fullname}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Số điện thoại</label>
+                            </td>
+                            <td>
+                                <span>{formatPhoneNumber(user.phoneNo)}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Giới Tính</label>
+                            </td>
+                            <td>
+                                <span>{user.gender === 'M' ? 'Nam' : user.gender === 'F' ? 'Nữ' : user.gender}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Ngày tham gia</label>
+                            </td>
+                            <td>
+                                <span>{format(new Date(user.createDate), 'dd/MM/yyyy')}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }
@@ -189,7 +198,7 @@ const PackageHistory = ({ userId }) => {
     const [packageData, setPackageData] = useState([]);
     const [errorMessage, setErrorMessage] = useState(null);
     const columns = useMemo(() => COLUMNS, []);
-    const initialState =  useMemo (() => ({ 
+    const initialState = useMemo(() => ({
         hiddenColumns: ['packageName'],
         sortBy: [
             {
@@ -249,7 +258,7 @@ const PackageHistory = ({ userId }) => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={packageData} columns={columns} initialState={initialState} dialogs={dialogs}/>
+                    <AdvanceTable data={packageData} columns={columns} initialState={initialState} dialogs={dialogs} />
                 </div>
             )}
         </>

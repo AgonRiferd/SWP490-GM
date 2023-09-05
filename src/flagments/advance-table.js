@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useTable, useSortBy, useGlobalFilter, usePagination } from "react-table";
 import Dialog from "./dialog";
+import { Tooltip } from 'react-tooltip'
 
 /**
  * @param {JSON} data dữ liệu đầu vào dưới dạng json
@@ -11,7 +12,8 @@ import Dialog from "./dialog";
  * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, phân trang và dialog cho CRUD.
  */
 
-export const AdvanceTable = ({ data, columns: initialColumns, initialState, dialogs, viewData }) => {
+export const AdvanceTable = ({ data, columns: initialColumns, initialState, dialogs, viewData, searchText }) => {
+    const tableId = Math.random().toString(36).slice(2, 11);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState(null);
     const [selectedRow, setSelectedRow] = useState(null);
@@ -25,7 +27,7 @@ export const AdvanceTable = ({ data, columns: initialColumns, initialState, dial
         { value: 2, label: 'Bị khóa' },
     ];
 
-    const columns = useMemo (
+    const columns = useMemo(
         () => {
             const commonColumns = initialColumns;
             return (dialogs || viewData)
@@ -102,7 +104,8 @@ export const AdvanceTable = ({ data, columns: initialColumns, initialState, dial
                 return {
                     ...column,
                     sortType: booleanSortFunction,
-                    disableSortBy: status !== '0' // Sử dụng custom sort function cho cột kiểu boolean
+                    // Sử dụng custom sort function cho cột kiểu boolean
+                    disableSortBy: status !== '0'
                 };
             }
             return column;
@@ -174,6 +177,7 @@ export const AdvanceTable = ({ data, columns: initialColumns, initialState, dial
                     <span>
                         Tìm kiếm: {' '}
                         <input value={globalFilter || ''} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Tìm kiếm" />
+                        {' '}<i className="fa-solid fa-circle-exclamation" data-tooltip-id={`search-tooltip-${tableId}`} />
                     </span>
                 </div>
                 {dialogCreate &&
@@ -277,6 +281,9 @@ export const AdvanceTable = ({ data, columns: initialColumns, initialState, dial
             {isDialogOpen && (
                 <Dialog mode={dialogMode} rowData={selectedRow} onClose={handleCloseDialog} />
             )}
+            <Tooltip id={`search-tooltip-${tableId}`}>
+                <TooltipCustom data={customColumns} />
+            </Tooltip>
         </>
     )
 };
@@ -310,5 +317,20 @@ export const LoadingTable = () => {
                 <span>Đang tải dữ liệu...</span>
             </div>
         </div>
+    )
+}
+
+const TooltipCustom = ({ data }) => {
+    const searchableColumns = data.filter((column) => !column.disableGlobalFilter);
+
+    return (
+        <>
+            <span>Tìm kiếm theo:</span>
+            <ul>
+                {searchableColumns.map((item, index) => (
+                    <li key={index}>{item.Header}</li>
+                ))}
+            </ul>
+        </>
     )
 }

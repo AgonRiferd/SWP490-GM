@@ -7,11 +7,6 @@ const COLUMNS = [
         disableSortBy: true,
     },
     {
-        Header: 'Tên gói tập',
-        accessor: 'packageName',
-        disableSortBy: true,
-    },
-    {
         Header: 'Thời gian bắt đầu',
         accessor: 'from',
         Cell: ({ value }) => {
@@ -28,7 +23,7 @@ const COLUMNS = [
             )
         },
         disableGlobalFilter: true,
-        width: 60
+        width: 50
     },
     {
         Header: 'Trạng thái',

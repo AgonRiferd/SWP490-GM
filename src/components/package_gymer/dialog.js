@@ -34,7 +34,6 @@ export const View = ({ data, onClose }) => {
                 if (pId) {
                     response = await axiosInstance.get(`/Packages/GetPackage/${pId}`);
                     const { data } = response.data;
-                    console.log(data);
                     packageData = data ? data : null;
                     if (data) {
                         if (data.hasPt && pgData.ptId) {
