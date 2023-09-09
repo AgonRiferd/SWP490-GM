@@ -23,11 +23,11 @@ const PrivateRoute = ({setIsAuthenticated}) => {
                 </aside>
                 <aside className={`right-side ${isCollapsed()}`}>
                     <Header setIsAuthenticated={setIsAuthenticated}/>
-                    <div className="content">
+                    <section className="content">
                         <div className="inner-content">
                             <Outlet />
                         </div>
-                    </div>
+                    </section>
                     <Footer />
                 </aside>
             </div>

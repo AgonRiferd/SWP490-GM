@@ -522,16 +522,6 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
         return dateA - dateB;
     });
 
-    const [exerciseItemExpands, setExerciseItemExpands] = useState([]);
-
-    const handleExerciseItemClick = (index) => {
-        if (exerciseItemExpands.includes(index)) {
-            setExerciseItemExpands(exerciseItemExpands.filter((i) => i !== index));
-        } else {
-            setExerciseItemExpands([...exerciseItemExpands, index]);
-        }
-    };
-
     return (
         <>
             <div className="schedule-content">
@@ -542,9 +532,7 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                         </div>
                         <div className="exercise-content">
                             {exerciseData.map((item, index) => (
-                                <div key={index} className={`item ${exerciseItemExpands.includes(index) ? 'show' : ''}`}>
-                                    <ExerciseSchedule data={item} index={index} handleExerciseItemClick={handleExerciseItemClick} />
-                                </div>
+                                <ExerciseSchedule data={item} key={index} />
                             ))}
                         </div>
                     </div>
@@ -559,17 +547,17 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
     );
 }
 
-const ExerciseSchedule = ({ data, index, handleExerciseItemClick }) => {
+const ExerciseSchedule = ({ data }) => {
     const [initialData,] = useState(data);
 
     return (
-        <>
-            <div className="title" onClick={() => handleExerciseItemClick(index)} >
+        <details className="item">
+            <summary className="title" >
                 <span>
                     {formatTime(initialData.from)} - {formatTime(initialData.to)}
                 </span>
                 <span className="fa fa-angle-down pull-right"></span>
-            </div>
+            </summary>
             <div className="details">
                 <table className='dialog-field'>
                     <tbody>
@@ -598,7 +586,7 @@ const ExerciseSchedule = ({ data, index, handleExerciseItemClick }) => {
                     </tbody>
                 </table>
             </div>
-        </>
+        </details>
     )
 }
 

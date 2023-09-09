@@ -1705,35 +1705,31 @@ hr.view-divider {
   overflow-y: auto;
 }
 
-.nutrition-content .item,
-.exercise-content .item {
+.schedule-content details {
   margin: 10px 0;
   margin-top: 5px;
 }
 
-.nutrition-content .item:not(:last-child),
-.exercise-content .item:not(:last-child) {
-  border-bottom: 1px solid var(--primary-color);
-}
-
-.nutrition-content .item>.title,
-.exercise-content .item>.title {
-  background-color: var(--text-color);
+.schedule-content details > summary {
   padding: 3px 2px;
+  background-color: var(--text-color);
+  border: none;
+  box-shadow: 1px 1px 2px #bbbbbb;
+  cursor: pointer;
 }
 
-.nutrition-content .item .details,
-.exercise-content .item .details {
-  display: none;
+.schedule-content details > .details {
+  background-color: var(--text-color);
+  margin: 0;
+  box-shadow: 1px 1px 2px #bbbbbb;
+}
+
+.exercise-content details > .details {
+  padding: 3px 10px;
 }
 
 .exercise-content table td:first-child {
   display: inline-block;
-}
-
-.nutrition-content .item.show .details,
-.exercise-content .item.show .details {
-  display: block;
 }
 
 .exercise-content .item.show .details {

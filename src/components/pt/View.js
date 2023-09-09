@@ -166,16 +166,32 @@ const OtherProfile = ({ user }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [rating, setRating] = useState(null);
 
     const fetchData = async () => {
         try {
             if (!isLoading)
                 setIsLoading(true);
             // Fetch data from the API and update the state
-            const response = await axiosInstance.get(`/Qualifications/GetQualificationByAccountId/${user.id}`);
+            let response = await axiosInstance.get(`/Qualifications/GetQualificationByAccountId/${user.id}`);
             //Fetch thành công
-            const { data } = response;
-            setQualification(data);
+            if (response) {
+                const { data } = response;
+                setQualification(data);
+            }
+
+            response = await axiosInstance.get('/Feedback/GetAverageRatingByExpertID', {
+                params: {
+                    expertID: user.id
+                }
+            });
+            //Fetch thành công
+            if (response) {
+                const { data } = response.data;
+                if (data) {
+                    setRating(data.averageRate);
+                }
+            }
             setIsLoading(false); // Kết thúc quá trình fetch
         } catch (error) {
             if (error.response) {
@@ -266,6 +282,20 @@ const OtherProfile = ({ user }) => {
                                         </td>
                                         <td>
                                             <span>{format(new Date(user.createDate), 'dd/MM/yyyy')}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label>Đánh giá</label>
+                                        </td>
+                                        <td>
+                                            {rating ?
+                                                <span>
+                                                    {rating} / 5
+                                                </span> : <span>
+                                                    Chưa có
+                                                </span>
+                                            }
                                         </td>
                                     </tr>
                                     <tr>

@@ -12,7 +12,7 @@ import { Tooltip } from 'react-tooltip'
  * @returns bảng giá trị được sắp xếp và có các chức năng: tìm kiếm, phân trang và dialog cho CRUD.
  */
 
-export const AdvanceTable = ({ data, columns: initialColumns, initialState, dialogs, viewData, searchText }) => {
+export const AdvanceTable = ({ data, columns: initialColumns, initialState, dialogs, viewData }) => {
     const tableId = Math.random().toString(36).slice(2, 11);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [dialogMode, setDialogMode] = useState(null);

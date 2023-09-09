@@ -237,16 +237,6 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
         return dateA - dateB;
     });
 
-    const [exerciseItemExpands, setExerciseItemExpands] = useState([]);
-
-    const handleExerciseItemClick = (index) => {
-        if (exerciseItemExpands.includes(index)) {
-            setExerciseItemExpands(exerciseItemExpands.filter((i) => i !== index));
-        } else {
-            setExerciseItemExpands([...exerciseItemExpands, index]);
-        }
-    };
-
     return (
         <>
             <div className="schedule-content">
@@ -257,9 +247,7 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
                         </div>
                         <div className="exercise-content">
                             {exerciseData.map((item, index) => (
-                                <div key={index} className={`item ${exerciseItemExpands.includes(index) ? 'show' : ''}`}>
-                                    <ExerciseSchedule data={item} index={index} handleExerciseItemClick={handleExerciseItemClick} exerciseItemExpands={exerciseItemExpands} />
-                                </div>
+                                <ExerciseSchedule data={item} key={index} />
                             ))}
                         </div>
                     </div>
@@ -284,11 +272,11 @@ export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }
     );
 }
 
-const ExerciseSchedule = ({ data, index, handleExerciseItemClick, exerciseItemExpands }) => {
+const ExerciseSchedule = ({ data }) => {
     const [initialData, setInitialData] = useState(data);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
+    const loadData = () => {
         const fetchData = async () => {
             let ptName = null;
             if (!isLoading)
@@ -312,20 +300,19 @@ const ExerciseSchedule = ({ data, index, handleExerciseItemClick, exerciseItemEx
             setIsLoading(false);
         }
 
-        if (exerciseItemExpands.includes(index) && !initialData.ptName) {
+        if (!initialData.ptName) {
             fetchData();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [exerciseItemExpands])
+    }
 
     return (
-        <>
-            <div className="title" onClick={() => handleExerciseItemClick(index)} >
+        <details onToggle={() => loadData()} className="item">
+            <summary className="title">
                 <span>
                     {formatTime(initialData.from)} - {formatTime(initialData.to)}
                 </span>
                 <span className="fa fa-angle-down pull-right"></span>
-            </div>
+            </summary>
             <div className="details">
                 {isLoading ? (
                     <div className="loading-overlay">
@@ -364,7 +351,7 @@ const ExerciseSchedule = ({ data, index, handleExerciseItemClick, exerciseItemEx
                     </>
                 )}
             </div>
-        </>
+        </details>
     )
 }
 
@@ -382,7 +369,6 @@ const NutritionSchedule = ({ data }) => {
                     let response = await axiosInstance.get(`/NutritionSchedules/GetNutritionSchedule/${initialData[0].nutritionScheduleId}`);
                     const { data } = response;
                     const neId = data ? data.neid : null;
-                    console.log(neId);
                     if (neId) {
                         response = await axiosInstance.get(`/Accounts/GetAccountByID/${neId}`);
                         const { data } = response;
@@ -397,16 +383,6 @@ const NutritionSchedule = ({ data }) => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    const [nutritionItemExpands, setNutritionItemExpands] = useState([]);
-
-    const handleNutritionItemClick = (index) => {
-        if (nutritionItemExpands.includes(index)) {
-            setNutritionItemExpands(nutritionItemExpands.filter((i) => i !== index));
-        } else {
-            setNutritionItemExpands([...nutritionItemExpands, index]);
-        }
-    };
 
     const formatMealTime = (mealTime) => {
         switch (mealTime) {
@@ -445,13 +421,13 @@ const NutritionSchedule = ({ data }) => {
                         </tbody>
                     </table>
                     {initialData.map((item, index) => (
-                        <div key={index} className={`item ${nutritionItemExpands.includes(index) ? 'show' : ''}`}>
-                            <div className="title" onClick={() => handleNutritionItemClick(index)} >
+                        <details key={index} className='item'>
+                            <summary className="title">
                                 <span>
                                     {formatMealTime(item.mealTime)}
                                 </span>
                                 <span className="fa fa-angle-down pull-right"></span>
-                            </div>
+                            </summary>
                             <div className="details">
                                 <table className="schedule-table">
                                     <thead>
@@ -478,7 +454,7 @@ const NutritionSchedule = ({ data }) => {
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
+                        </details>
                     ))}
                 </>
             )}

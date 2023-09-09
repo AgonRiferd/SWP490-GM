@@ -124,6 +124,7 @@ const NEManage = () => {
                 <CustomView 
                     dataUser={dataView}
                     isMainLoading={isLoading}
+                    setDataView={setDataView}
                 />
             }
         </>

@@ -9,7 +9,7 @@ import { formatPhoneNumber } from "../../utils/convert";
 import Dialog from "../../flagments/dialog";
 import { ImageInput } from "../../utils/imageConvert";
 
-const CustomView = ({ dataUser, isMainLoading }) => {
+const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -61,6 +61,7 @@ const CustomView = ({ dataUser, isMainLoading }) => {
             <hr className="view-divider" />
             <div className="sep-container">
                 <div className="sep-text">Thông tin</div>
+                <button type="button" className="button-close" onClick={() => setDataView()}>&times;</button>
             </div>
             {isLoading ? (
                 <div className="loading-overlay">
@@ -74,83 +75,73 @@ const CustomView = ({ dataUser, isMainLoading }) => {
                             <span className="status-error">{errorMessage}</span>
                         ) : (
                             <>
-                                <div className="profile-avatar">
-                                    {user.fullname.charAt(0).toUpperCase()}
+                                <div className="user-avatar">
+                                    <div className="profile-avatar">
+                                        {user.fullname.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <table className='dialog-field'>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span>{user.fullname}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        ({user.isDelete ?
+                                                            <span className="status-lock">
+                                                                Bị khóa
+                                                            </span>
+                                                            :
+                                                            <span className="status-active">
+                                                                Hoạt động
+                                                            </span>
+                                                        })
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div>
-                                    <table className='dialog-field'>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <label>Tên</label>
-                                                </td>
-                                                <td>
-                                                    <span>{user.fullname}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label>Số Điện Thoại</label>
-                                                </td>
-                                                <td>
-                                                    <span>{formatPhoneNumber(user.phoneNo)}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <label>Trạng Thái</label>
-                                                </td>
-                                                <td>
-                                                    {user.isDelete ?
-                                                        <span className="status-lock">
-                                                            Bị khóa
-                                                        </span>
-                                                        :
-                                                        <span className="status-active">
-                                                            Hoạt động
-                                                        </span>
-                                                    }
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div className="user-details">
+                                    <div className="common-tabs">
+                                        <div className={`common-tab ${isTabActive(1) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(1)}>
+                                            <div className="common-tab-container">
+                                                <span className="common-tab-name">
+                                                    Tổng quan
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
+                                            <div className="common-tab-container">
+                                                <span className="common-tab-name">
+                                                    Thực phẩm
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
+                                            <div className="common-tab-container">
+                                                <span className="common-tab-name">
+                                                    Công việc
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="common-plain">
+                                        {isTabActive(1) &&
+                                            <OtherProfile user={user} />
+                                        }
+                                        {isTabActive(2) &&
+                                            <FoodAndSuppliments userId={user.id} />
+                                        }
+                                        {isTabActive(3) &&
+                                            <WorkingPackages userId={user.id} />
+                                        }
+                                    </div>
                                 </div>
                             </>
                         )}
-                    </div>
-                    <div className="common-tabs">
-                        <div className={`common-tab ${isTabActive(1) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(1)}>
-                            <div className="common-tab-container">
-                                <span className="common-tab-name">
-                                    Tổng quan
-                                </span>
-                            </div>
-                        </div>
-                        <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
-                            <div className="common-tab-container">
-                                <span className="common-tab-name">
-                                    Thực phẩm
-                                </span>
-                            </div>
-                        </div>
-                        <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
-                            <div className="common-tab-container">
-                                <span className="common-tab-name">
-                                    Công việc
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="common-plain">
-                        {isTabActive(1) &&
-                            <OtherProfile user={user} />
-                        }
-                        {isTabActive(2) &&
-                            <FoodAndSuppliments userId={user.id} />
-                        }
-                        {isTabActive(3) &&
-                            <WorkingPackages userId={user.id} />
-                        }
                     </div>
                 </>
             )}
@@ -163,16 +154,32 @@ const OtherProfile = ({ user }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [rating, setRating] = useState(null);
 
     const fetchData = async () => {
         try {
             if (!isLoading)
                 setIsLoading(true);
             // Fetch data from the API and update the state
-            const response = await axiosInstance.get(`/Qualifications/GetQualificationByAccountId/${user.id}`);
+            let response = await axiosInstance.get(`/Qualifications/GetQualificationByAccountId/${user.id}`);
             //Fetch thành công
-            const { data } = response;
-            setQualification(data);
+            if (response) {
+                const { data } = response;
+                setQualification(data);
+            }
+
+            response = await axiosInstance.get('/Feedback/GetAverageRatingByExpertID', {
+                params: {
+                    expertID: user.id
+                }
+            });
+            //Fetch thành công
+            if (response) {
+                const { data } = response.data;
+                if (data) {
+                    setRating(data.averageRate);
+                }
+            }
             setIsLoading(false); // Kết thúc quá trình fetch
         } catch (error) {
             if (error.response) {
@@ -227,22 +234,6 @@ const OtherProfile = ({ user }) => {
                         <Dialog mode={dialogMode} rowData={qualification} onClose={handleCloseDialog} />
                     )}
                     <div className="profile-overview">
-                        <div className="certificate">
-                            <div className="sep-container">
-                                <div className="sep-text">Chứng chỉ</div>
-                            </div>
-                            {qualification ?
-                                <>
-                                    <img src={qualification.certificate} alt="certificate" />
-                                    <button className="any-button" onClick={handleOpenDialog}>Chỉnh sửa</button>
-                                </> : <>
-                                    <button className="any-button" onClick={handleOpenDialog}>Chỉnh sửa</button>
-                                </>
-                            }
-                        </div>
-                        <div className="strip">
-                            <div className="sep-text"></div>
-                        </div>
                         <div className="user-info">
                             <div className="sep-container">
                                 <div className="sep-text">Thông tin</div>
@@ -251,6 +242,22 @@ const OtherProfile = ({ user }) => {
                                 <tbody>
                                     <tr>
                                         <td width={200}>
+                                            <label>Họ Tên</label>
+                                        </td>
+                                        <td>
+                                            <span>{user.fullname}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label>Số điện thoại</label>
+                                        </td>
+                                        <td>
+                                            <span>{formatPhoneNumber(user.phoneNo)}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
                                             <label>Giới Tính</label>
                                         </td>
                                         <td>
@@ -263,6 +270,20 @@ const OtherProfile = ({ user }) => {
                                         </td>
                                         <td>
                                             <span>{format(new Date(user.createDate), 'dd/MM/yyyy')}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label>Đánh giá</label>
+                                        </td>
+                                        <td>
+                                            {rating ?
+                                                <span>
+                                                    {rating} / 5
+                                                </span> : <span>
+                                                    Chưa có
+                                                </span>
+                                            }
                                         </td>
                                     </tr>
                                     <tr>
@@ -292,6 +313,30 @@ const OtherProfile = ({ user }) => {
                                 </tbody>
                             </table>
                         </div>
+                        <div className="certificate">
+                            <div className="sep-container">
+                                <div className="sep-text"></div>
+                            </div>
+                            <table className='dialog-field'>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span>Chứng chỉ</span>
+                                        </td>
+                                        <td>
+                                            {qualification ?
+                                                <> 
+                                                    <button className="any-button" onClick={handleOpenDialog}>Chỉnh sửa</button>
+                                                    <img src={qualification.certificate} alt="certificate" />
+                                                </> : <>
+                                                    <button className="any-button" onClick={handleOpenDialog}>Chỉnh sửa</button>
+                                                </>
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </>
             )}
@@ -308,16 +353,20 @@ const WorkingPackages = ({ userId }) => {
             Header: 'Tên thành viên',
             accessor: 'gymerName'
         },
-        ...PACKAGE_GYMER_COLUMNS
+        ...PACKAGE_GYMER_COLUMNS,
+        {
+            Header: 'Tên gói tập',
+            accessor: 'packageName'
+        }
     ], []);
-    const initialState =  useMemo (() => ({ 
+    const initialState = useMemo(() => ({
         hiddenColumns: ['name', 'status'],
         sortBy: [
             {
                 id: "from",
                 desc: true
             }
-        ]
+        ],
     }), []);
 
     useEffect(() => {

@@ -35,7 +35,7 @@ const Sidebar = ({ handleCollapsed, hasCollapsed }) => {
     };
 
     const angleArrow = (navItem) => {
-        return hasCollapsed ? 
+        return hasCollapsed ?
             (activeNavItem === navItem ? 'fa-angle-left' : 'fa-angle-right')
             :
             (activeNavItem === navItem ? 'fa-angle-down' : 'fa-angle-right');
