@@ -8,6 +8,7 @@ import { AdvanceTable, LoadingTable } from "../../flagments/advance-table";
 import { formatPhoneNumber } from "../../utils/convert";
 import Dialog from "../../flagments/dialog";
 import { ImageInput } from "../../utils/imageConvert";
+import Success from "../../utils/successAnimation";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -325,7 +326,7 @@ const OtherProfile = ({ user }) => {
                                         </td>
                                         <td>
                                             {qualification ?
-                                                <> 
+                                                <>
                                                     <button className="any-button" onClick={handleOpenDialog}>Chỉnh sửa</button>
                                                     <img src={qualification.certificate} alt="certificate" />
                                                 </> : <>
@@ -512,6 +513,7 @@ const CertificationEdit = ({ data, onClose, isLoading, onLoading, ...props }) =>
         certificate: imageUrl,
         descrition: data ? data.descrition : ""
     });
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const handleExpChange = (e) => {
         const { name, value } = e.target;
@@ -541,16 +543,15 @@ const CertificationEdit = ({ data, onClose, isLoading, onLoading, ...props }) =>
             const response = data ? await axiosInstance.put('/Qualifications/UpdateQualification', certData)
                 : await axiosInstance.post('/Qualifications/CreateQualification', certData);
             if (response.status === 200 || response.status === 201 || response.status === 204) {
-                alert('Cập nhật thành công');
-                props.fetchData();
-                onClose();
+                setIsSuccess(true);
+                onLoading(false);
             }
         } catch (error) {
             // Xử lý lỗi nếu có
             if (error.response) {
                 setErrorMessage(
                     <>
-                        <p>Cập nhật thành công</p>
+                        <p>Cập nhật không thành công</p>
                         <p>Mã lỗi: {error.response.status}</p>
                     </>
                 );
@@ -574,58 +575,71 @@ const CertificationEdit = ({ data, onClose, isLoading, onLoading, ...props }) =>
         }
     };
 
+    const handleOnClose = () => {
+        onClose();
+        props.fetchData();
+    }
+
     return (
         <>
-            {id ?
+            {isSuccess ? (
+                <Success onClose={handleOnClose}>
+                    <span>Đã cập nhật</span>
+                </Success>
+            ) : (
                 <>
-                    {errorMessage && <span className="status-error">{errorMessage}</span>}
-                    <form onSubmit={handleCreateCertificate}>
-                        <div className='dialog-fields'>
-                            <table className='dialog-field'>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <label>Chứng Chỉ</label>
-                                            <label className='status-lock'>*</label>
-                                        </td>
-                                        <td className="normal-file-input">
-                                            <ImageInput userId={id} setImageUrl={setImageUrl} imageUrl={imageUrl} />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label htmlFor="experience">Số năm kinh nghiệm</label>
-                                            <label className='status-lock'>*</label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                id="experience"
-                                                name="experience"
-                                                pattern="\d+"
-                                                value={certData.experience}
-                                                onChange={handleExpChange}
-                                                onKeyDown={handleKeyDown}
-                                                required
-                                                placeholder="0"
-                                            />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className='dialog-button-tray'>
-                            <button type='submit' className='any-button button-submit' disabled={isLoading || !imageUrl}>Xác nhận</button>
-                            <button type='button' className='any-button button-cancel' onClick={onClose}>Bỏ qua</button>
-                        </div>
-                    </form>
-                </> : <>
-                    <span className="status-error">ID người dùng không xác định</span>
-                    <div className='dialog-button-tray'>
-                        <button type='button' className='any-button button-cancel' onClick={onClose}>Đóng</button>
-                    </div>
+                    {id ?
+                        <>
+                            {errorMessage && <span className="status-error">{errorMessage}</span>}
+                            <form onSubmit={handleCreateCertificate}>
+                                <div className='dialog-fields'>
+                                    <table className='dialog-field'>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <label>Chứng Chỉ</label>
+                                                    <label className='status-lock'>*</label>
+                                                </td>
+                                                <td className="normal-file-input">
+                                                    <ImageInput userId={id} setImageUrl={setImageUrl} imageUrl={imageUrl} />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label htmlFor="experience">Số năm kinh nghiệm</label>
+                                                    <label className='status-lock'>*</label>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        id="experience"
+                                                        name="experience"
+                                                        pattern="\d+"
+                                                        value={certData.experience}
+                                                        onChange={handleExpChange}
+                                                        onKeyDown={handleKeyDown}
+                                                        required
+                                                        placeholder="0"
+                                                    />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className='dialog-button-tray'>
+                                    <button type='submit' className='any-button button-submit' disabled={isLoading || !imageUrl}>Xác nhận</button>
+                                    <button type='button' className='any-button button-cancel' onClick={onClose}>Bỏ qua</button>
+                                </div>
+                            </form>
+                        </> : <>
+                            <span className="status-error">ID người dùng không xác định</span>
+                            <div className='dialog-button-tray'>
+                                <button type='button' className='any-button button-cancel' onClick={onClose}>Đóng</button>
+                            </div>
+                        </>
+                    }
                 </>
-            }
+            )}
         </>
     );
 };

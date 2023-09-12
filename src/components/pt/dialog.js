@@ -348,6 +348,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 };
 
 export const View = ({ data, onClose }) => {
+    
 }
 
 export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {

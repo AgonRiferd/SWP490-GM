@@ -3,14 +3,14 @@ import axiosInstance from '../../utils/axiosConfig';
 import { format } from 'date-fns';
 import { formatMoney } from '../../utils/convert';
 
-export const Create = ({ onClose }) => {
+const Create = ({ onClose }) => {
     return (
         <>
         </>
     );
 };
 
-export const View = ({ data, onClose }) => {
+const View = ({ data, onClose }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [pgData, setPgData] = useState({
         packageGymerId: data.id,
@@ -210,8 +210,79 @@ export const View = ({ data, onClose }) => {
     );
 };
 
-export const Edit = ({ data, onClose }) => {
+const Edit = ({ data, onClose }) => {
 };
 
-export const Delete = ({ data, onClose }) => {
+const Delete = ({ data, onClose }) => {
 };
+
+const ViewListGymerPackage = ({ data, onClose }) => {
+
+    return (
+        <>
+            <div className='dialog-fields pg-dialog'>
+                <table className='dialog-field'>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span>Tên thành viên</span>
+                            </td>
+                            <td>
+                                <span>{data.gymerName}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Gói tập</span>
+                            </td>
+                            <td></td>
+                        </tr>
+                        {data.gymerPackages.map((item, index) => (
+                            <tr key={index}>
+                                <td colSpan={2}>
+                                    <details>
+                                        <summary>
+                                            {item.packageName}
+                                        </summary>
+                                        <div>
+                                            <table className='dialog-field'>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <label>Ngày bắt đầu</label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{format(new Date(item.from), 'dd/MM/yyyy')}</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <label>Số ngày huấn luyện</label>
+                                                        </td>
+                                                        <td>
+                                                            <span>{item.numberOfSession}</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </details>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className="dialog-button-tray">
+                <button type="button" className="any-button button-cancel" onClick={onClose}>
+                    Đóng
+                </button>
+            </div>
+        </>
+    )
+
+}
+
+const PackageGymerDialog = { Create, View, Edit, Delete, ViewListGymerPackage }
+
+export default PackageGymerDialog;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosConfig";
 import { formatPhoneNumber } from "../../utils/convert";
 import { ImageInput } from "../../utils/imageConvert";
+import Success from "../../utils/successAnimation";
 
 // const MAX_FILE_SIZE = 10 * 1024 * 1024;
 // const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png'];
@@ -436,84 +437,4 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
 };
 
 export const Delete = ({ data, onClose }) => {
-    // const [isDeleted, setIsDeleted] = useState(false);
-
-    // const handleDelete = () => {
-    //     // Xử lý logic xóa dữ liệu
-    //     // ...
-    //     setIsDeleted(true);
-    // };
-
-    // return (
-    //     <>
-    //         {isDeleted ? (
-    //             <p>Task failed successfully!</p>
-    //         ) : (
-    //             <p>Bạn có chắc chắn muốn xóa?</p>
-    //         )}
-
-    //         <div className="dialog-button-tray">
-    //             {isDeleted ? (
-    //                 <button type="button" className="any-button" onClick={onClose}>
-    //                     Đóng
-    //                 </button>
-    //             ) : (
-    //                 <>
-    //                     <button type="button" className="any-button button-submit" onClick={handleDelete}>
-    //                         Xác nhận
-    //                     </button>
-    //                     <button type="button" className="any-button button-cancel" onClick={onClose}>
-    //                         Hủy bỏ
-    //                     </button>
-    //                 </>
-    //             )}
-    //         </div>
-    //     </>
-    // );
 };
-
-const SUCCESS_COUNTDOWN = 5;
-
-const Success = ({ onClose, children }) => {
-    const [autoCloseCountdown, setAutoCloseCountdown] = useState(SUCCESS_COUNTDOWN + 1);
-    const [autoCloseTimeout, setAutoCloseTimeout] = useState(null);
-
-    useEffect(() => {
-        if (autoCloseCountdown > 0) {
-            const timeoutId = setTimeout(() => {
-                setAutoCloseCountdown((prevCountdown) => prevCountdown - 1);
-            }, 1000);
-            setAutoCloseTimeout(timeoutId);
-        } else if (autoCloseCountdown === 0) {
-            onClose();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [autoCloseCountdown]);
-
-    const handleOnClose = () => {
-        if (autoCloseTimeout) {
-            clearTimeout(autoCloseTimeout);
-        }
-        onClose();
-    }
-
-    return (
-        <>
-            <div className="success-checkmark">
-                <div className="check-icon">
-                    <span className="icon-line line-tip"></span>
-                    <span className="icon-line line-long"></span>
-                    <div className="icon-circle"></div>
-                    <div className="icon-fix"></div>
-                </div>
-            </div>
-            {children}
-            <div>
-                {`Cửa sổ sẽ tự động đóng sau ${autoCloseCountdown === SUCCESS_COUNTDOWN + 1 ? autoCloseCountdown - 1 : autoCloseCountdown} giây`}
-            </div>
-            <div className='dialog-button-tray'>
-                <button type='button' className='any-button button-cancel' onClick={handleOnClose}>Đóng</button>
-            </div>
-        </>
-    )
-}

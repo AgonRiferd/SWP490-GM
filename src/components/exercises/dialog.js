@@ -7,10 +7,10 @@ function getVideoIdFromUrl(url) {
     return match ? match[1] : 'dQw4w9WgXcQ';
 }
 
-export const Create = ({ onClose }) => {
+const Create = ({ onClose }) => {
 };
 
-export const View = ({ data, onClose }) => {
+const View = ({ data, onClose }) => {
     const [initialData] = useState(data);
     const videoId = getVideoIdFromUrl(data.video);
     return (
@@ -62,8 +62,12 @@ export const View = ({ data, onClose }) => {
     )
 };
 
-export const Edit = ({ data, onClose }) => {
+const Edit = ({ data, onClose }) => {
 };
 
-export const Delete = ({ data, onClose }) => {
+const Delete = ({ data, onClose }) => {
 };
+
+const ExerciseDialog = {Create, View, Edit, Delete};
+
+export default ExerciseDialog;

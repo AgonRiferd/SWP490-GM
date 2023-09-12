@@ -1,17 +1,14 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Cookies from "universal-cookie";
-import { useNavigate } from "react-router-dom";
 import axios from '../utils/axiosConfig';
 
 export const PageLoader = ({ setIsLoading, setIsAuthenticated }) => {
     const [status, setStatus] = useState('Đang kết nối đến máy chủ...');
-    const navigate = useNavigate();
     const cookies = new Cookies();
     const token = cookies.get('token');
 
     useEffect(() => {
-        const verifyToken = async (token) => {
+        const verifyToken = async () => {
             try {
                 await axios.get('/Login/getPhoneNoAndID', {
                     headers: {
@@ -19,24 +16,22 @@ export const PageLoader = ({ setIsLoading, setIsAuthenticated }) => {
                     }
                 });
                 setIsAuthenticated(true);
-                setIsLoading(false);
             } catch (error) {
-                alert("Your token has expired or invalid.")
                 cookies.remove("token");
+                console.log("Your token has expired or invalid.");
+            } finally {
                 setIsLoading(false);
-                navigate("/login");
             }
         };
 
         if (token) {
             setStatus('Đang kiểm tra token...');
-            verifyToken(token);
+            verifyToken();
         } else {
             setIsLoading(false);
-            navigate("/login");
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status]);
+    }, []);
 
     return (
         <>

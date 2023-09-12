@@ -5,7 +5,7 @@ import Calendar from "../../flagments/advance-calendar";
 import { ScheduleDetail } from "./dialog";
 import { AdvanceTable, LoadingTable } from "../../flagments/advance-table";
 import COLUMNS from "../package_gymer/Columns";
-import { View } from "../package_gymer/dialog";
+import PackageGymerDialog from "../package_gymer/dialog";
 import { formatPhoneNumber } from "../../utils/convert";
 
 const CustomView = ({ userId, setDataView, isMainLoading }) => {
@@ -246,7 +246,7 @@ const PackageHistory = ({ userId }) => {
         dialogView: {
             title: "Thông tin",
             icon: <i className="fa-solid fa-eye"></i>,
-            component: View
+            component: PackageGymerDialog.View
         }
     }), []);
 
