@@ -298,7 +298,7 @@ const Schedule = ({ userId }) => {
     }, [userId]);
 
     const Tooltip = ({ data }) => {
-        const nutritionData = data.filter((item) => item.nutritionScheduleId);
+        const nutritionData = data.filter((item) => item.nutritionScheduleId && item.foodAndSuppliment !== null);
         const exerciseData = data.filter((item) => item.scheduleId);
 
         return (

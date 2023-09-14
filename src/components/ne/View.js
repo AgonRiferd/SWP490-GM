@@ -2,13 +2,13 @@ import React, { useMemo, useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosConfig";
 import { format } from 'date-fns'
 import FOOD_COLUMNS from "../foods/Columns";
-import PACKAGE_GYMER_COLUMNS from "../package_gymer/Columns";
 import { Delete, View } from "../foods/dialog";
 import { AdvanceTable, LoadingTable } from "../../flagments/advance-table";
 import { formatPhoneNumber } from "../../utils/convert";
 import Dialog from "../../flagments/dialog";
 import { ImageInput } from "../../utils/imageConvert";
 import Success from "../../utils/successAnimation";
+import PackageGymerDialog from "../package_gymer/dialog";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -353,18 +353,12 @@ const WorkingPackages = ({ userId }) => {
         {
             Header: 'Tên thành viên',
             accessor: 'gymerName'
-        },
-        ...PACKAGE_GYMER_COLUMNS,
-        {
-            Header: 'Tên gói tập',
-            accessor: 'packageName'
         }
     ], []);
     const initialState = useMemo(() => ({
-        hiddenColumns: ['name', 'status'],
         sortBy: [
             {
-                id: "from",
+                id: "gymerName",
                 desc: true
             }
         ],
@@ -404,6 +398,14 @@ const WorkingPackages = ({ userId }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId]);
 
+    const dialogs = useMemo(() => ({
+        dialogView: {
+            title: "Thông tin",
+            icon: <i className="fa-solid fa-eye"></i>,
+            component: PackageGymerDialog.ViewListGymerPackage
+        }
+    }), []);
+
     return (
         <>
             {isLoading ? (
@@ -414,7 +416,12 @@ const WorkingPackages = ({ userId }) => {
                 <>
                     <h1>Danh sách công việc đang hoạt động</h1>
                     <div className="list-content">
-                        <AdvanceTable data={packageData} columns={columns} initialState={initialState} />
+                        <AdvanceTable 
+                            data={packageData} 
+                            columns={columns} 
+                            initialState={initialState}
+                            dialogs={dialogs}
+                        />
                     </div>
                 </>
             )}

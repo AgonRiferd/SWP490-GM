@@ -46,14 +46,14 @@ const ReportPage = () => {
                 <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
                     <div className="common-tab-container">
                         <span className="common-tab-name">
-                            Đã Kết Thúc
+                            Đang Tạm Dừng
                         </span>
                     </div>
                 </div>
                 <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
                     <div className="common-tab-container">
                         <span className="common-tab-name">
-                            Đang Tạm Dừng
+                            Đã Kết Thúc
                         </span>
                     </div>
                 </div>

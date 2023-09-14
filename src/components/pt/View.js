@@ -451,13 +451,13 @@ const Exercise = ({ userId }) => {
         ], []
     );
 
-    const fetchData = async (UID) => {
+    const fetchData = async () => {
         try {
             setIsLoading(true);
             // Fetch data from the API and update the state
             const response = await axiosInstance.get('/Excercises/GetExcercisesByPTID', {
                 params: {
-                    PTID: UID
+                    PTID: userId
                 }
             });
             //Fetch thành công
@@ -484,8 +484,9 @@ const Exercise = ({ userId }) => {
     };
 
     useEffect(() => {
-        fetchData(userId);
-    }, [userId]);
+        fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const dialogs = useMemo(() => ({
         dialogView: {
@@ -499,6 +500,7 @@ const Exercise = ({ userId }) => {
             component: ExerciseDialog.Delete,
             fetchData: fetchData
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }), []);
 
     return (

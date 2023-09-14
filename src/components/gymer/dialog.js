@@ -356,7 +356,7 @@ const ExerciseSchedule = ({ data }) => {
 }
 
 const NutritionSchedule = ({ data }) => {
-    const initialData = data;
+    const initialData = data.filter((item) => item.foodAndSuppliment !== null);
     const [isLoading, setIsLoading] = useState(false);
     const [neName, setNeName] = useState(null);
 

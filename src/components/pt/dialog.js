@@ -258,38 +258,6 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                     </tr>
                                     <tr>
                                         <td>
-                                            <label htmlFor="password">Mật khẩu</label>
-                                            <label className='status-lock'>*</label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="password"
-                                                id="password"
-                                                name="password"
-                                                value={formData.password}
-                                                onChange={handleChange}
-                                                required
-                                            />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <label htmlFor="retypePw">Nhập lại mật khẩu</label>
-                                            <label className='status-lock'>*</label>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="password"
-                                                id="retypePw"
-                                                name="retypePw"
-                                                value={retypePw}
-                                                onChange={handleRePasswordChange}
-                                                required
-                                            />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
                                             <label htmlFor="name">Họ và tên</label>
                                             <label className='status-lock'>*</label>
                                         </td>
@@ -331,6 +299,38 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                 />
                                                 <label htmlFor="female">Nữ</label>
                                             </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="password">Mật khẩu</label>
+                                            <label className='status-lock'>*</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="password"
+                                                id="password"
+                                                name="password"
+                                                value={formData.password}
+                                                onChange={handleChange}
+                                                required
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label htmlFor="retypePw">Nhập lại mật khẩu</label>
+                                            <label className='status-lock'>*</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="password"
+                                                id="retypePw"
+                                                name="retypePw"
+                                                value={retypePw}
+                                                onChange={handleRePasswordChange}
+                                                required
+                                            />
                                         </td>
                                     </tr>
                                 </tbody>
