@@ -27,11 +27,7 @@ const Sidebar = ({ handleCollapsed, hasCollapsed }) => {
     };
 
     const isMenuItemActive = (navItem) => {
-        return activeNavItem === navItem ? 'active' : '';
-    };
-
-    const isMenuCollapsed = (navItem) => {
-        return activeNavItem === navItem ? 'collapsed' : 'collapse';
+        return activeNavItem === navItem && !hasCollapsed ? 'active' : '';
     };
 
     const angleArrow = (navItem) => {
@@ -60,23 +56,37 @@ const Sidebar = ({ handleCollapsed, hasCollapsed }) => {
                         </button>
                     </li>
                     {/**Dashboard*/}
-                    <li>
+                    <li className={hasCollapsed ? 'menu-dropdown' : ''}>
                         <NavLink end to="/" onClick={() => handleMenuClick('dashboard')}>
                             <i className="fa-solid fa-home fa-sidebar-icon fa-custom"></i>
                             <span className='title'>Trang Chủ</span>
                             <span className="arrow"></span>
                         </NavLink>
+                        {hasCollapsed &&
+                            <ul className='sub-menu'>
+                                <li className='sub-menu-title'>
+                                    <span>Trang Chủ</span>
+                                </li>
+                            </ul>
+                        }
                     </li>
                     {/**Management*/}
                     <li className={`menu-dropdown ${isMenuItemActive('management')}`}>
                         <a href="##" onClick={() => handleMenuClick('management')}>
                             <i className="fa-solid fa-gear fa-sidebar-icon fa-custom"></i>
                             <span className='title'>Quản Lý</span>
-                            <span className={`fa pull-right ${angleArrow('management')}`}></span>
+                            {!hasCollapsed &&
+                                <span className={`fa pull-right ${angleArrow('management')}`}></span>
+                            }
                         </a>
-                        <ul className={`sub-menu ${isMenuCollapsed('management')}`}>
+                        <ul className='sub-menu'>
+                            {hasCollapsed &&
+                                <li className='sub-menu-title'>
+                                    <span>Quản lý</span>
+                                </li>
+                            }
                             <li>
-                                <NavLink to="/management/member">
+                                <NavLink to="/management/gymer">
                                     <i className="fa-solid fa-user fa-sidebar-icon fa-custom"></i>
                                     <span className='title'>Thành Viên</span>
                                     <span className="arrow"></span>
@@ -106,12 +116,19 @@ const Sidebar = ({ handleCollapsed, hasCollapsed }) => {
                         </ul>
                     </li>
                     {/**Dashboard*/}
-                    <li>
+                    <li className={hasCollapsed ? 'menu-dropdown' : ''}>
                         <NavLink to="/report" onClick={() => handleMenuClick('dashboard')}>
                             <i className="fa-solid fa-box fa-sidebar-icon fa-custom"></i>
                             <span className='title'>Danh Sách Gói Bán</span>
                             <span className="arrow"></span>
                         </NavLink>
+                        {hasCollapsed &&
+                            <ul className='sub-menu'>
+                                <li className='sub-menu-title'>
+                                    <span>Danh Sách Gói Bán</span>
+                                </li>
+                            </ul>
+                        }
                     </li>
                 </ul>
             </section>

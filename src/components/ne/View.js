@@ -416,9 +416,9 @@ const WorkingPackages = ({ userId }) => {
                 <>
                     <h1>Danh sách công việc đang hoạt động</h1>
                     <div className="list-content">
-                        <AdvanceTable 
-                            data={packageData} 
-                            columns={columns} 
+                        <AdvanceTable
+                            data={packageData}
+                            columns={columns}
                             initialState={initialState}
                             dialogs={dialogs}
                         />
@@ -443,11 +443,11 @@ const FoodAndSuppliments = ({ userId }) => {
         ]
     }), []);
 
-    const fetchData = async (UID) => {
+    const fetchData = async () => {
         try {
             setIsLoading(true);
             // Fetch data from the API and update the state
-            const response = await axiosInstance.get(`/FoodAndSuppliments/GetFoodAndSupplimentsBYNE/${UID}`);
+            const response = await axiosInstance.get(`/FoodAndSuppliments/GetFoodAndSupplimentsBYNE/${userId}`);
             //Fetch thành công
             const { data } = response.data;
             if (data)
@@ -455,11 +455,14 @@ const FoodAndSuppliments = ({ userId }) => {
         } catch (error) {
             if (error.response) {
                 // Lỗi được trả về từ phía server
-                setErrorMessage(
-                    <>
-                        <span>Mã lỗi: {error.response.status}</span>
-                    </>
-                );
+                const { status } = error.response;
+                if (status !== 404) {
+                    setErrorMessage(
+                        <>
+                            <span>Mã lỗi: {status}</span>
+                        </>
+                    );
+                }
             } else {
                 // Lỗi không có phản hồi từ server
                 setErrorMessage(
@@ -475,8 +478,9 @@ const FoodAndSuppliments = ({ userId }) => {
     };
 
     useEffect(() => {
-        fetchData(userId);
-    }, [userId]);
+        fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const dialogs = useMemo(() => ({
         dialogView: {
@@ -490,6 +494,7 @@ const FoodAndSuppliments = ({ userId }) => {
             component: Delete,
             fetchData: fetchData
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }), []);
 
     return (

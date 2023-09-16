@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axiosInstance from '../../utils/axiosConfig';
+import Success from '../../utils/successAnimation';
 
 export const Create = ({ onClose }) => {
-    return (
-        <>
-        </>
-    );
 };
 
 export const View = ({ data, onClose }) => {
@@ -52,5 +50,79 @@ export const View = ({ data, onClose }) => {
 export const Edit = ({ data, onClose }) => {
 };
 
-export const Delete = ({ data, onClose }) => {
+export const Delete = ({ data, isLoading, onLoading, onClose, ...props }) => {
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    const handleDelete = async (e) => {
+        e.preventDefault();
+
+        try {
+            onLoading(true);
+            const response = await axiosInstance.delete(`/FoodAndSuppliments/DeleteFoodAndSuppliment/${data.id}`);
+            if (response) {
+                setIsSuccess(true);
+            }
+            onLoading(false);
+        } catch (error) {
+            // Xử lý lỗi nếu có
+            if (error.response) {
+                setErrorMessage(<>
+                    <p>Xóa không thành công</p>
+                    <p>Mã lỗi: {error.response.status}</p>
+                </>);
+            } else {
+                setErrorMessage(<>
+                    <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                    <p>Mã lỗi: {error.code}</p>
+                </>);
+            }
+            onLoading(false);
+        }
+    };
+
+    const handleOnClose = () => {
+        onClose();
+        props.fetchData();
+    }
+
+    return (
+        <>
+            {isSuccess ? (
+                <Success onClose={handleOnClose}>
+                    <span>Đã xóa thành công</span>
+                </Success>
+            ) : (
+                <div className="content-delete">
+                    {errorMessage ? (
+                        <>
+                            <center>
+                                <span className="status-error">{errorMessage}</span>
+                            </center>
+                            <div className="dialog-button-tray">
+                                <button type="button" className="any-button button-cancel" onClick={onClose}>
+                                    Trở về
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <center>
+                                <p>Tên thực phẩm : <span className='status-error'>{data.name}</span></p>
+                                <p>Bạn có chắc chắn muốn xóa?</p>
+                            </center>
+                            <div className="dialog-button-tray">
+                                <button type="button" className="any-button" onClick={handleDelete} disabled={isLoading}>
+                                    Xác nhận
+                                </button>
+                                <button type="button" className="any-button button-cancel button-remarquable" onClick={onClose}>
+                                    Hủy bỏ
+                                </button>
+                            </div>
+                        </>
+                    )}
+                </div>
+            )}
+        </>
+    );
 };

@@ -3,6 +3,7 @@ import axiosInstance from "../../utils/axiosConfig";
 import { formatPhoneNumber } from "../../utils/convert";
 import { ImageInput } from "../../utils/imageConvert";
 import { format } from "date-fns";
+import Success from "../../utils/successAnimation";
 // import { storageRef } from '../../utils/firebaseConfig';
 
 const GENDER_MALE = 'M';
@@ -253,6 +254,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                 onKeyDown={handleKeyDown}
                                                 required
                                                 placeholder="xxxx-xxx-xxxx"
+                                                title="Số điện thoại có dạng xxxx-xxx-xxx hoặc xxxx-xxx-xxxx"
                                             />
                                         </td>
                                     </tr>
@@ -439,80 +441,6 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
 };
 
 export const Delete = ({ data, onLoading, isLoading, onClose, ...props }) => {
-    const [errorMessage, setErrorMessage] = useState('');
-    const [isSuccess, setIsSuccess] = useState(false);
-
-    const handleDelete = async (e) => {
-        e.preventDefault();
-
-        try {
-            onLoading(true);
-            const response = await axiosInstance.delete(`/Accounts/DeleteAccountPERMANENT/${data.id}`);
-            if (response) {
-                setIsSuccess(true);
-            }
-            onLoading(false);
-        } catch (error) {
-            // Xử lý lỗi nếu có
-            if (error.response) {
-                setErrorMessage(<>
-                    <p>Xóa không thành công</p>
-                    <p>Mã lỗi: {error.response.status}</p>
-                </>);
-            } else {
-                setErrorMessage(<>
-                    <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
-                    <p>Mã lỗi: {error.code}</p>
-                </>);
-            }
-            onLoading(false);
-        }
-    };
-
-    const handleOnClose = () => {
-        onClose();
-        props.fetchData();
-    }
-
-    return (
-        <>
-            {isSuccess ? (
-                <Success onClose={handleOnClose}>
-                    <span>Đã xóa thành công</span>
-                </Success>
-            ) : (
-                <div className="content-delete">
-                    {errorMessage ? (
-                        <>
-                            <center>
-                                <span className="status-error">{errorMessage}</span>
-                            </center>
-                            <div className="dialog-button-tray">
-                                <button type="button" className="any-button button-cancel" onClick={onClose}>
-                                    Trở về
-                                </button>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <center>
-                                <p>Tên Dịch vụ : <span className='status-error'>{data.name}</span></p>
-                                <p>Bạn có chắc chắn muốn xóa?</p>
-                            </center>
-                            <div className="dialog-button-tray">
-                                <button type="button" className="any-button" onClick={handleDelete} disabled={isLoading}>
-                                    Xác nhận
-                                </button>
-                                <button type="button" className="any-button button-cancel button-remarquable" onClick={onClose}>
-                                    Hủy bỏ
-                                </button>
-                            </div>
-                        </>
-                    )}
-                </div>
-            )}
-        </>
-    );
 };
 
 export const ScheduleDetail = ({ data, onClose, isLoading, onLoading, ...props }) => {
@@ -588,51 +516,5 @@ const ExerciseSchedule = ({ data }) => {
                 </table>
             </div>
         </details>
-    )
-}
-
-const SUCCESS_COUNTDOWN = 5;
-
-const Success = ({ onClose, children }) => {
-    const [autoCloseCountdown, setAutoCloseCountdown] = useState(SUCCESS_COUNTDOWN + 1);
-    const [autoCloseTimeout, setAutoCloseTimeout] = useState(null);
-
-    useEffect(() => {
-        if (autoCloseCountdown > 0) {
-            const timeoutId = setTimeout(() => {
-                setAutoCloseCountdown((prevCountdown) => prevCountdown - 1);
-            }, 1000);
-            setAutoCloseTimeout(timeoutId);
-        } else if (autoCloseCountdown === 0) {
-            onClose();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [autoCloseCountdown]);
-
-    const handleOnClose = () => {
-        if (autoCloseTimeout) {
-            clearTimeout(autoCloseTimeout);
-        }
-        onClose();
-    }
-
-    return (
-        <>
-            <div className="success-checkmark">
-                <div className="check-icon">
-                    <span className="icon-line line-tip"></span>
-                    <span className="icon-line line-long"></span>
-                    <div className="icon-circle"></div>
-                    <div className="icon-fix"></div>
-                </div>
-            </div>
-            {children}
-            <div>
-                {`Cửa sổ sẽ tự động đóng sau ${autoCloseCountdown === SUCCESS_COUNTDOWN + 1 ? autoCloseCountdown - 1 : autoCloseCountdown} giây`}
-            </div>
-            <div className='dialog-button-tray'>
-                <button type='button' className='any-button button-cancel' onClick={handleOnClose}>Đóng</button>
-            </div>
-        </>
     )
 }

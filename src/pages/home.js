@@ -1,13 +1,23 @@
 import React from 'react';
+import Statistic from '../flagments/statistic';
+import Management from '../flagments/managements';
 
 const HomePage = () => {
 
     return (
         <>
-            <h2>Trang Chủ</h2>
-            <div className="{//your-content}">
-
+            <div className='content-header'>
+                <span className="title">
+                    Trang Chủ
+                </span>
             </div>
+            <section className="home-statistic">
+                <Statistic />
+            </section>
+            <hr></hr>
+            <section className='home-managements'>
+                <Management />
+            </section>
         </>
     )
 }

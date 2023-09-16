@@ -442,14 +442,14 @@ const Exercise = ({ userId }) => {
     const [errorMessage, setErrorMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
-    const sortees = useMemo(
-        () => [
+    const initialState = useMemo(() => ({
+        sortBy: [
             {
                 id: "name",
                 desc: false
             }
-        ], []
-    );
+        ]
+    }), []);
 
     const fetchData = async () => {
         try {
@@ -511,7 +511,7 @@ const Exercise = ({ userId }) => {
                 <span className="status-error">{errorMessage}</span>
             ) : (
                 <div className="list-content">
-                    <AdvanceTable data={data} columns={columns} sortees={sortees} dialogs={dialogs} />
+                    <AdvanceTable data={data} columns={columns} initialState={initialState} dialogs={dialogs} />
                 </div>
             )}
         </>

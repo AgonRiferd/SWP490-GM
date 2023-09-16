@@ -26,7 +26,8 @@ function App() {
           <Route path="/" element={isAuthenticated ? <PrivateRoute setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/login" />}>
             <Route index element={<HomePage />} />
             <Route path="/management">
-              <Route exact path="member" element={<MemberManage />} />
+              <Route index element={<Navigate to="/404" />} />
+              <Route exact path="gymer" element={<MemberManage />} />
               <Route exact path="pt" element={<PTManage />} />
               <Route exact path="ne" element={<NEManage />} />
               <Route exact path="package" element={<PackageManage />} />
