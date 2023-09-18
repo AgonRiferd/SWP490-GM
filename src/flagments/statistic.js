@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import axiosInstance from "../utils/axiosConfig";
 import { formatMoney } from "../utils/convert";
 
-const CURRENT_DATE = new Date("2023-08-11");
+const CURRENT_DATE = new Date("2023-07-31");
 
 const Statistic = () => {
     return (
