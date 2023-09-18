@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react"
 import axiosInstance from "../utils/axiosConfig";
 import { formatMoney } from "../utils/convert";
+import { format } from "date-fns";
 
-const CURRENT_DATE = new Date("2023-07-31");
+const CURRENT_DATE = new Date();
+
+const formatDate = (date) => {
+    return format(new Date(date), "yyyy-MM-dd");
+}
 
 const Statistic = () => {
     return (
@@ -172,71 +177,89 @@ const Card = ({ form }) => {
     )
 }
 
-function calculateNewMembers(data, setForm, startDate, endDate, title, subtitle) {
+function countNewMembers(data, startDate, endDate) {
     const filteredData = data.filter((item) => {
-        const createDate = new Date(item.createDate);
+        const createDate = formatDate(new Date(item.createDate));
         return createDate >= startDate && createDate <= endDate;
     });
 
-    const totalCount = filteredData.length;
-
-    if (totalCount > 0) {
-        setForm(() => ({
-            stats: totalCount,
-            icon: <i className="fa-solid fa-person-circle-plus" />,
-            title: title,
-            subtitle: subtitle
-        }));
-    }
+    return filteredData.length;
 }
 
-function calculateNewPurchased(data, setForm, startDate, endDate, title, subtitle) {
+function countPurchased(data, startDate, endDate) {
     const filteredData = data.filter((item) => {
-        const createDate = new Date(item.from);
+        const createDate = formatDate(new Date(item.from));
         return createDate >= startDate && createDate <= endDate;
     });
-
-    const totalCount = filteredData.length;
-
-    if (totalCount > 0) {
-        setForm(() => ({
-            stats: totalCount,
-            icon: <i className="fa-solid fa-box-open" />,
-            title: title,
-            subtitle: subtitle
-        }));
-    }
+   
+    return filteredData.length;
 }
 
 function MemberCards(data, setForm) {
 
     if (data) {
         // Thành viên mới trong ngày hiện tại
-        calculateNewMembers(data, setForm, CURRENT_DATE, CURRENT_DATE, "Hôm nay", "Thành viên mới");
+        const currentDate = formatDate(CURRENT_DATE);
+        let count = countNewMembers(data, currentDate, currentDate);
+        if (count) {
+            setForm(() => ({
+                stats: count,
+                icon: <i className="fa-solid fa-person-circle-plus" />,
+                title: "Hôm nay",
+                subtitle: "Thành viên mới"
+            }));
+            return;
+        }
 
         // Thành viên mới trong tháng hiện tại
         const currentMonth = CURRENT_DATE.getMonth();
         const currentYear = CURRENT_DATE.getFullYear();
-        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
-
-        calculateNewMembers(data, setForm, firstDayOfMonth, lastDayOfMonth, "Tháng này", "Thành viên mới");
+        const firstDayOfMonth = formatDate(new Date(currentYear, currentMonth, 1));
+        const lastDayOfMonth = formatDate(new Date(currentYear, currentMonth + 1, 0));
+        count = countNewMembers(data, firstDayOfMonth, lastDayOfMonth);
+        if (count) {
+            setForm(() => ({
+                stats: count,
+                icon: <i className="fa-solid fa-person-circle-plus" />,
+                title: "Tháng này",
+                subtitle: "Thành viên mới"
+            }));
+            return;
+        }
     }
 }
 
 function PackageGymerCards(data, setForm) {
 
     if (data) {
-        // Thành viên mới trong ngày hiện tại
-        calculateNewPurchased(data, setForm, CURRENT_DATE, CURRENT_DATE, "Hôm nay", "gói tập đã được mua");
+        const currentDate = formatDate(CURRENT_DATE);
+        let count = countPurchased(data, currentDate, currentDate);
+        
+        if (count > 0) {
+            setForm(() => ({
+                stats: count,
+                icon: <i className="fa-solid fa-box-open" />,
+                title: "Hôm nay",
+                subtitle: "gói tập đã được mua"
+            }));
+            return;
+        }
 
-        // Thành viên mới trong tháng hiện tại
         const currentMonth = CURRENT_DATE.getMonth();
         const currentYear = CURRENT_DATE.getFullYear();
-        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+        const firstDayOfMonth = formatDate(new Date(currentYear, currentMonth, 1));
+        const lastDayOfMonth = formatDate(new Date(currentYear, currentMonth + 1, 0));
 
-        calculateNewPurchased(data, setForm, firstDayOfMonth, lastDayOfMonth, "Tháng này", "gói tập đã được mua");
+        count = countPurchased(data, firstDayOfMonth, lastDayOfMonth);
+        if (count > 0) {
+            setForm(() => ({
+                stats: count,
+                icon: <i className="fa-solid fa-box-open" />,
+                title: "Tháng này",
+                subtitle: "gói tập đã được mua"
+            }));
+            return;
+        }
     }
 }
 

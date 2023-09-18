@@ -104,7 +104,7 @@ const CountMemberByRole = ({ user }) => {
                     <NavLink to={`/management/${user.role}`}>
                         <div className="manager">
                             <div className="icon">
-                                <i class="fa-solid fa-gear"></i>
+                                <i className="fa-solid fa-gear"></i>
                             </div>
                             <span>{user.name}</span>
                         </div>
@@ -185,7 +185,7 @@ const CountPackages = ({ packageForm }) => {
                     <NavLink to={`/management/package`}>
                         <div className="manager">
                             <div className="icon">
-                                <i class="fa-solid fa-gear"></i>
+                                <i className="fa-solid fa-gear"></i>
                             </div>
                             <span>{packageForm.name}</span>
                         </div>
