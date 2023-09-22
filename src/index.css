@@ -1341,10 +1341,10 @@ hr.view-divider {
   }
 
   >.user-avatar {
-    display: flex;
     width: 25%;
     max-width: 250px;
     margin: 20px 10px;
+    display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
@@ -2071,7 +2071,7 @@ hr.view-divider {
         & .card-title {
           color: black;
           text-align: center;
-          
+
           & h2 {
             margin-bottom: 0;
           }
@@ -2166,5 +2166,107 @@ hr.view-divider {
     display: flex;
     justify-content: left;
     font-family: Roboto;
+  }
+}
+
+.rate-field {
+  margin-right: 20px;
+}
+
+.feedback-result {
+  margin: 20px 0;
+
+  >.common-frame {
+    margin-bottom: 15px;
+    display: flex;
+    border: 1px solid #f3ece4;
+    border-radius: 8px;
+    background: #f3ece4;
+    box-sizing: border-box;
+
+    >.rating-flame {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 10px;
+      border-right: 1px solid var(--tertiary-color);
+
+      >.title {
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid var(--tertiary-color);
+      }
+
+      >.rating {
+        font-size: 30px;
+      }
+    }
+
+    >.details-flame {
+      flex-grow: 1;
+      padding: 10px 15px;
+      position: relative;
+
+      >.detail {
+        display: flex;
+        border-bottom: 1px solid var(--tertiary-color);
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+
+        &>* {
+          flex-grow: 1;
+
+          &:not(:last-child) {
+            border-right: 1px solid var(--tertiary-color);
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.pagination {
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  justify-content: center;
+
+  >.page-item {
+    display: list-item;
+
+    &:first-child .page-link {
+      border-top-left-radius: .25rem;
+      border-bottom-left-radius: .25rem;
+    }
+
+    &.active .page-link {
+      z-index: 3;
+      color: #fff;
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+
+    &.disabled .page-link {
+      color: #6c757d;
+      pointer-events: none;
+      background-color: #fff;
+      border-color: #dee2e6;
+    }
+
+    & .page-link {
+      position: relative;
+      display: block;
+      color: #0d6efd;
+      text-decoration: none;
+      background-color: #fff;
+      border: 1px solid #dee2e6;
+      transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+      padding: .375rem .75rem;
+    }
+  }
+
+  & [role=button] {
+    cursor: pointer;
   }
 }

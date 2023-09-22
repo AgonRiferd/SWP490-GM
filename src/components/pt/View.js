@@ -11,6 +11,7 @@ import Dialog from "../../flagments/dialog";
 import Calendar from "../../flagments/advance-calendar";
 import { ScheduleDetail } from "./dialog";
 import Success from "../../utils/successAnimation";
+import PaginatedItems from "../../flagments/pagination";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -119,18 +120,25 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                                         <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
                                             <div className="common-tab-container">
                                                 <span className="common-tab-name">
-                                                    Bài tập
+                                                    Đánh giá
                                                 </span>
                                             </div>
                                         </div>
                                         <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
                                             <div className="common-tab-container">
                                                 <span className="common-tab-name">
-                                                    Huấn luyện
+                                                    Bài tập
                                                 </span>
                                             </div>
                                         </div>
                                         <div className={`common-tab ${isTabActive(4) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(4)}>
+                                            <div className="common-tab-container">
+                                                <span className="common-tab-name">
+                                                    Huấn luyện
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`common-tab ${isTabActive(5) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(5)}>
                                             <div className="common-tab-container">
                                                 <span className="common-tab-name">
                                                     Danh biểu
@@ -143,12 +151,15 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                                             <OtherProfile user={user} />
                                         }
                                         {isTabActive(2) &&
-                                            <Exercise userId={user.id} />
+                                            <FeedbackViewer userId={user.id} />
                                         }
                                         {isTabActive(3) &&
-                                            <WorkingPackages userId={user.id} />
+                                            <Exercise userId={user.id} />
                                         }
                                         {isTabActive(4) &&
+                                            <WorkingPackages userId={user.id} />
+                                        }
+                                        {isTabActive(5) &&
                                             <Schedule userId={user.id} />
                                         }
                                     </div>
@@ -166,6 +177,7 @@ const OtherProfile = ({ user }) => {
     const [qualification, setQualification] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [dialogMode, setDialogMode] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [rating, setRating] = useState(null);
 
@@ -216,21 +228,25 @@ const OtherProfile = ({ user }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const handleOpenDialog = () => {
+    const handleOpenDialog = (mode) => {
+        setDialogMode(mode);
         setIsDialogOpen(true);
     };
 
     const handleCloseDialog = () => {
         setIsDialogOpen(false);
+        setDialogMode(null);
     };
 
-    const dialogMode = {
-        title: "Chứng chỉ",
-        icon: <i className="fa-solid fa-user-lock"></i>,
-        component: CertificationEdit,
-        userId: user.id,
-        fetchData: fetchData
-    };
+    const dialogs = useMemo(() => ({
+        dialogCertificate: {
+            title: "Chứng chỉ",
+            component: CertificationEdit,
+            userId: user.id,
+            fetchData: fetchData
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }), []);
 
     return (
         <>
@@ -291,9 +307,11 @@ const OtherProfile = ({ user }) => {
                                         </td>
                                         <td>
                                             {rating ?
-                                                <span>
-                                                    {rating} / 5
-                                                </span> : <span>
+                                                <>
+                                                    <span className="rate-field">
+                                                        {rating} / 5
+                                                    </span>
+                                                </> : <span>
                                                     Chưa có
                                                 </span>
                                             }
@@ -339,10 +357,14 @@ const OtherProfile = ({ user }) => {
                                         <td>
                                             {qualification ?
                                                 <>
-                                                    <button className="any-button" onClick={handleOpenDialog}>Chỉnh sửa</button>
+                                                    <button className="any-button" onClick={() => handleOpenDialog(dialogs.dialogCertificate)}>
+                                                        Chỉnh sửa
+                                                    </button>
                                                     <img src={qualification.certificate} alt="certificate" />
                                                 </> : <>
-                                                    <button className="any-button" onClick={handleOpenDialog}>Chỉnh sửa</button>
+                                                    <button className="any-button" onClick={() => handleOpenDialog(dialogs.dialogCertificate)}>
+                                                        Chỉnh sửa
+                                                    </button>
                                                 </>
                                             }
                                         </td>
@@ -485,7 +507,7 @@ const Exercise = ({ userId }) => {
 
     useEffect(() => {
         fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const dialogs = useMemo(() => ({
@@ -500,7 +522,7 @@ const Exercise = ({ userId }) => {
             component: ExerciseDialog.Delete,
             fetchData: fetchData
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }), []);
 
     return (
@@ -659,6 +681,96 @@ const CertificationEdit = ({ data, onClose, isLoading, onLoading, ...props }) =>
     );
 };
 
+const FeedbackViewer = ({ userId }) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [rating, setRating] = useState(null);
+    const [listFeedback, setListFeedback] = useState(null);
+
+    const fetchData = async () => {
+        try {
+            if (!isLoading)
+                setIsLoading(true);
+            // Fetch data from the API and update the state
+            let response = await axiosInstance.get('/Feedback/GetFeedbackListByExpertID', {
+                params: {
+                    expertID: userId,
+                    isDelete: false
+                }
+            });
+            //Fetch thành công
+            if (response) {
+                const { data } = response.data;
+                setListFeedback(data);
+            }
+
+            response = await axiosInstance.get('/Feedback/GetAverageRatingByExpertID', {
+                params: {
+                    expertID: userId
+                }
+            });
+            //Fetch thành công
+            if (response) {
+                const { data } = response.data;
+                if (data) {
+                    setRating(data.averageRate);
+                }
+            }
+        } catch (error) {
+            if (error.response) {
+                // Lỗi được trả về từ phía server
+                setErrorMessage(error.response.data.message);
+            } else {
+                // Lỗi không có phản hồi từ server
+                setErrorMessage(
+                    <>
+                        <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                        <span>Mã lỗi: {error.code}</span>
+                    </>
+                );
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    return (
+        <>
+            {isLoading ? (
+                <div className="loading-overlay">
+                    <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+                    <span>Đang tải dữ liệu...</span>
+                </div>
+            ) : errorMessage ? (
+                <span className="status-error">{errorMessage}</span>
+            ) : (
+                <>
+                    {listFeedback ? (
+                        <>
+                            <div>
+                                <span>Trung bình: </span>
+                                <span>{rating} / 5</span>
+                            </div>
+                            <div>
+                                <PaginatedItems itemsPerPage={5} data={listFeedback} component={FeedbackDetail} />
+                            </div>
+                        </>
+                    ) : (
+                        <div>
+                            Hiện chưa có đánh giá
+                        </div>
+                    )}
+
+                </>
+            )}
+        </>
+    )
+}
+
 const Schedule = ({ userId }) => {
     const [scheduleData, setScheduleData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -682,7 +794,7 @@ const Schedule = ({ userId }) => {
 
     const Tooltip = ({ data }) => {
         const totalMembers = Array.from(new Set(data.map(item => item.gymerID)));
-        const totalWorkShifts = new Set(data.map(item => item.dateAndTime));
+        const totalWorkShifts = new Set(data.map(item => item.from && item.to));
 
         return (
             <>
@@ -736,6 +848,38 @@ const Schedule = ({ userId }) => {
             )}
         </div>
     );
+}
+
+const FeedbackDetail = ({ data }) => {
+    return (
+        <div className="feedback-result">
+            {data &&
+                data.map((item, index) => (
+                    <div className="common-frame" key={index}>
+                        <div className="rating-flame">
+                            <span className="title">Đánh giá</span>
+                            <span className="rating">{item.rate}</span>
+                        </div>
+                        <div className="details-flame">
+                            <div className="detail">
+                                <div>
+                                    <span>Người đánh giá: </span>
+                                    <span>{item.gymerName}</span>
+                                </div>
+                                <div>
+                                    <span>Tên gói tập: </span>
+                                    <span>{item.packageName}</span>
+                                </div>
+                            </div>
+                            <div>
+                                {item.feedback1}
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    )
 }
 
 export default CustomView;

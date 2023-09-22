@@ -25,6 +25,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         gender: GENDER_MALE,
         role: 'PT'
     });
+
     const [retypePw, setRetypePw] = useState('');
 
     const [certData, setCertData] = useState({
@@ -164,9 +165,50 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
         }
     }
 
+    const handleDisableStatus = async (e) => {
+        e.preventDefault();
+
+        const formDisable = {
+            phoneNo: '',
+            password: '',
+            fullname: '',
+            image: '',
+            gender: '',
+            role: '',
+            isDelete: true
+        }
+
+        try {
+            onLoading(true);
+            const response = await axiosInstance.put(`/Accounts/UpdateAccount?id=${id}`, formDisable);
+            if (response) {
+                setIsSuccess(true);
+            }
+        } catch (error) {
+            // Xử lý lỗi nếu có
+            if (error.response) {
+                setErrorMessage(<>
+                    <p>Cập nhật không thành công</p>
+                    <p>Mã lỗi: {error.response.status}</p>
+                </>);
+            } else {
+                setErrorMessage(<>
+                    <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                    <p>Mã lỗi: {error.code}</p>
+                </>);
+            }
+        } finally {
+            onLoading(false);
+        }
+    };
+
     const handleOnClose = () => {
         onClose();
         props.fetchData();
+    }
+
+    const handleCerfOnClose = (e) => {
+        handleDisableStatus(e)
     }
 
     return (
@@ -222,7 +264,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                         </div>
                         <div className='dialog-button-tray'>
                             <button type='submit' className='any-button button-submit' disabled={isLoading || !imageUrl}>Xác nhận</button>
-                            <button type='button' className='any-button button-cancel' onClick={handleOnClose}>Bỏ qua</button>
+                            <button type='button' className='any-button button-cancel' onClick={handleCerfOnClose}>Bỏ qua</button>
                         </div>
                     </form>
                 </> : <>
@@ -350,7 +392,7 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
 };
 
 export const View = ({ data, onClose }) => {
-    
+
 }
 
 export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
