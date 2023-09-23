@@ -9,6 +9,7 @@ import Dialog from "../../flagments/dialog";
 import { ImageInput } from "../../utils/imageConvert";
 import Success from "../../utils/successAnimation";
 import PackageGymerDialog from "../package_gymer/dialog";
+import PaginatedItems from "../../flagments/pagination";
 
 const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
     const [user, setUser] = useState(null);
@@ -117,11 +118,18 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                                         <div className={`common-tab ${isTabActive(2) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(2)}>
                                             <div className="common-tab-container">
                                                 <span className="common-tab-name">
-                                                    Thực phẩm
+                                                    Đánh giá
                                                 </span>
                                             </div>
                                         </div>
                                         <div className={`common-tab ${isTabActive(3) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(3)}>
+                                            <div className="common-tab-container">
+                                                <span className="common-tab-name">
+                                                    Thực phẩm
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`common-tab ${isTabActive(4) ? 'common-tab-selected' : ''}`} onClick={() => handleTabClick(4)}>
                                             <div className="common-tab-container">
                                                 <span className="common-tab-name">
                                                     Công việc
@@ -134,9 +142,12 @@ const CustomView = ({ dataUser, setDataView, isMainLoading }) => {
                                             <OtherProfile user={user} />
                                         }
                                         {isTabActive(2) &&
-                                            <FoodAndSuppliments userId={user.id} />
+                                            <FeedbackViewer userId={user.id} />
                                         }
                                         {isTabActive(3) &&
+                                            <FoodAndSuppliments userId={user.id} />
+                                        }
+                                        {isTabActive(4) &&
                                             <WorkingPackages userId={user.id} />
                                         }
                                     </div>
@@ -655,5 +666,128 @@ const CertificationEdit = ({ data, onClose, isLoading, onLoading, ...props }) =>
         </>
     );
 };
+
+const FeedbackViewer = ({ userId }) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [rating, setRating] = useState(null);
+    const [listFeedback, setListFeedback] = useState(null);
+
+    const fetchData = async () => {
+        try {
+            if (!isLoading)
+                setIsLoading(true);
+            // Fetch data from the API and update the state
+            let response = await axiosInstance.get('/Feedback/GetFeedbackListByExpertID', {
+                params: {
+                    expertID: userId,
+                    isDelete: false
+                }
+            });
+            //Fetch thành công
+            if (response) {
+                const { data } = response.data;
+                setListFeedback(data);
+            }
+
+            response = await axiosInstance.get('/Feedback/GetAverageRatingByExpertID', {
+                params: {
+                    expertID: userId
+                }
+            });
+            //Fetch thành công
+            if (response) {
+                const { data } = response.data;
+                if (data) {
+                    setRating(data.averageRate);
+                }
+            }
+        } catch (error) {
+            if (error.response) {
+                // Lỗi được trả về từ phía server
+                setErrorMessage(error.response.data.message);
+            } else {
+                // Lỗi không có phản hồi từ server
+                setErrorMessage(
+                    <>
+                        <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
+                        <span>Mã lỗi: {error.code}</span>
+                    </>
+                );
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    return (
+        <>
+            {isLoading ? (
+                <div className="loading-overlay">
+                    <i className="fa-solid fa-spinner fa-spin-pulse"></i>
+                    <span>Đang tải dữ liệu...</span>
+                </div>
+            ) : errorMessage ? (
+                <span className="status-error">{errorMessage}</span>
+            ) : (
+                <>
+                    {listFeedback ? (
+                        <>
+                            <div>
+                                <span>Trung bình: </span>
+                                <span>{rating} / 5</span>
+                            </div>
+                            <div>
+                                <PaginatedItems itemsPerPage={5} data={listFeedback} component={FeedbackDetail} />
+                            </div>
+                        </>
+                    ) : (
+                        <div>
+                            Hiện chưa có đánh giá
+                        </div>
+                    )}
+
+                </>
+            )}
+        </>
+    )
+}
+
+const FeedbackDetail = ({ data }) => {
+    return (
+        <div className="feedback-result">
+            {data &&
+                data.map((item, index) => (
+                    <div className="common-frame" key={index}>
+                        <div className="rating-flame">
+                            <span className="title">Đánh giá</span>
+                            <span className="rating">{item.rate}</span>
+                        </div>
+                        <div className="details-flame">
+                            <div className="detail">
+                                <div>
+                                    <span>Người đánh giá: </span>
+                                    <span>{item.gymerName}</span>
+                                </div>
+                                <div>
+                                    <span>Tên gói tập: </span>
+                                    <span>{item.packageName}</span>
+                                    <i className="fa-solid fa-eye"></i>
+                                </div>
+                            </div>
+                            <div>
+                                {item.feedback1}
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    )
+}
 
 export default CustomView;

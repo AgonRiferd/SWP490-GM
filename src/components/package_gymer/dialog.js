@@ -22,7 +22,7 @@ const View = ({ data, onClose }) => {
     });
 
     useEffect(() => {
-        const fetchScheduleData = async () => {
+        const fetchPackageData = async () => {
             let ptName, neName, packageData = null;
 
             if (!isLoading)
@@ -61,7 +61,7 @@ const View = ({ data, onClose }) => {
             }
         };
 
-        fetchScheduleData();
+        fetchPackageData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
