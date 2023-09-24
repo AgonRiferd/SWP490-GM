@@ -470,16 +470,19 @@ const FoodAndSuppliments = ({ userId }) => {
                 if (status !== 404) {
                     setErrorMessage(
                         <>
-                            <span>Mã lỗi: {status}</span>
+                            <span>Đã xảy ra lỗi bên máy chủ.</span>
+                            <span>Vui lòng thử lại sau.</span>
                         </>
                     );
+                } else {
+                    setData([]);
                 }
             } else {
                 // Lỗi không có phản hồi từ server
                 setErrorMessage(
                     <>
-                        <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
-                        <span>Mã lỗi: {error.code}</span>
+                        <p>Đã xảy ra lỗi kết nối.</p>
+                        <p>Vui lòng thử lại sau.</p>
                     </>
                 );
             }
@@ -776,7 +779,6 @@ const FeedbackDetail = ({ data }) => {
                                 <div>
                                     <span>Tên gói tập: </span>
                                     <span>{item.packageName}</span>
-                                    <i className="fa-solid fa-eye"></i>
                                 </div>
                             </div>
                             <div>

@@ -752,7 +752,7 @@ const FeedbackViewer = ({ userId }) => {
                     {listFeedback ? (
                         <>
                             <div>
-                                <span>Trung bình: </span>
+                                <span>Đánh giá trung bình: </span>
                                 <span>{rating} / 5</span>
                             </div>
                             <div>
