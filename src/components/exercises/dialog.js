@@ -3,30 +3,33 @@ import React, { useState } from 'react';
 import Success from '../../utils/successAnimation';
 import axiosInstance from '../../utils/axiosConfig';
 
-function getVideoIdFromUrl(url) {
-    const regex = /(?:\?v=|\/embed\/|\.be\/)([\w-]+)(?:&.*|$)/;
-    const match = url.match(regex);
-    return match ? match[1] : 'dQw4w9WgXcQ';
-}
+// function getVideoIdFromUrl(url) {
+//     const regex = /(?:\?v=|\/embed\/|\.be\/)([\w-]+)(?:&.*|$)/;
+//     const match = url.match(regex);
+//     return match ? match[1] : 'dQw4w9WgXcQ';
+// }
 
 const Create = ({ onClose }) => {
 };
 
 const View = ({ data, onClose }) => {
     const [initialData] = useState(data);
-    const videoId = getVideoIdFromUrl(data.video);
+    // const videoId = getVideoIdFromUrl(data.video);
     return (
         <>
             <div className='dialog-fields flex-column'>
                 <div className='iframe-video'>
-                    <iframe
+                    {/* <iframe
                         width="400"
                         height="200"
                         src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`}
                         title="Video"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
-                    />
+                    /> */}
+                    <video width="400" height="200" controls>
+                        <source src={data.video} type="video/mp4" />
+                    </video>
                 </div>
                 <table className='dialog-field'>
                     <tbody>
@@ -86,12 +89,10 @@ const Delete = ({ data, isLoading, onLoading, onClose, ...props }) => {
             if (error.response) {
                 setErrorMessage(<>
                     <p>Xóa không thành công</p>
-                    <p>Mã lỗi: {error.response.status}</p>
                 </>);
             } else {
                 setErrorMessage(<>
                     <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
-                    <p>Mã lỗi: {error.code}</p>
                 </>);
             }
             onLoading(false);

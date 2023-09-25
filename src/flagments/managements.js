@@ -71,12 +71,21 @@ const CountMemberByRole = ({ user }) => {
                 //Fetch thành công
                 if (response) {
                     const { data } = response.data;
-                    setForm(() => ({
-                        stats: data.length,
-                        icon: user.icon,
-                        subtitle: user.name,
-                        role: user.role
-                    }));
+                    if (data) {
+                        setForm(() => ({
+                            stats: data.length,
+                            icon: user.icon,
+                            subtitle: user.name,
+                            role: user.role
+                        }));
+                    } else {
+                        setForm(() => ({
+                            stats: 0,
+                            icon: user.icon,
+                            subtitle: user.name,
+                            role: user.role
+                        }));
+                    }
                 }
             } catch (error) {
                 setForm(() => ({
@@ -125,7 +134,7 @@ const PackageManagement = () => {
     return (
         <div className="column">
             <div className="card">
-            <div className="card-title">
+                <div className="card-title">
                     <h2>Gói tập</h2>
                 </div>
                 <div className="card-content">

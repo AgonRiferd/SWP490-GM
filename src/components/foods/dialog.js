@@ -68,13 +68,13 @@ export const Delete = ({ data, isLoading, onLoading, onClose, ...props }) => {
             // Xử lý lỗi nếu có
             if (error.response) {
                 setErrorMessage(<>
-                    <p>Xóa không thành công</p>
-                    <p>Mã lỗi: {error.response.status}</p>
+                    <p>Đã có lỗi từ máy chủ.</p>
+                    <p>Xóa không thành công.</p>
                 </>);
             } else {
                 setErrorMessage(<>
-                    <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
-                    <p>Mã lỗi: {error.code}</p>
+                    <p>Đã xảy ra lỗi.</p>
+                    <p>Vui lòng thử lại sau.</p>
                 </>);
             }
             onLoading(false);
