@@ -148,15 +148,14 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
             if (error.response) {
                 setErrorMessage(
                     <>
+                        <p>Đã xảy ra lỗi từ máy chủ</p>
                         <p>Tạo không thành công</p>
-                        <p>Mã lỗi: {error.response.status}</p>
                     </>
                 );
             } else {
                 setErrorMessage(
                     <>
                         <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
-                        <p>Mã lỗi: {error.code}</p>
                     </>
                 );
             }
@@ -421,14 +420,15 @@ export const Edit = ({ data, isLoading, onLoading, onClose, ...props }) => {
         } catch (error) {
             // Xử lý lỗi nếu có
             if (error.response) {
-                setErrorMessage(<>
-                    <p>Cập nhật không thành công</p>
-                    <p>Mã lỗi: {error.response.status}</p>
-                </>);
+                setErrorMessage(
+                    <>
+                        <p>Đã xảy ra lỗi từ máy chủ</p>
+                        <p>Cập nhật không thành công</p>
+                    </>
+                );
             } else {
                 setErrorMessage(<>
                     <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
-                    <p>Mã lỗi: {error.code}</p>
                 </>);
             }
             onLoading(false);

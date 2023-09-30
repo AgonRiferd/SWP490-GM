@@ -49,7 +49,6 @@ const MemberManage = () => {
                 setErrorMessage(
                     <>
                         <p>Đã xảy ra lỗi. Vui lòng thử lại sau.</p>
-                        <span>Mã lỗi: {error.code}</span>
                     </>
                 );
             }
