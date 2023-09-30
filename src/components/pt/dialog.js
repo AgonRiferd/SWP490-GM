@@ -356,6 +356,8 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                 name="password"
                                                 value={formData.password}
                                                 onChange={handleChange}
+                                                minLength={6}
+                                                maxLength={50}
                                                 required
                                             />
                                         </td>
@@ -372,6 +374,8 @@ export const Create = ({ onClose, isLoading, onLoading, ...props }) => {
                                                 name="retypePw"
                                                 value={retypePw}
                                                 onChange={handleRePasswordChange}
+                                                minLength={6}
+                                                maxLength={50}
                                                 required
                                             />
                                         </td>

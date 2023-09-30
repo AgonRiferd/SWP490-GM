@@ -53,7 +53,7 @@ const Header = ({ setIsAuthenticated }) => {
                                 <li className="dropdown-title">Bạn hiện có 0 thông báo</li>
                                 <li>
                                     <div className="notification-empty">
-                                        <h2>Nothing new</h2>
+                                        <h2>Không có thông báo</h2>
                                     </div>
                                 </li>
                                 <li className="dropdown-footer">Xem tất cả thông báo</li>
@@ -65,7 +65,7 @@ const Header = ({ setIsAuthenticated }) => {
                                 <i className="fa-solid fa-circle-user fa-user fa-custom"></i>
                                 <div className="profile">
                                     <div>
-                                        Admin
+                                        Quản lý
                                         <span>
                                             <i className="caret"></i>
                                         </span>
